@@ -3,3 +3,8 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+#----------------------------------------------
+# login and generate JWT token
+api_login_check:
+    path: /api/token/login
