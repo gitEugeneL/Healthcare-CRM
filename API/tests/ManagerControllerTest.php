@@ -2,9 +2,7 @@
 
 namespace App\Tests;
 
-
 use Symfony\Component\HttpFoundation\Response;
-
 
 class ManagerControllerTest extends TestCase
 {
