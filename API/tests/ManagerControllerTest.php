@@ -2,75 +2,79 @@
 
 namespace App\Tests;
 
+
+use Symfony\Component\HttpFoundation\Response;
+
+
 class ManagerControllerTest extends TestCase
 {
     private array $admin = [
         'username' => 'admin@admin.com',
         'password' => 'admin!1A'
     ];
-    private array $nonexistentManager = [
+
+    private array $manager = [
         'lastName' => 'manager',
         'firstName' => 'manager',
         'email' => 'm@m.com',
         'password' => 'manager!1M',
-        'phone' => '+48000000000'
+        'phone' => '+00000000000'
     ];
 
-    private array $existentManager = [
-        'lastName' => 'manager1',
-        'firstName' => 'manager1',
-        'email' => 'manager@manager.com',
-        'password' => 'manager!1M',
-        'phone' => '+48000000000'
-    ];
-
-    public function testCreate_validData(): void
+    private function createManager(string $accessToken): Response
     {
-        $adminAccessToken = $this->login($this->admin['username'], $this->admin['password']);
-        $response = $this->post(
+        return $this->post(
             uri: '/api/manager/create',
-            data: $this->nonexistentManager,
-            accessToken: $adminAccessToken
+            data: $this->manager,
+            accessToken: $accessToken
         );
-        $this->assertSame(201, $response->getStatusCode());
-        $this->assertJson($response->getContent());
-        $this->assertSame($this->nonexistentManager['email'], json_decode($response->getContent(), true)['email']);
     }
 
-
-    public function testCreate_invalidData(): void
+    public function testCreate_withValidData_returnsCreated(): void
     {
         $adminAccessToken = $this->login($this->admin['username'], $this->admin['password']);
+        $response = $this->createManager($adminAccessToken);
+        $this->assertSame(201, $response->getStatusCode());
+        $this->assertJson($response->getContent());
+        $this->assertSame($this->manager['email'], json_decode($response->getContent(), true)['email']);
+    }
+
+    public function testCreate_witExistentManager_returnsAlreadyExist(): void
+    {
+        $adminAccessToken = $this->login($this->admin['username'], $this->admin['password']);
+        $this->createManager($adminAccessToken);
+
         $response = $this->post(
             uri: '/api/manager/create',
-            data: $this->existentManager,
-            accessToken: $adminAccessToken,
+            data: $this->manager,
+            accessToken: $adminAccessToken
         );
         $this->assertSame(409, $response->getStatusCode());
         $this->assertIsString($response->getContent());
-        $this->assertSame("User manager@manager.com already exists", $response->getContent());
+        $this->assertSame("User {$this->manager['email']} already exists", $response->getContent());
     }
 
-    public function testInfo_validData(): void
+    public function testInfo_withValidManager_returnsOk(): void
     {
-        $managerAccessToken = $this->login($this->existentManager['email'], $this->existentManager['password']);
+        $adminAccessToken = $this->login($this->admin['username'], $this->admin['password']);
+        $this->createManager($adminAccessToken);
 
+        $managerAccessToken = $this->login($this->manager['email'], $this->manager['password']);
         $response = $this->get(
             uri: '/api/manager/info',
             accessToken: $managerAccessToken
         );
-        var_dump($response->getContent());
+
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertJson($response->getContent());
-        $this->assertSame($this->existentManager['email'], json_decode($response->getContent(), true)['email']);
+        $this->assertSame($this->manager['email'], json_decode($response->getContent(), true)['email']);
     }
 
-    public function testInfo_invalidData(): void
+    public function testInfo_withInvalidUser_returnsUnauthorized(): void
     {
         $response = $this->get(
             uri: '/api/manager/info',
+            accessToken: 'invalidToken'
         );
-        var_dump($response->getContent());
         $this->assertSame(401, $response->getStatusCode());
     }
 }

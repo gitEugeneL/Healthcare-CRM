@@ -55,7 +55,7 @@ abstract class TestCase extends WebTestCase
     protected function login(string $username, string $password): string
     {
         $response = $this->post(
-            uri: 'api/token/login',
+            uri: '/api/token/login',
             data: [
                 'username' => $username,
                 'password' => $password
