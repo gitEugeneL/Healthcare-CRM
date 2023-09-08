@@ -2,36 +2,11 @@
 
 namespace App\Tests;
 
-use Symfony\Component\HttpFoundation\Response;
-
 class ManagerControllerTest extends TestCase
 {
-    private array $admin = [
-        'username' => 'admin@admin.com',
-        'password' => 'admin!1A'
-    ];
-
-    private array $manager = [
-        'lastName' => 'manager',
-        'firstName' => 'manager',
-        'email' => 'm@m.com',
-        'password' => 'manager!1M',
-        'phone' => '+00000000000'
-    ];
-
-    private function createManager(string $accessToken): Response
-    {
-        return $this->post(
-            uri: '/api/manager/create',
-            data: $this->manager,
-            accessToken: $accessToken
-        );
-    }
-
     public function testCreate_withValidData_returnsCreated(): void
     {
-        $adminAccessToken = $this->login($this->admin['username'], $this->admin['password']);
-        $response = $this->createManager($adminAccessToken);
+        $response = $this->createManager();
         $this->assertSame(201, $response->getStatusCode());
         $this->assertJson($response->getContent());
         $this->assertSame($this->manager['email'], json_decode($response->getContent(), true)['email']);
@@ -39,8 +14,8 @@ class ManagerControllerTest extends TestCase
 
     public function testCreate_witExistentManager_returnsAlreadyExist(): void
     {
-        $adminAccessToken = $this->login($this->admin['username'], $this->admin['password']);
-        $this->createManager($adminAccessToken);
+        $adminAccessToken= $this->login($this->admin['username'], $this->admin['password']);
+        $this->createManager();
 
         $response = $this->post(
             uri: '/api/manager/create',
@@ -54,8 +29,7 @@ class ManagerControllerTest extends TestCase
 
     public function testInfo_withValidManager_returnsOk(): void
     {
-        $adminAccessToken = $this->login($this->admin['username'], $this->admin['password']);
-        $this->createManager($adminAccessToken);
+        $this->createManager();
 
         $managerAccessToken = $this->login($this->manager['email'], $this->manager['password']);
         $response = $this->get(

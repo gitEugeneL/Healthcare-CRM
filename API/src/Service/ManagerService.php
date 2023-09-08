@@ -4,14 +4,14 @@ namespace App\Service;
 
 use App\Dto\Request\Manager\CreateManagerDto;
 use App\Dto\Response\Manager\ManagerResponseDto;
-use App\Dto\Transformer\Manager\ManagerResponseDtoTransformer;
+use App\Entity\Auth\Roles;
+use App\Entity\Auth\User;
 use App\Entity\Manager;
-use App\Entity\Roles;
-use App\Entity\User;
 use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
 use App\Repository\ManagerRepository;
 use App\Repository\UserRepository;
+use App\Transformer\Manager\ManagerResponseDtoTransformer;
 
 class ManagerService
 {

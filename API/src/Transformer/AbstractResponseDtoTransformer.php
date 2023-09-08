@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dto\Transformer;
+namespace App\Transformer;
 
 abstract class AbstractResponseDtoTransformer implements ResponseDtoTransformInterface
 {

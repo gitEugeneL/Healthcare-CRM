@@ -1,16 +1,12 @@
 <?php
 
-use App\Tests\TestCase;
+namespace App\Tests;
+
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthTest extends TestCase
 {
-    private array $admin = [
-        'username' => 'admin@admin.com',
-        'password' => 'admin!1A'
-    ];
-
     private function userLogin(string $username, string $password): Response
     {
         return $this->post(

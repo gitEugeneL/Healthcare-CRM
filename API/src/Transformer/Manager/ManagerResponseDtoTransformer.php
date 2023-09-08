@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Dto\Transformer\Manager;
+namespace App\Transformer\Manager;
 
 use App\Dto\Response\Manager\ManagerResponseDto;
-use App\Dto\Transformer\AbstractResponseDtoTransformer;
+use App\Transformer\AbstractResponseDtoTransformer;
 
 class ManagerResponseDtoTransformer extends AbstractResponseDtoTransformer
 {
     public function transformFromObject(object $manager): ManagerResponseDto
     {
         $dto = new ManagerResponseDto();
+        $dto->setId($manager->getId());
         $dto->setFirstName($manager->getFirstName());
         $dto->setLastName($manager->getLastName());
         $dto->setEmail($manager->getUser()->getEmail());

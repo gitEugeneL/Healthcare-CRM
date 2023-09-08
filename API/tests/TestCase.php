@@ -15,6 +15,19 @@ abstract class TestCase extends WebTestCase
 
     protected KernelBrowser $client;
 
+    protected array $admin = [
+        'username' => 'admin@admin.com',
+        'password' => 'admin!1A'
+    ];
+
+    protected array $manager = [
+        'lastName' => 'manager',
+        'firstName' => 'manager',
+        'email' => 'm@m.com',
+        'password' => 'manager!1M',
+        'phone' => '+00000000000'
+    ];
+
     protected function setUp(): void
     {
         $this->client = static::createClient();
@@ -62,5 +75,15 @@ abstract class TestCase extends WebTestCase
             ]
         );
         return json_decode($response->getContent(), true)['token'];
+    }
+
+    protected function createManager(): Response
+    {
+        $adminAccessToken = $this->login($this->admin['username'], $this->admin['password']);
+        return $this->post(
+            uri: '/api/manager/create',
+            data: $this->manager,
+            accessToken: $adminAccessToken
+        );
     }
 }

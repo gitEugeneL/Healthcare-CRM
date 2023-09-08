@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dto\Transformer;
+namespace App\Transformer;
 
 interface ResponseDtoTransformInterface
 {
