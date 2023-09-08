@@ -65,5 +65,38 @@ class DoctorControllerTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame(1, $responseData['currentPage']);
         $this->assertSame(2, $responseData['totalPages']);
-    }   
+    }
+
+    public function testShowOne_validId_returnsOk(): void
+    {
+        $this->createManager();
+        $managerAccessToken = $this->login($this->manager['email'], $this->manager['password']);
+        $this->post(
+            uri: '/api/doctor/create',
+            data: $this->doctor,
+            accessToken: $managerAccessToken
+        );
+        $response = $this->get(
+            uri: '/api/doctor/show/1',
+            accessToken: $managerAccessToken
+        );
+        $responseData = json_decode($response->getContent(), true);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(1, $responseData['id']);
+        $this->assertSame($this->doctor['email'], $responseData['email']);
+    }
+
+    public function testShowOne_invalidId_returnsNotFound(): void
+    {
+        $id = 1;
+        $this->createManager();
+        $managerAccessToken = $this->login($this->manager['email'], $this->manager['password']);
+        $response = $this->get(
+            uri: "/api/doctor/show/{$id}",
+            accessToken: $managerAccessToken
+        );
+        $this->assertSame(404, $response->getStatusCode());
+        $this->assertIsString($response->getContent());
+        $this->assertSame("User id:{$id} not found", $response->getContent());
+    }
 }

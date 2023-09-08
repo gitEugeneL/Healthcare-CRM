@@ -44,4 +44,9 @@ class DoctorRepository extends ServiceEntityRepository
     {
         return ceil(count($this->findAll()) / $limit);
     }
+
+    public function findOneById(int $id): Doctor|null
+    {
+        return $this->findOneBy(['id' => $id]);
+    }
 }

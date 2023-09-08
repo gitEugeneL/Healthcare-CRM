@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Dto\Request\Doctor\CreateDoctorDto;
+use App\Exception\AlreadyExistException;
+use App\Exception\NotFoundException;
 use App\Service\DoctorService;
 use App\Validator\RequestValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +23,9 @@ class DoctorController extends AbstractController
         private readonly DoctorService $doctorService
     ) {}
 
+    /**
+     * @throws AlreadyExistException
+     */
     #[IsGranted('ROLE_MANAGER')]
     #[Route('/create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
@@ -43,7 +48,17 @@ class DoctorController extends AbstractController
         return $this->json($result, 200);
     }
 
+    /**
+     * @throws NotFoundException
+     */
+    #[IsGranted('ROLE_MANAGER')]
+    #[Route('/show/{doctorId}', methods: ['GET'])]
+    public function showOne(Request $request): JsonResponse
+    {
+        $result = $this->doctorService->showOne((int) $request->get('doctorId'));
+        return $this->json($result, 200);
+    }
+
     // todo update profile (ROLE_DOCTOR), change password and others
     // todo profile update status (ROLE_MANAGER)
-    // todo show doctor (by email or id)
 }

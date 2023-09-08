@@ -8,6 +8,7 @@ use App\Entity\Auth\Roles;
 use App\Entity\Auth\User;
 use App\Entity\Doctor;
 use App\Exception\AlreadyExistException;
+use App\Exception\NotFoundException;
 use App\Repository\DoctorRepository;
 use App\Repository\UserRepository;
 use App\Transformer\Doctor\DoctorResponseDtoTransformer;
@@ -22,6 +23,9 @@ class DoctorService
         private readonly PaginatorResponseTransformer $paginatorResponseTransformer
     ) {}
 
+    /**
+     * @throws AlreadyExistException
+     */
     public function create(CreateDoctorDto $dto): DoctorResponseDto
     {
         if ($this->userRepository->isUserExist($dto->getEmail()))
@@ -46,5 +50,16 @@ class DoctorService
         $count = $this->doctorRepository->countPages($itemPerPage);
         return $this->paginatorResponseTransformer
             ->transformToArray($this->doctorResponseDtoTransformer->transformFromObjects($doctors), $page, $count);
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    public function showOne(int $doctorId): DoctorResponseDto
+    {
+        $doctor = $this->doctorRepository->findOneById($doctorId);
+        if (is_null($doctor))
+            throw new NotFoundException("User id:{$doctorId} not found");
+        return $this->doctorResponseDtoTransformer->transformFromObject($doctor);
     }
 }
