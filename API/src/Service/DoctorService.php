@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Dto\Request\Doctor\CreateDoctorDto;
 use App\Dto\Response\Doctor\DoctorResponseDto;
 use App\Entity\Auth\Roles;
+use App\Entity\Auth\Status;
 use App\Entity\Auth\User;
 use App\Entity\Doctor;
 use App\Exception\AlreadyExistException;
@@ -36,9 +37,10 @@ class DoctorService
                 ->setEmail($dto->getEmail())
                 ->setPassword(password_hash($dto->getPassword(), PASSWORD_DEFAULT))
                 ->setRoles([Roles::ROLE_DOCTOR])
-            )
-            ->setFirstName($dto->getFirstName())
-            ->setLastName($dto->getLastName());
+                ->setStatus(Status::ACTIVE)
+                ->setFirstName($dto->getFirstName())
+                ->setLastName($dto->getLastName())
+            );
         $this->doctorRepository->save($doctor, true);
         return $this->doctorResponseDtoTransformer->transformFromObject($doctor);
     }

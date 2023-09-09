@@ -30,15 +30,6 @@ class CreateManagerDto
     #[Assert\Length(max: 100, maxMessage: "Last name should not exceed {{ limit }} characters")]
     private string $lastName;
 
-    #[Assert\NotBlank]
-    #[Assert\NotNull]
-    #[Assert\Length(min: 9, max: 12)]
-    #[Assert\Regex(
-        pattern: '/^\+?\d+$/',
-        message: "Phone should contain only digits and a '+' at the beginning"
-    )]
-    private string $phone;
-
     public function getEmail(): string
     {
         return $this->email;
@@ -77,15 +68,5 @@ class CreateManagerDto
     public function setLastName(string $lastName): void
     {
         $this->lastName = $lastName;
-    }
-
-    public function getPhone(): string
-    {
-        return $this->phone;
-    }
-
-    public function setPhone(string $phone): void
-    {
-        $this->phone = $phone;
     }
 }

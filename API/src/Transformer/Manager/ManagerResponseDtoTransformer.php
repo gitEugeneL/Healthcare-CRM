@@ -9,12 +9,13 @@ class ManagerResponseDtoTransformer extends AbstractResponseDtoTransformer
 {
     public function transformFromObject(object $manager): ManagerResponseDto
     {
-        $dto = new ManagerResponseDto();
-        $dto->setId($manager->getId());
-        $dto->setFirstName($manager->getFirstName());
-        $dto->setLastName($manager->getLastName());
-        $dto->setEmail($manager->getUser()->getEmail());
-        $dto->setPhone($manager->getPhone());
-        return $dto;
+        $user = $manager->getUser();
+        return (new ManagerResponseDto())
+            ->setId($manager->getId())
+            ->setPosition($manager->getPosition())
+            ->setFirstName($user->getFirstName())
+            ->setLastName($user->getLastName())
+            ->setEmail($user->getEmail())
+            ->setPhone($user->getPhone());
     }
 }

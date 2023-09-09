@@ -25,7 +25,6 @@ abstract class TestCase extends WebTestCase
         'firstName' => 'manager',
         'email' => 'm@m.com',
         'password' => 'manager!1M',
-        'phone' => '+00000000000'
     ];
 
     protected function setUp(): void
