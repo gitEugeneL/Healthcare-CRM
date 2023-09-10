@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Dto\Response\Doctor;
+namespace App\Dto\Doctor;
 
-class DoctorResponseDto
+class ResponseDoctorDto
 {
     private int $id;
     private string $firstName;

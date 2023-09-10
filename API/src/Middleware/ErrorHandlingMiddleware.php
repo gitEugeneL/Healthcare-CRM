@@ -3,6 +3,7 @@
 namespace App\Middleware;
 
 use App\Exception\AlreadyExistException;
+use App\Exception\DtoRequestException;
 use App\Exception\NotFoundException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,6 +26,9 @@ class ErrorHandlingMiddleware implements EventSubscriberInterface
         }
         elseif ($exception instanceof NotFoundException) {
             $response = new Response($exception->getMessage(), 404);
+        }
+        elseif ($exception instanceof DtoRequestException) {
+            $response = new Response($exception->getMessage(), 422);
         }
         else {
             $response = new Response($exception, 500); // only for dev

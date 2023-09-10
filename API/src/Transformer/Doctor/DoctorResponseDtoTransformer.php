@@ -2,15 +2,15 @@
 
 namespace App\Transformer\Doctor;
 
-use App\Dto\Response\Doctor\DoctorResponseDto;
+use App\Dto\Doctor\ResponseDoctorDto;
 use App\Transformer\AbstractResponseDtoTransformer;
 
 class DoctorResponseDtoTransformer extends AbstractResponseDtoTransformer
 {
-    public function transformFromObject(object $doctor): DoctorResponseDto
+    public function transformFromObject(object $doctor): ResponseDoctorDto
     {
         $user = $doctor->getUser();
-        return (new DoctorResponseDto())
+        return (new ResponseDoctorDto())
             ->setId($doctor->getId())
             ->setFirstName($user->getFirstName())
             ->setLastName($user->getLastName())

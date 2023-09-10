@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Dto\Request\Doctor;
+namespace App\Dto\Doctor;
 
-use App\Entity\Status;
+use App\Entity\Doctor\Status;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class UpdateStatusDoctorDto

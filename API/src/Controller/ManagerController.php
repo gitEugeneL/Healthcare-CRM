@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
-use App\Dto\Request\Manager\CreateManagerDto;
+use App\Dto\Manager\CreateManagerDto;
+use App\Exception\AlreadyExistException;
+use App\Exception\DtoRequestException;
+use App\Exception\NotFoundException;
 use App\Service\ManagerService;
-use App\Validator\RequestValidator;
+use App\Validator\DtoValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,23 +21,28 @@ class ManagerController extends AbstractController
 {
     public function __construct(
         private readonly SerializerInterface $serializer,
-        private readonly RequestValidator $requestValidator,
+        private readonly DtoValidator $dtoValidator,
         private readonly ManagerService $managerService
     ) {}
 
+    /**
+     * @throws DtoRequestException
+     * @throws AlreadyExistException
+     */
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         $dto = $this->serializer->deserialize($request->getContent(), CreateManagerDto::class, 'json');
-        $errors = $this->requestValidator->dtoValidator($dto);
-        if (count($errors) > 0)
-            return $this->json($errors, 422);
+        $this->dtoValidator->validate($dto);
 
         $result = $this->managerService->create($dto);
         return $this->json($result, 201);
     }
 
+    /**
+     * @throws NotFoundException
+     */
     #[IsGranted('ROLE_MANAGER')]
     #[Route('/info', methods: ['GET'])]
     public function info(TokenStorageInterface $tokenStorage): JsonResponse

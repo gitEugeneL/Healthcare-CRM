@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Dto\Response\Manager;
+namespace App\Dto\Manager;
 
-class ManagerResponseDto
+class ResponseManagerDto
 {
     private int $id;
     private string $position;
