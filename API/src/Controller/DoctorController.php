@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\Request\Doctor\CreateDoctorDto;
+use App\Dto\Request\Doctor\UpdateStatusDoctorDto;
 use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
 use App\Service\DoctorService;
@@ -59,6 +60,20 @@ class DoctorController extends AbstractController
         return $this->json($result, 200);
     }
 
-    // todo update profile (ROLE_DOCTOR), change password and others
-    // todo profile update status (ROLE_MANAGER)
+    /**
+     * @throws AlreadyExistException
+     * @throws NotFoundException
+     */
+    #[IsGranted('ROLE_MANAGER')]
+    #[Route('/update-status', methods: ['PATCH'])]
+    public function updateStatus(Request $request): JsonResponse
+    {
+        $dto = $this->serializer->deserialize($request->getContent(), UpdateStatusDoctorDto::class, 'json');
+        $errors = $this->requestValidator->dtoValidator($dto);
+        if (count($errors) > 0)
+            return $this->json($errors, 422);
+
+        $this->doctorService->updateStatus($dto);
+        return $this->json('Successfully updated', 204);
+    }
 }

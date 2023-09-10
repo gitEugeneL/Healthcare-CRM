@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Auth;
+namespace App\Entity;
 
 enum Status
 {

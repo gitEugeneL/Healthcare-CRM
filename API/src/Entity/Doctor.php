@@ -17,6 +17,9 @@ class Doctor
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column]
+    private ?string $status = null;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
@@ -42,6 +45,17 @@ class Doctor
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): static
+    {
+        $this->status = $status;
+        return $this;
     }
 
     public function getDescription(): ?string

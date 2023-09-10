@@ -27,6 +27,13 @@ abstract class TestCase extends WebTestCase
         'password' => 'manager!1M',
     ];
 
+    protected array $doctor = [
+        'email' => 'doctor@doctor.com',
+        'password' => 'doctor!1',
+        'lastName' => 'doctor1',
+        'firstName' => 'doctor1'
+    ];
+
     protected function setUp(): void
     {
         $this->client = static::createClient();
@@ -47,6 +54,20 @@ abstract class TestCase extends WebTestCase
           uri: $uri,
           server: $this->headers,
           content: json_encode($data)
+        );
+        return $this->client->getResponse();
+    }
+
+    protected function patch(string $uri, array $data = [], $accessToken = null): Response
+    {
+        if ($accessToken)
+            $this->setAccessToken($accessToken);
+
+        $this->client->request(
+            method: 'PATCH',
+            uri: $uri,
+            server: $this->headers,
+            content: json_encode($data)
         );
         return $this->client->getResponse();
     }
@@ -76,13 +97,14 @@ abstract class TestCase extends WebTestCase
         return json_decode($response->getContent(), true)['token'];
     }
 
-    protected function createManager(): Response
+    protected function createAndLoginManager(): string
     {
         $adminAccessToken = $this->login($this->admin['username'], $this->admin['password']);
-        return $this->post(
+        $this->post(
             uri: '/api/manager/create',
             data: $this->manager,
             accessToken: $adminAccessToken
         );
+        return $this->login($this->manager['email'], $this->manager['password']);
     }
 }

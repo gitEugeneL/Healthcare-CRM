@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Dto\Request\Manager\CreateManagerDto;
 use App\Dto\Response\Manager\ManagerResponseDto;
 use App\Entity\Auth\Roles;
-use App\Entity\Auth\Status;
 use App\Entity\Auth\User;
 use App\Entity\Manager;
 use App\Exception\AlreadyExistException;
@@ -36,7 +35,6 @@ class ManagerService
                 ->setEmail($dto->getEmail())
                 ->setPassword(password_hash($dto->getPassword(), PASSWORD_DEFAULT))
                 ->setRoles([Roles::ROLE_MANAGER])
-                ->setStatus(Status::ACTIVE)
                 ->setFirstName($dto->getFirstName())
                 ->setLastName($dto->getLastName())
             );

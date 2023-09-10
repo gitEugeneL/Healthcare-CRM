@@ -3,11 +3,12 @@
 namespace App\Service;
 
 use App\Dto\Request\Doctor\CreateDoctorDto;
+use App\Dto\Request\Doctor\UpdateStatusDoctorDto;
 use App\Dto\Response\Doctor\DoctorResponseDto;
 use App\Entity\Auth\Roles;
-use App\Entity\Auth\Status;
 use App\Entity\Auth\User;
 use App\Entity\Doctor;
+use App\Entity\Status;
 use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
 use App\Repository\DoctorRepository;
@@ -37,10 +38,10 @@ class DoctorService
                 ->setEmail($dto->getEmail())
                 ->setPassword(password_hash($dto->getPassword(), PASSWORD_DEFAULT))
                 ->setRoles([Roles::ROLE_DOCTOR])
-                ->setStatus(Status::ACTIVE)
                 ->setFirstName($dto->getFirstName())
                 ->setLastName($dto->getLastName())
-            );
+            )
+            ->setStatus(Status::ACTIVE);
         $this->doctorRepository->save($doctor, true);
         return $this->doctorResponseDtoTransformer->transformFromObject($doctor);
     }
@@ -63,5 +64,27 @@ class DoctorService
         if (is_null($doctor))
             throw new NotFoundException("User id:{$doctorId} not found");
         return $this->doctorResponseDtoTransformer->transformFromObject($doctor);
+    }
+
+    /**
+     * @throws AlreadyExistException
+     * @throws NotFoundException
+     */
+    public function updateStatus(UpdateStatusDoctorDto $dto): void
+    {
+        $doctorId = $dto->getDoctorId();
+        $newStatus = $dto->getStatus();
+        $doctor = $this->doctorRepository->findOneById($doctorId);
+        if (is_null($doctor))
+            throw new NotFoundException("Doctor id:{$doctorId} not found");
+
+        $status = $doctor->getStatus();
+        if ($status === $newStatus)
+            throw new AlreadyExistException('Status has already been updated');
+
+        if ($status === Status::ACTIVE || $status === Status::DISABLED)
+            $doctor->setStatus($newStatus);
+        else
+            throw new NotFoundException("Status: {$status} doesn't exist");
     }
 }
