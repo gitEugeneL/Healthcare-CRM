@@ -4,7 +4,6 @@ namespace App\DataFixtures;
 
 use App\Entity\Auth\Roles;
 use App\Entity\Auth\User;
-use App\Entity\Status;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 

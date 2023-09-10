@@ -2,13 +2,13 @@
 
 namespace App\Service;
 
-use App\Dto\Request\Doctor\CreateDoctorDto;
-use App\Dto\Request\Doctor\UpdateStatusDoctorDto;
-use App\Dto\Response\Doctor\DoctorResponseDto;
+use App\Dto\Doctor\CreateDoctorDto;
+use App\Dto\Doctor\ResponseDoctorDto;
+use App\Dto\Doctor\UpdateStatusDoctorDto;
+use App\Entity\Doctor\Doctor;
+use App\Entity\Doctor\Status;
 use App\Entity\Auth\Roles;
 use App\Entity\Auth\User;
-use App\Entity\Doctor;
-use App\Entity\Status;
 use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
 use App\Repository\DoctorRepository;
@@ -28,7 +28,7 @@ class DoctorService
     /**
      * @throws AlreadyExistException
      */
-    public function create(CreateDoctorDto $dto): DoctorResponseDto
+    public function create(CreateDoctorDto $dto): ResponseDoctorDto
     {
         if ($this->userRepository->isUserExist($dto->getEmail()))
             throw new AlreadyExistException("User {$dto->getEmail()} already exists");
@@ -58,7 +58,7 @@ class DoctorService
     /**
      * @throws NotFoundException
      */
-    public function showOne(int $doctorId): DoctorResponseDto
+    public function showOne(int $doctorId): ResponseDoctorDto
     {
         $doctor = $this->doctorRepository->findOneById($doctorId);
         if (is_null($doctor))

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dto\Request\Manager;
+namespace App\Dto\Manager;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -37,7 +37,7 @@ class CreateManagerDto
 
     public function setEmail(string $email): void
     {
-        $this->email = $email;
+        $this->email = trim($email);
     }
 
     public function getPassword(): string
@@ -47,7 +47,7 @@ class CreateManagerDto
 
     public function setPassword(string $password): void
     {
-        $this->password = $password;
+        $this->password = trim($password);
     }
 
     public function getFirstName(): string
@@ -57,7 +57,7 @@ class CreateManagerDto
 
     public function setFirstName(string $firstName): void
     {
-        $this->firstName = $firstName;
+        $this->firstName = trim($firstName);
     }
 
     public function getLastName(): string
@@ -67,6 +67,6 @@ class CreateManagerDto
 
     public function setLastName(string $lastName): void
     {
-        $this->lastName = $lastName;
+        $this->lastName = trim($lastName);
     }
 }

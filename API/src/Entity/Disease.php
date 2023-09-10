@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Doctor\Doctor;
 use App\Repository\DiseaseRepository;
 use Doctrine\ORM\Mapping as ORM;
 

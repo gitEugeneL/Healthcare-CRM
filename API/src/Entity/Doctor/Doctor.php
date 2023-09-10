@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Doctor;
 
 use App\Entity\Auth\User;
+use App\Entity\Disease;
+use App\Entity\Specialization;
 use App\Repository\DoctorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

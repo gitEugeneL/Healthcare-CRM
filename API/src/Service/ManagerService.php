@@ -2,11 +2,11 @@
 
 namespace App\Service;
 
-use App\Dto\Request\Manager\CreateManagerDto;
-use App\Dto\Response\Manager\ManagerResponseDto;
+use App\Dto\Manager\CreateManagerDto;
+use App\Dto\Manager\ResponseManagerDto;
+use App\Entity\Manager;
 use App\Entity\Auth\Roles;
 use App\Entity\Auth\User;
-use App\Entity\Manager;
 use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
 use App\Repository\ManagerRepository;
@@ -24,7 +24,7 @@ class ManagerService
     /**
      * @throws AlreadyExistException
      */
-    public function create(CreateManagerDto $dto): ManagerResponseDto
+    public function create(CreateManagerDto $dto): ResponseManagerDto
     {
         if ($this->userRepository->isUserExist($dto->getEmail()))
             throw new AlreadyExistException("User {$dto->getEmail()} already exists");
@@ -45,7 +45,7 @@ class ManagerService
     /**
      * @throws NotFoundException
      */
-    public function info(string $userIdentifier): ManagerResponseDto
+    public function info(string $userIdentifier): ResponseManagerDto
     {
         $user = $this->userRepository->findOneByEmail($userIdentifier);
         if (is_null($user))
