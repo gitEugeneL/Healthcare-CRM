@@ -40,7 +40,7 @@ class DoctorRepository extends ServiceEntityRepository
         return $this->findBy([], ['id' => 'DESC'], $limit, ($page - 1) * $limit);
     }
 
-    public function countPages(int $limit): int
+    public function findAllPaginationCount(int $limit): int
     {
         return ceil(count($this->findAll()) / $limit);
     }

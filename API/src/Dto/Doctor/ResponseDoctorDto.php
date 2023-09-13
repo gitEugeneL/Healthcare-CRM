@@ -11,7 +11,7 @@ class ResponseDoctorDto
     private ?string $phone;
     private ?string $education;
     private ?string $description;
-    private ?array $specialization;
+    private ?array $specializations;
     private ?array $diseases;
 
     public function getId(): int
@@ -91,14 +91,14 @@ class ResponseDoctorDto
         return $this;
     }
 
-    public function getSpecialization(): array
+    public function getSpecializations(): array
     {
-        return $this->specialization;
+        return $this->specializations;
     }
 
-    public function setSpecialization(?array $specialization): static
+    public function setSpecializations(?array $specializations): static
     {
-        $this->specialization = $specialization;
+        $this->specializations = $specializations;
         return $this;
     }
 

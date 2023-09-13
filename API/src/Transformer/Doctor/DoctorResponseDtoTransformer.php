@@ -9,7 +9,12 @@ class DoctorResponseDtoTransformer extends AbstractResponseDtoTransformer
 {
     public function transformFromObject(object $doctor): ResponseDoctorDto
     {
+        $specializations = [];
+        foreach ($doctor->getSpecializations() as $specialization) {
+            $specializations[] = $specialization->getName();
+        }
         $user = $doctor->getUser();
+
         return (new ResponseDoctorDto())
             ->setId($doctor->getId())
             ->setFirstName($user->getFirstName())
@@ -18,7 +23,7 @@ class DoctorResponseDtoTransformer extends AbstractResponseDtoTransformer
             ->setPhone($user->getPhone())
             ->setEducation($doctor->getEducation())
             ->setDescription($doctor->getDescription())
-            ->setSpecialization($doctor->getSpecializations()->toArray() ?: null)
-            ->setDiseases($doctor->getDiseases()->toArray() ?: null);
+            ->setSpecializations($specializations);
+//            ->setDiseases($doctor->getDiseases()->toArray() ?: null);
     }
 }

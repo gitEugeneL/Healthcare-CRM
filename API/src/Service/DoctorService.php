@@ -50,7 +50,7 @@ class DoctorService
     {
         $itemPerPage = 10;
         $doctors = $this->doctorRepository->findAllWithPagination($page, $itemPerPage);
-        $count = $this->doctorRepository->countPages($itemPerPage);
+        $count = $this->doctorRepository->findAllPaginationCount($itemPerPage);
         return $this->paginatorResponseTransformer
             ->transformToArray($this->doctorResponseDtoTransformer->transformFromObjects($doctors), $page, $count);
     }

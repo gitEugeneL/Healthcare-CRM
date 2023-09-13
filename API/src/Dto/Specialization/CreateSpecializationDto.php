@@ -11,6 +11,9 @@ class CreateSpecializationDto
     #[Assert\Length(min: 5, max: 100)]
     private string $name;
 
+    #[Assert\Length(max: 250)]
+    private ?string $description;
+
     public function getName(): string
     {
         return $this->name;
@@ -19,5 +22,15 @@ class CreateSpecializationDto
     public function setName(string $name): void
     {
         $this->name = trim($name);
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
     }
 }

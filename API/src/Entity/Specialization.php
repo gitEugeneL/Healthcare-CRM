@@ -23,7 +23,7 @@ class Specialization
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\ManyToMany(targetEntity: Doctor::class, mappedBy: 'specialization')]
+    #[ORM\ManyToMany(targetEntity: Doctor::class, mappedBy: 'specializations')]
     private Collection $doctors;
 
     public function __construct()

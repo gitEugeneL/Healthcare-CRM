@@ -29,7 +29,7 @@ class Doctor
     private ?string $education = null;
 
     #[ORM\ManyToMany(targetEntity: Specialization::class, inversedBy: 'doctors')]
-    private Collection $specialization;
+    private Collection $specializations;
 
     #[ORM\OneToMany(mappedBy: 'doctor', targetEntity: Disease::class)]
     private Collection $diseases;
@@ -40,7 +40,7 @@ class Doctor
 
     public function __construct()
     {
-        $this->specialization = new ArrayCollection();
+        $this->specializations = new ArrayCollection();
         $this->diseases = new ArrayCollection();
     }
 
@@ -87,20 +87,23 @@ class Doctor
      */
     public function getSpecializations(): Collection
     {
-        return $this->specialization;
+        return $this->specializations;
     }
 
-    public function addSpecialization(Specialization $specialization): static
+    public function addSpecialization(Specialization $specialization): self
     {
-        if (!$this->specialization->contains($specialization)) {
-            $this->specialization->add($specialization);
+        if (!$this->specializations->contains($specialization)) {
+            $this->specializations->add($specialization);
+            $specialization->addDoctor($this);
         }
         return $this;
     }
 
-    public function removeSpecialization(Specialization $specialization): static
+    public function removeSpecialization(Specialization $specialization): self
     {
-        $this->specialization->removeElement($specialization);
+        if ($this->specializations->removeElement($specialization)) {
+            $specialization->removeDoctor($this);
+        }
         return $this;
     }
 
