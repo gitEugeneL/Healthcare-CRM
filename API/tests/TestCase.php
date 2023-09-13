@@ -107,4 +107,15 @@ abstract class TestCase extends WebTestCase
         );
         return $this->login($this->manager['email'], $this->manager['password']);
     }
+
+    protected function createAndLoginDoctor(): string
+    {
+        $managerAccessToken = $this->createAndLoginManager();
+        $this->post(
+            uri: '/api/doctor/create',
+            data: $this->doctor,
+            accessToken: $managerAccessToken
+        );
+        return $this->login($this->doctor['email'], $this->doctor['password']);
+    }
 }

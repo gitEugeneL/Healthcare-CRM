@@ -53,4 +53,32 @@ class SpecializationControllerTest extends TestCase
         $this->assertSame('specialization0', $responseData[0]['name']);
         $this->assertSame('specialization4', $responseData[4]['name']);
     }
+
+    public function testShowDoctors_withValidSpecializationName_returnsOk(): void
+    {
+        $specialization = ['name' => 'dentist'];
+        $managerAccessToken = $this->createAndLoginManager();
+        $this->post(
+            uri: '/api/specialization/create',
+            data: $specialization,
+            accessToken: $managerAccessToken
+        );
+        $response = $this->get(
+            uri: "/api/specialization/show/doctors/{$specialization['name']}",
+            accessToken: $managerAccessToken
+        );
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testShowDoctors_withInvalidSpecializationName_returnsNotFound(): void
+    {
+        $specialization = ['name' => 'dentist'];
+        $managerAccessToken = $this->createAndLoginManager();
+        $response = $this->get(
+            uri: "/api/specialization/show/doctors/{$specialization['name']}",
+            accessToken: $managerAccessToken
+        );
+        $this->assertSame("Specialization {$specialization['name']} doesn't exist", $response->getContent());
+        $this->assertSame(404, $response->getStatusCode());
+    }
 }
