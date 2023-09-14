@@ -12,27 +12,21 @@ use App\Entity\Auth\User;
 use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
 use App\Repository\DoctorRepository;
-use App\Repository\UserRepository;
 use App\Transformer\Doctor\DoctorResponseDtoTransformer;
 use App\Transformer\Paginator\PaginatorResponseTransformer;
 
 class DoctorService
 {
+    const ITEM_PER_PAGE = 10;
+
     public function __construct(
         private readonly DoctorRepository $doctorRepository,
-        private readonly UserRepository $userRepository,
         private readonly DoctorResponseDtoTransformer $doctorResponseDtoTransformer,
         private readonly PaginatorResponseTransformer $paginatorResponseTransformer
     ) {}
 
-    /**
-     * @throws AlreadyExistException
-     */
     public function create(CreateDoctorDto $dto): ResponseDoctorDto
     {
-        if ($this->userRepository->isUserExist($dto->getEmail()))
-            throw new AlreadyExistException("User {$dto->getEmail()} already exists");
-
         $doctor = (new Doctor())
             ->setUser((new User())
                 ->setEmail($dto->getEmail())
@@ -48,11 +42,11 @@ class DoctorService
 
     public function show(int $page): array
     {
-        $itemPerPage = 10;
-        $doctors = $this->doctorRepository->findAllWithPagination($page, $itemPerPage);
-        $count = $this->doctorRepository->findAllPaginationCount($itemPerPage);
+       $result = $this->doctorRepository->findAllWithPagination($page, self::ITEM_PER_PAGE);
+       $doctors = $result['doctors'];
+       $totalPages = $result['totalPages'];
         return $this->paginatorResponseTransformer
-            ->transformToArray($this->doctorResponseDtoTransformer->transformFromObjects($doctors), $page, $count);
+            ->transformToArray($this->doctorResponseDtoTransformer->transformFromObjects($doctors), $page, $totalPages);
     }
 
     /**
@@ -62,8 +56,18 @@ class DoctorService
     {
         $doctor = $this->doctorRepository->findOneById($doctorId);
         if (is_null($doctor))
-            throw new NotFoundException("User id:{$doctorId} not found");
+            throw new NotFoundException("User id: {$doctorId} not found");
         return $this->doctorResponseDtoTransformer->transformFromObject($doctor);
+    }
+
+    public function showBySpecialization(string $specializationName, int $page): array
+    {
+        $result = $this->doctorRepository
+            ->findBySpecializationWithPagination($specializationName, $page, self::ITEM_PER_PAGE);
+        $doctors = $result['doctors'];
+        $totalPages = $result['totalPages'];
+        return $this->paginatorResponseTransformer
+            ->transformToArray($this->doctorResponseDtoTransformer->transformFromObjects($doctors), $page, $totalPages);
     }
 
     /**

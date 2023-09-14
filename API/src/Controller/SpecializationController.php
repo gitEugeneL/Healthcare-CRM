@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\Specialization\CreateSpecializationDto;
+use App\Dto\Specialization\UpdateSpecializationDoctorsDto;
 use App\Exception\AlreadyExistException;
 use App\Exception\DtoRequestException;
 use App\Exception\NotFoundException;
@@ -35,7 +36,6 @@ class SpecializationController extends AbstractController
     {
         $dto = $this->serializer->deserialize($request->getContent(), CreateSpecializationDto::class, 'json');
         $this->dtoValidator->validate($dto);
-
         $result = $this->specializationService->create($dto);
         return $this->json($result, 201);
     }
@@ -49,17 +49,34 @@ class SpecializationController extends AbstractController
     }
 
     /**
+     * @throws DtoRequestException
      * @throws NotFoundException
+     * @throws AlreadyExistException
      */
-    #[IsGranted(new Expression('is_granted("ROLE_PATIENT") or is_granted("ROLE_MANAGER")'))]
-    #[Route('/show/doctors/{specializationName}', methods: ['GET'])]
-    public function showDoctors(Request $request): JsonResponse
+    #[IsGranted('ROLE_MANAGER')]
+    #[Route('/include-doctor', methods: ['PATCH'])]
+    public function includeDoctor(Request $request): JsonResponse
     {
-        $specializationName = $request->get('specializationName');
-        $result = $this->specializationService->showDoctors($specializationName);
-        return $this->json($result, 200);
+        $dto = $this->serializer
+            ->deserialize($request->getContent(), UpdateSpecializationDoctorsDto::class, 'json');
+        $this->dtoValidator->validate($dto);
+        $this->specializationService->includeDoctor($dto);
+        return $this->json('Doctor successfully included', 201);
     }
 
-    // todo include doctor (specialization)
-    // todo exclude doctor (specialization)
+    /**
+     * @throws DtoRequestException
+     * @throws NotFoundException
+     * @throws AlreadyExistException
+     */
+    #[IsGranted('ROLE_MANAGER')]
+    #[Route('/exclude-doctor', methods: ['PATCH'])]
+    public function excludeDoctor(Request $request): JsonResponse
+    {
+        $dto = $this->serializer
+            ->deserialize($request->getContent(), UpdateSpecializationDoctorsDto::class, 'json');
+        $this->dtoValidator->validate($dto);
+        $this->specializationService->excludeDoctor($dto);
+        return $this->json('Doctor successfully excluded', 201);
+    }
 }

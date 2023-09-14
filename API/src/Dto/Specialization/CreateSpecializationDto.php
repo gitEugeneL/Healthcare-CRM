@@ -21,7 +21,7 @@ class CreateSpecializationDto
 
     public function setName(string $name): void
     {
-        $this->name = trim($name);
+        $this->name = trim(strtolower($name));
     }
 
     public function getDescription(): ?string

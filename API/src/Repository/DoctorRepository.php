@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Doctor\Doctor;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,12 +38,37 @@ class DoctorRepository extends ServiceEntityRepository
 
     public function findAllWithPagination(int $page, int $limit): array
     {
-        return $this->findBy([], ['id' => 'DESC'], $limit, ($page - 1) * $limit);
+        $total = count($this->findAll());
+        $doctors =  $this->findBy([], [], $limit, ($page - 1) * $limit);
+
+        return [
+            'doctors' => $doctors,
+            'totalPages' => ceil($total / $limit)
+        ];
     }
 
-    public function findAllPaginationCount(int $limit): int
+    public function findBySpecializationWithPagination(string $specializationName, int $page, int $limit): array
     {
-        return ceil(count($this->findAll()) / $limit);
+        $qb = $this->createQueryBuilder('d');
+
+        $qb->join('d.specializations', 's')
+            ->where('s.name = :specializationName')
+            ->setParameter('specializationName', $specializationName);
+
+        $total = $qb->select('COUNT(d.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $doctors = $qb->select('d')
+            ->setMaxResults($limit)
+            ->setFirstResult(($page - 1) * $limit)
+            ->getQuery()
+            ->getResult();
+
+        return [
+            'doctors' => $doctors,
+            'totalPages' => ceil($total / $limit)
+        ];
     }
 
     public function findOneById(int $id): Doctor|null

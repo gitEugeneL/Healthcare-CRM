@@ -3,12 +3,14 @@
 namespace App\Dto\Doctor;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as AcmeAssert;
 
 class CreateDoctorDto
 {
     #[Assert\NotBlank]
     #[Assert\NotNull]
     #[Assert\Email]
+    #[AcmeAssert\Constraints\User\UserNotExist]
     private string $email;
 
     #[Assert\NotBlank]

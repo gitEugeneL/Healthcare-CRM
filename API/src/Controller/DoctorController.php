@@ -10,6 +10,7 @@ use App\Exception\NotFoundException;
 use App\Service\DoctorService;
 use App\Validator\DtoValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +27,6 @@ class DoctorController extends AbstractController
     ) {}
 
     /**
-     * @throws AlreadyExistException
      * @throws DtoRequestException
      */
     #[IsGranted('ROLE_MANAGER')]
@@ -57,6 +57,16 @@ class DoctorController extends AbstractController
     public function showOne(Request $request): JsonResponse
     {
         $result = $this->doctorService->showOne((int) $request->get('doctorId'));
+        return $this->json($result, 200);
+    }
+
+    #[IsGranted(new Expression('is_granted("ROLE_PATIENT") or is_granted("ROLE_MANAGER")'))]
+    #[Route('/show-by-specialization/{specializationName}')]
+    public function showBySpecialization(Request $request): JsonResponse
+    {
+        $page = $request->query->getInt('page', 1);
+        $specializationName = $request->get('specializationName');
+        $result = $this->doctorService->showBySpecialization($specializationName, $page);
         return $this->json($result, 200);
     }
 

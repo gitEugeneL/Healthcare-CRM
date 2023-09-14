@@ -26,8 +26,7 @@ class DoctorControllerTest extends TestCase
                 accessToken: $managerAccessToken
             );
         }
-        $this->assertSame(409, $response->getStatusCode());
-        $this->assertSame("User {$this->doctor['email']} already exists", $response->getContent());
+        $this->assertSame(422, $response->getStatusCode());
     }
 
     public function testShow_validRequest_returnsOk(): void
@@ -79,7 +78,7 @@ class DoctorControllerTest extends TestCase
             accessToken: $managerAccessToken
         );
         $this->assertSame(404, $response->getStatusCode());
-        $this->assertSame("User id:{$id} not found", $response->getContent());
+        $this->assertSame("User id: {$id} not found", $response->getContent());
     }
 
     public function testUpdateStatus_withValidStatus_returnsUpdated(): void
@@ -135,5 +134,42 @@ class DoctorControllerTest extends TestCase
         );
         $this->assertSame(409, $response->getStatusCode());
         $this->assertSame("Status has already been updated", $response->getContent());
+    }
+
+    public function testShowBySpecialization_withValidData_returnOk(): void
+    {
+        $specialization = ['name' => 'dentist'];
+        $managerAccessToken = $this->createAndLoginManager();
+        $this->post(
+            uri: '/api/specialization/create',
+            data: $specialization,
+            accessToken: $managerAccessToken
+        );
+        for ($i = 1; $i <= 5; $i++) {
+            $this->doctor['email'] = "doctor{$i}@doctor.com";
+            $this->post(
+                uri: '/api/doctor/create',
+                data: $this->doctor,
+                accessToken: $managerAccessToken
+            );
+            $this->patch(
+                uri: '/api/specialization/include-doctor',
+                data: [
+                    'doctorId' => $i,
+                    'specializationName' => $specialization['name']
+                ],
+                accessToken:  $managerAccessToken
+            );
+        }
+        $response = $this->get(
+            uri: "/api/doctor/show-by-specialization/{$specialization['name']}",
+            accessToken: $managerAccessToken
+        );
+        $responseData = json_decode($response->getContent(), true);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertCount(5, $responseData['items']);
+        foreach ($responseData['items'] as $doctor) {
+            $this->assertSame('dentist', $doctor['specializations'][0]);
+        }
     }
 }

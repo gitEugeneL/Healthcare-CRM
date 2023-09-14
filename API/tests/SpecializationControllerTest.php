@@ -54,7 +54,7 @@ class SpecializationControllerTest extends TestCase
         $this->assertSame('specialization4', $responseData[4]['name']);
     }
 
-    public function testShowDoctors_withValidSpecializationName_returnsOk(): void
+    public function includeDoctor_withValidData_returnsUpdated(): void
     {
         $specialization = ['name' => 'dentist'];
         $managerAccessToken = $this->createAndLoginManager();
@@ -63,22 +63,74 @@ class SpecializationControllerTest extends TestCase
             data: $specialization,
             accessToken: $managerAccessToken
         );
+        for ($i = 1; $i <= 5; $i++) {
+            $this->doctor['email'] = "doctor{$i}@doctor.com";
+            $this->post(
+                uri: '/api/doctor/create',
+                data: $this->doctor,
+                accessToken: $managerAccessToken
+            );
+            $this->patch(
+                uri: '/api/specialization/include-doctor',
+                data: [
+                    'doctorId' => $i,
+                    'specializationName' => $specialization['name']
+                ],
+                accessToken:  $managerAccessToken
+            );
+        }
         $response = $this->get(
-            uri: "/api/specialization/show/doctors/{$specialization['name']}",
+            uri: "/api/doctor/show-by-specialization/{$specialization['name']}",
             accessToken: $managerAccessToken
         );
-        $this->assertSame(200, $response->getStatusCode());
+        $responseData = json_decode($response->getContent(), true);
+        $this->assertSame(201, $response->getStatusCode());
+        $this->assertCount(5, $responseData['items']);
+        foreach ($responseData['items'] as $doctor) {
+            $this->assertSame('dentist', $doctor['specializations'][0]);
+        }
     }
 
-    public function testShowDoctors_withInvalidSpecializationName_returnsNotFound(): void
+    public function excludeDoctor_withValidData_returnsUpdated(): void
     {
         $specialization = ['name' => 'dentist'];
         $managerAccessToken = $this->createAndLoginManager();
-        $response = $this->get(
-            uri: "/api/specialization/show/doctors/{$specialization['name']}",
+        $this->post(
+            uri: '/api/specialization/create',
+            data: $specialization,
             accessToken: $managerAccessToken
         );
-        $this->assertSame("Specialization {$specialization['name']} doesn't exist", $response->getContent());
-        $this->assertSame(404, $response->getStatusCode());
+        for ($i = 1; $i <= 5; $i++) {
+            $this->doctor['email'] = "doctor{$i}@doctor.com";
+            $this->post(
+                uri: '/api/doctor/create',
+                data: $this->doctor,
+                accessToken: $managerAccessToken
+            );
+            $this->patch(
+                uri: '/api/specialization/include-doctor',
+                data: [
+                    'doctorId' => $i,
+                    'specializationName' => $specialization['name']
+                ],
+                accessToken:  $managerAccessToken
+            );
+            $this->patch(
+                uri: '/api/specialization/exclude-doctor',
+                data: [
+                    'doctorId' => $i,
+                    'specializationName' => $specialization['name']
+                ],
+                accessToken:  $managerAccessToken
+            );
+        }
+        $response = $this->get(
+            uri: "/api/doctor/show-by-specialization/{$specialization['name']}",
+            accessToken: $managerAccessToken
+        );
+        $responseData = json_decode($response->getContent(), true);
+        $this->assertSame(201, $response->getStatusCode());
+        $this->assertCount(0, $responseData['items']);
+
     }
 }
