@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Dto\Specialization\CreateSpecializationDto;
 use App\Dto\Specialization\UpdateSpecializationDoctorsDto;
+use App\Dto\Specialization\UpdateSpecializationDto;
 use App\Exception\AlreadyExistException;
 use App\Exception\DtoRequestException;
 use App\Exception\NotFoundException;
@@ -46,6 +47,31 @@ class SpecializationController extends AbstractController
     {
         $result = $this->specializationService->show();
         return $this->json($result, 200);
+    }
+
+    /**
+     * @throws DtoRequestException
+     * @throws NotFoundException
+     */
+    #[IsGranted('ROLE_MANAGER')]
+    #[Route('/update/{specializationName}', methods: ['PATCH'])]
+    public function update(Request $request): JsonResponse
+    {
+        $dto = $this->serializer->deserialize($request->getContent(), UpdateSpecializationDto::class, 'json');
+        $this->dtoValidator->validate($dto);
+        $result = $this->specializationService->update($dto, $request->get('specializationName'));
+        return $this->json($result, 201);
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    #[IsGranted('ROLE_MANAGER')]
+    #[Route('/delete/{specializationName}', methods: ['DELETE'])]
+    public function delete(Request $request): JsonResponse
+    {
+        $this->specializationService->delete($request->get('specializationName'));
+        return $this->json('successfully deleted', 204);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Dto\Specialization\CreateSpecializationDto;
 use App\Dto\Specialization\UpdateSpecializationDoctorsDto;
 use App\Dto\Specialization\ResponseSpecializationDto;
+use App\Dto\Specialization\UpdateSpecializationDto;
 use App\Entity\Doctor\Doctor;
 use App\Entity\Specialization;
 use App\Exception\AlreadyExistException;
@@ -61,6 +62,26 @@ class SpecializationService
     {
         $specializations = $this->specializationRepository->findAll();
         return $this->specializationResponseDtoTransformer->transformFromObjects($specializations);
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    public function update(UpdateSpecializationDto $dto, string $specializationName): ResponseSpecializationDto
+    {
+        $specialization = $this->findSpecialization($specializationName);
+        $specialization->setDescription($dto->getDescription());
+        $this->specializationRepository->save($specialization, true);
+        return $this->specializationResponseDtoTransformer->transformFromObject($specialization);
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    public function delete(string $specializationName): void
+    {
+        $specialization = $this->findSpecialization($specializationName);
+        $this->specializationRepository->remove($specialization, true);
     }
 
     /**

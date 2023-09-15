@@ -9,8 +9,8 @@ class DoctorControllerTest extends TestCase
         $managerAccessToken = $this->createAndLoginManager();
         $response = $this->post(
             uri: '/api/doctor/create',
-            data: $this->doctor,
-            accessToken: $managerAccessToken
+            accessToken: $managerAccessToken,
+            data: $this->doctor
         );
         $this->assertSame(201, $response->getStatusCode());
         $this->assertSame($this->doctor['email'], json_decode($response->getContent(), true)['email']);
@@ -22,8 +22,8 @@ class DoctorControllerTest extends TestCase
         for ($i = 0; $i < 2; $i++) {
             $response = $this->post(
                 uri: '/api/doctor/create',
-                data: $this->doctor,
-                accessToken: $managerAccessToken
+                accessToken: $managerAccessToken,
+                data: $this->doctor
             );
         }
         $this->assertSame(422, $response->getStatusCode());
@@ -36,8 +36,8 @@ class DoctorControllerTest extends TestCase
             $this->doctor['email'] = "doctor{$i}@doctor.com";
             $this->post(
                 uri: '/api/doctor/create',
-                data: $this->doctor,
-                accessToken: $managerAccessToken
+                accessToken: $managerAccessToken,
+                data: $this->doctor
             );
         }
         $response = $this->get(
@@ -56,8 +56,8 @@ class DoctorControllerTest extends TestCase
         $managerAccessToken = $this->createAndLoginManager();
         $this->post(
             uri: '/api/doctor/create',
-            data: $this->doctor,
-            accessToken: $managerAccessToken
+            accessToken: $managerAccessToken,
+            data: $this->doctor
         );
         $response = $this->get(
             uri: '/api/doctor/show/1',
@@ -86,16 +86,16 @@ class DoctorControllerTest extends TestCase
         $managerAccessToken = $this->createAndLoginManager();
         $this->post(
             uri: '/api/doctor/create',
-            data: $this->doctor,
-            accessToken: $managerAccessToken
+            accessToken: $managerAccessToken,
+            data: $this->doctor
         );
         $response = $this->patch(
             uri: '/api/doctor/update-status',
+            accessToken: $managerAccessToken,
             data: [
                 'doctorId' => 1,
                 'status' => 'DISABLED'
-            ],
-            accessToken: $managerAccessToken
+            ]
         );
         $this->assertSame(204, $response->getStatusCode());
     }
@@ -106,11 +106,11 @@ class DoctorControllerTest extends TestCase
         $managerAccessToken = $this->createAndLoginManager();
         $response = $this->patch(
             uri: '/api/doctor/update-status',
+            accessToken: $managerAccessToken,
             data: [
                 'doctorId' => $doctorId,
                 'status' => 'DISABLED'
-            ],
-            accessToken: $managerAccessToken
+            ]
         );
         $this->assertSame(404, $response->getStatusCode());
         $this->assertSame("Doctor id:{$doctorId} not found", $response->getContent());
@@ -121,16 +121,16 @@ class DoctorControllerTest extends TestCase
         $managerAccessToken = $this->createAndLoginManager();
         $this->post(
             uri: '/api/doctor/create',
-            data: $this->doctor,
-            accessToken: $managerAccessToken
+            accessToken: $managerAccessToken,
+            data: $this->doctor
         );
         $response = $this->patch(
             uri: '/api/doctor/update-status',
+            accessToken: $managerAccessToken,
             data: [
                 'doctorId' => 1,
                 'status' => 'ACTIVE'
-            ],
-            accessToken: $managerAccessToken
+            ]
         );
         $this->assertSame(409, $response->getStatusCode());
         $this->assertSame("Status has already been updated", $response->getContent());
@@ -142,23 +142,23 @@ class DoctorControllerTest extends TestCase
         $managerAccessToken = $this->createAndLoginManager();
         $this->post(
             uri: '/api/specialization/create',
-            data: $specialization,
-            accessToken: $managerAccessToken
+            accessToken: $managerAccessToken,
+            data: $specialization
         );
         for ($i = 1; $i <= 5; $i++) {
             $this->doctor['email'] = "doctor{$i}@doctor.com";
             $this->post(
                 uri: '/api/doctor/create',
-                data: $this->doctor,
-                accessToken: $managerAccessToken
+                accessToken: $managerAccessToken,
+                data: $this->doctor
             );
             $this->patch(
                 uri: '/api/specialization/include-doctor',
+                accessToken:  $managerAccessToken,
                 data: [
                     'doctorId' => $i,
                     'specializationName' => $specialization['name']
-                ],
-                accessToken:  $managerAccessToken
+                ]
             );
         }
         $response = $this->get(

@@ -31,6 +31,6 @@ class CreateSpecializationDto
 
     public function setDescription(?string $description): void
     {
-        $this->description = $description;
+        $this->description = trim($description);
     }
 }

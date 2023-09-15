@@ -44,27 +44,13 @@ abstract class TestCase extends WebTestCase
         $this->headers['HTTP_AUTHORIZATION'] = 'Bearer ' . $accessToken;
     }
 
-    protected function post(string $uri, array $data = [], $accessToken = null): Response
+    private function request(string $method, string $uri, string $accessToken = null, array $data = []): Response
     {
         if ($accessToken)
             $this->setAccessToken($accessToken);
 
         $this->client->request(
-          method: 'POST',
-          uri: $uri,
-          server: $this->headers,
-          content: json_encode($data)
-        );
-        return $this->client->getResponse();
-    }
-
-    protected function patch(string $uri, array $data = [], $accessToken = null): Response
-    {
-        if ($accessToken)
-            $this->setAccessToken($accessToken);
-
-        $this->client->request(
-            method: 'PATCH',
+            method: $method,
             uri: $uri,
             server: $this->headers,
             content: json_encode($data)
@@ -72,17 +58,24 @@ abstract class TestCase extends WebTestCase
         return $this->client->getResponse();
     }
 
-    protected function get(string $uri, $accessToken = null): Response
+    protected function post(string $uri, string $accessToken = null, array $data = []): Response
     {
-        if ($accessToken)
-            $this->setAccessToken($accessToken);
+        return $this->request('POST', $uri, $accessToken, $data);
+    }
 
-        $this->client->request(
-            method: 'GET',
-            uri: $uri,
-            server: $this->headers
-        );
-        return $this->client->getResponse();
+    protected function patch(string $uri, string $accessToken = null, $data = []): Response
+    {
+        return $this->request('PATCH', $uri, $accessToken, $data);
+    }
+
+    protected function get(string $uri, string $accessToken = null): Response
+    {
+        return $this->request('GET', $uri, $accessToken);
+    }
+
+    protected function delete(string $uri, string $accessToken = null): Response
+    {
+        return $this->request('DELETE', $uri, $accessToken);
     }
 
     protected function login(string $username, string $password): string
@@ -102,8 +95,8 @@ abstract class TestCase extends WebTestCase
         $adminAccessToken = $this->login($this->admin['username'], $this->admin['password']);
         $this->post(
             uri: '/api/manager/create',
+            accessToken: $adminAccessToken,
             data: $this->manager,
-            accessToken: $adminAccessToken
         );
         return $this->login($this->manager['email'], $this->manager['password']);
     }
@@ -113,8 +106,8 @@ abstract class TestCase extends WebTestCase
         $managerAccessToken = $this->createAndLoginManager();
         $this->post(
             uri: '/api/doctor/create',
-            data: $this->doctor,
-            accessToken: $managerAccessToken
+            accessToken: $managerAccessToken,
+            data: $this->doctor
         );
         return $this->login($this->doctor['email'], $this->doctor['password']);
     }

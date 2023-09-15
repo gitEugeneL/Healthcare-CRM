@@ -9,8 +9,8 @@ class ManagerControllerTest extends TestCase
         $adminAccessToken = $this->login($this->admin['username'], $this->admin['password']);
         $response = $this->post(
             uri: '/api/manager/create',
-            data: $this->manager,
-            accessToken: $adminAccessToken
+            accessToken: $adminAccessToken,
+            data: $this->manager
         );
         $this->assertSame(201, $response->getStatusCode());
         $this->assertSame($this->manager['email'], json_decode($response->getContent(), true)['email']);
@@ -22,8 +22,8 @@ class ManagerControllerTest extends TestCase
         for ($i = 0; $i < 2; $i++) {
             $response = $this->post(
                 uri: '/api/manager/create',
-                data: $this->manager,
-                accessToken: $adminAccessToken
+                accessToken: $adminAccessToken,
+                data: $this->manager
             );
         }
         $this->assertSame(409, $response->getStatusCode());
