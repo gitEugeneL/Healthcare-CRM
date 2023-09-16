@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Dto\Doctor\CreateDoctorDto;
 use App\Dto\Doctor\ResponseDoctorDto;
+use App\Dto\Doctor\UpdateDoctorDto;
 use App\Dto\Doctor\UpdateStatusDoctorDto;
 use App\Entity\Doctor\Doctor;
 use App\Entity\Doctor\Status;
@@ -90,5 +91,31 @@ class DoctorService
             $doctor->setStatus($newStatus);
         else
             throw new NotFoundException("Status: {$status} doesn't exist");
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    public function update(UpdateDoctorDto $dto, string $userIdentifier): ResponseDoctorDto
+    {
+        if (!$dto->getFirstName() && !$dto->getLastName() && !$dto->getDescription() && !$dto->getEducation())
+            throw new NotFoundException('Nothing to change');
+
+        $doctor = $this->doctorRepository->findOneByEmail($userIdentifier);
+        if (is_null($doctor))
+            throw new NotFoundException("This doctor doesn't exist");
+
+        $user = $doctor->getUser();
+        if (!is_null($dto->getFirstName()))
+            $user->setFirstName($dto->getFirstName());
+        if (!is_null($dto->getLastName()))
+            $user->setLastName($dto->getLastName());
+        if (!is_null($dto->getDescription()))
+            $doctor->setDescription($dto->getDescription());
+        if (!is_null($dto->getEducation()))
+            $doctor->setEducation($dto->getEducation());
+
+        $this->doctorRepository->save($doctor, true);
+        return $this->doctorResponseDtoTransformer->transformFromObject($doctor);
     }
 }

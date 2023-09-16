@@ -75,4 +75,14 @@ class DoctorRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['id' => $id]);
     }
+
+    public function findOneByEmail(string $email): Doctor|null
+    {
+        return $this->createQueryBuilder('d')
+            ->join('d.user', 'u')
+            ->where('u.email = :email')
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

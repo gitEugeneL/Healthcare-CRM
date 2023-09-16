@@ -70,7 +70,7 @@ class SpecializationControllerTest extends TestCase
             data: $specialization
         );
         $responseData = json_decode($response->getContent(), true);
-        $this->assertSame(201, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertSame($specialization['name'], $responseData['name']);
         $this->assertSame($specialization['description'], $responseData['description']);
     }

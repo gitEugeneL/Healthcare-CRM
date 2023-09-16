@@ -17,19 +17,19 @@ class CreateDoctorDto
     #[Assert\NotNull]
     #[Assert\Length(min: 8)]
     #[Assert\Regex(
-        pattern: '/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/',
-        message: "The password must contain at least one number, one letter and one character"
+        pattern: '/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}\S*$/',
+        message: 'The password must contain at least one number, one letter and one character'
     )]
     private string $password;
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Length(max: 50, maxMessage: "First name should not exceed {{ limit }} characters")]
+    #[Assert\Length(max: 50, maxMessage: 'First name should not exceed {{ limit }} characters')]
     private string $firstName;
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Length(max: 100, maxMessage: "Last name should not exceed {{ limit }} characters")]
+    #[Assert\Length(max: 100, maxMessage: 'Last name should not exceed {{ limit }} characters')]
     private string $lastName;
 
     public function getEmail(): string
@@ -39,7 +39,7 @@ class CreateDoctorDto
 
     public function setEmail(string $email): void
     {
-        $this->email = trim($email);
+        $this->email = trim(strtolower($email));
     }
 
     public function getPassword(): string
@@ -59,7 +59,7 @@ class CreateDoctorDto
 
     public function setFirstName(string $firstName): void
     {
-        $this->firstName = trim($firstName);
+        $this->firstName = trim(strtolower($firstName));
     }
 
     public function getLastName(): string
@@ -69,6 +69,6 @@ class CreateDoctorDto
 
     public function setLastName(string $lastName): void
     {
-        $this->lastName = trim($lastName);
+        $this->lastName = trim(strtolower($lastName));
     }
 }

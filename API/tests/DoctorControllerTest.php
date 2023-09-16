@@ -97,7 +97,7 @@ class DoctorControllerTest extends TestCase
                 'status' => 'DISABLED'
             ]
         );
-        $this->assertSame(204, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
     }
 
     public function testUpdateStatus_withInvalidDoctorId_returnsNotFound(): void
@@ -133,7 +133,50 @@ class DoctorControllerTest extends TestCase
             ]
         );
         $this->assertSame(409, $response->getStatusCode());
-        $this->assertSame("Status has already been updated", $response->getContent());
+        $this->assertSame('Status has already been updated', $response->getContent());
+    }
+
+    public function testUpdate_withValidData_returnsUpdated(): void
+    {
+        $managerAccessToken = $this->createAndLoginManager();
+        $this->post(
+            uri: '/api/doctor/create',
+            accessToken: $managerAccessToken,
+            data: $this->doctor
+        );
+        $doctorAccessToken = $this->createAndLoginDoctor();
+        $updateData = [
+            'firstName' => "new doctor's name",
+            'description' => 'new description',
+            'education' => 'new education'
+        ];
+        $response = $this->patch(
+            uri: '/api/doctor/update',
+            accessToken: $doctorAccessToken,
+            data: $updateData
+        );
+        $responseData = json_decode($response->getContent(), true);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame($updateData['firstName'], $responseData['firstName']);
+        $this->assertSame($updateData['description'], $responseData['description']);
+        $this->assertSame($updateData['education'], $responseData['education']);
+    }
+
+    public function testUpdate_withInvalidData_returnsNotFound(): void
+    {
+        $managerAccessToken = $this->createAndLoginManager();
+        $this->post(
+            uri: '/api/doctor/create',
+            accessToken: $managerAccessToken,
+            data: $this->doctor
+        );
+        $doctorAccessToken = $this->createAndLoginDoctor();
+        $response = $this->patch(
+            uri: '/api/doctor/update',
+            accessToken: $doctorAccessToken,
+        );
+        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame('Nothing to change', $response->getContent());
     }
 
     public function testShowBySpecialization_withValidData_returnOk(): void

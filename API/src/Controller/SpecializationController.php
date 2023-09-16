@@ -60,7 +60,7 @@ class SpecializationController extends AbstractController
         $dto = $this->serializer->deserialize($request->getContent(), UpdateSpecializationDto::class, 'json');
         $this->dtoValidator->validate($dto);
         $result = $this->specializationService->update($dto, $request->get('specializationName'));
-        return $this->json($result, 201);
+        return $this->json($result, 200);
     }
 
     /**

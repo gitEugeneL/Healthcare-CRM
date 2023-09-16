@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\Doctor\CreateDoctorDto;
+use App\Dto\Doctor\UpdateDoctorDto;
 use App\Dto\Doctor\UpdateStatusDoctorDto;
 use App\Exception\AlreadyExistException;
 use App\Exception\DtoRequestException;
@@ -16,6 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+
 
 #[Route('/api/doctor')]
 class DoctorController extends AbstractController
@@ -83,6 +86,21 @@ class DoctorController extends AbstractController
         $this->dtoValidator->validate($dto);
 
         $this->doctorService->updateStatus($dto);
-        return $this->json('Successfully updated', 204);
+        return $this->json('Successfully updated', 200);
+    }
+
+    /**
+     * @throws DtoRequestException
+     * @throws NotFoundException
+     */
+    #[IsGranted('ROLE_DOCTOR')]
+    #[Route('/update', methods: ['PATCH'])]
+    public function update(Request $request, TokenStorageInterface $tokenStorage): JsonResponse
+    {
+        $dto = $this->serializer->deserialize($request->getContent(), UpdateDoctorDto::class, 'json');
+        $this->dtoValidator->validate($dto);
+        $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
+        $result = $this->doctorService->update($dto, $userIdentifier);
+        return $this->json($result, 200);
     }
 }
