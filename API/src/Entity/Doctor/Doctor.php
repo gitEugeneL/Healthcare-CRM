@@ -31,7 +31,7 @@ class Doctor
     #[ORM\ManyToMany(targetEntity: Specialization::class, inversedBy: 'doctors')]
     private Collection $specializations;
 
-    #[ORM\OneToMany(mappedBy: 'doctor', targetEntity: Disease::class)]
+    #[ORM\ManyToMany(targetEntity: Disease::class, inversedBy: 'doctors')]
     private Collection $diseases;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
@@ -90,7 +90,7 @@ class Doctor
         return $this->specializations;
     }
 
-    public function addSpecialization(Specialization $specialization): self
+    public function addSpecialization(Specialization $specialization): static
     {
         if (!$this->specializations->contains($specialization)) {
             $this->specializations->add($specialization);
@@ -99,7 +99,7 @@ class Doctor
         return $this;
     }
 
-    public function removeSpecialization(Specialization $specialization): self
+    public function removeSpecialization(Specialization $specialization): static
     {
         if ($this->specializations->removeElement($specialization)) {
             $specialization->removeDoctor($this);
@@ -119,7 +119,7 @@ class Doctor
     {
         if (!$this->diseases->contains($disease)) {
             $this->diseases->add($disease);
-            $disease->setDoctor($this);
+            $disease->addDoctor($this);
         }
         return $this;
     }
@@ -127,9 +127,7 @@ class Doctor
     public function removeDisease(Disease $disease): static
     {
         if ($this->diseases->removeElement($disease)) {
-            if ($disease->getDoctor() === $this) {
-                $disease->setDoctor(null);
-            }
+            $disease->removeDoctor($this);
         }
         return $this;
     }
