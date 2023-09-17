@@ -21,28 +21,22 @@ class DiseaseRepository extends ServiceEntityRepository
         parent::__construct($registry, Disease::class);
     }
 
-//    /**
-//     * @return Disease[] Returns an array of Disease objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('d')
-//            ->andWhere('d.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('d.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function save(Disease $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+        if ($flush)
+            $this->getEntityManager()->flush();
+    }
 
-//    public function findOneBySomeField($value): ?Disease
-//    {
-//        return $this->createQueryBuilder('d')
-//            ->andWhere('d.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function remove(Disease $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+        if ($flush)
+            $this->getEntityManager()->flush();
+    }
+
+    public function findOneByName(string $name): Disease|null
+    {
+        return $this->findOneBy(['name' => $name]);
+    }
 }

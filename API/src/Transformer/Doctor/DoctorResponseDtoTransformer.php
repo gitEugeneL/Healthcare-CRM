@@ -24,6 +24,6 @@ class DoctorResponseDtoTransformer extends AbstractResponseDtoTransformer
             ->setEducation($doctor->getEducation())
             ->setDescription($doctor->getDescription())
             ->setSpecializations($specializations);
-//            ->setDiseases($doctor->getDiseases()->toArray() ?: null);
+//            ->setDiseases($doctor->getDiseases()->toArray() ?: null); // todo
     }
 }

@@ -16,7 +16,7 @@ class Disease
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50, unique: true)]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Doctor::class, mappedBy: 'diseases')]
