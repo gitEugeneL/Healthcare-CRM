@@ -39,4 +39,9 @@ class DiseaseRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['name' => $name]);
     }
+
+    public function findOneById(int $id): Disease|null
+    {
+        return $this->findOneBy(['id' => $id]);
+    }
 }

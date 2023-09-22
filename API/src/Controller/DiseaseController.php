@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Dto\Disease\CreateDiseaseDto;
 use App\Exception\AlreadyExistException;
 use App\Exception\DtoRequestException;
+use App\Exception\NotFoundException;
 use App\Service\DiseaseService;
 use App\Validator\DtoValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,5 +36,19 @@ class DiseaseController extends AbstractController
         $this->dtoValidator->validate($dto);
         $result = $this->diseaseService->create($dto);
         return $this->json($result, 201);
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    #[IsGranted('ROLE_MANAGER')]
+    #[Route('/delete/{diseaseId}', methods: ['DELETE'])]
+    public function delete(Request $request): JsonResponse
+    {
+        $id = $request->get('diseaseId');
+        if (!is_numeric($id))
+            $this->json('Incorrect ID format. ID should be a number.', 422);
+        $this->diseaseService->delete($id);
+        return $this->json('successfully deleted', 204);
     }
 }
