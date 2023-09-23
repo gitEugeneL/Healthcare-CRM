@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Auth\Roles;
 use App\Entity\Auth\User;
+use App\Entity\Disease;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -24,7 +25,13 @@ class AppTestDbFixtures extends Fixture
             ->setFirstName('admin')
             ->setLastName('admin');
 
+
+        // create test disease
+        $seedDisease = (new Disease())
+            ->setName('influenza');
+
         $manager->persist($seedAdmin);
+        $manager->persist($seedDisease);
         $manager->flush();
     }
 }
