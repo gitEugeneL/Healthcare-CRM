@@ -13,6 +13,10 @@ class DoctorResponseDtoTransformer extends AbstractResponseDtoTransformer
         foreach ($doctor->getSpecializations() as $specialization) {
             $specializations[] = $specialization->getName();
         }
+        $diseases = [];
+        foreach ($doctor->getDiseases() as $disease) {
+            $diseases[] = $disease->getName();
+        }
         $user = $doctor->getUser();
 
         return (new ResponseDoctorDto())
@@ -23,7 +27,7 @@ class DoctorResponseDtoTransformer extends AbstractResponseDtoTransformer
             ->setPhone($user->getPhone())
             ->setEducation($doctor->getEducation())
             ->setDescription($doctor->getDescription())
-            ->setSpecializations($specializations);
-//            ->setDiseases($doctor->getDiseases()->toArray() ?: null); // todo
+            ->setSpecializations($specializations)
+            ->setDiseases($diseases);
     }
 }

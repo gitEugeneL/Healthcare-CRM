@@ -73,6 +73,19 @@ class DoctorController extends AbstractController
     }
 
     /**
+     * @throws NotFoundException
+     */
+    #[IsGranted(new Expression('is_granted("ROLE_PATIENT") or is_granted("ROLE_MANAGER")'))]
+    #[Route('/show-by-disease/{diseaseId}')]
+    public function showByDisease(Request $request): JsonResponse
+    {
+        $page = $request->query->getInt('page', 1);
+        $diseaseId = (int) $request->get('diseaseId');
+        $result = $this->doctorService->showByDisease($diseaseId, $page);
+        return $this->json($result, 200);
+    }
+
+    /**
      * @throws AlreadyExistException
      * @throws NotFoundException
      * @throws DtoRequestException

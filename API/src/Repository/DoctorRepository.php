@@ -71,6 +71,30 @@ class DoctorRepository extends ServiceEntityRepository
         ];
     }
 
+    public function findByDiseaseWithPagination(int $diseaseId, int $page, int $limit): array
+    {
+        $qb = $this->createQueryBuilder('d');
+
+        $qb->join('d.diseases', 'di')
+            ->where('di.id = :diseaseId')
+            ->setParameter('diseaseId', $diseaseId);
+
+        $total = $qb->select('COUNT(d.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $doctors = $qb->select('d')
+            ->setMaxResults($limit)
+            ->setFirstResult(($page - 1) * $limit)
+            ->getQuery()
+            ->getResult();
+
+        return [
+            'doctors' => $doctors,
+            'totalPages' => ceil($total / $limit)
+        ];
+    }
+
     public function findOneById(int $id): Doctor|null
     {
         return $this->findOneBy(['id' => $id]);
