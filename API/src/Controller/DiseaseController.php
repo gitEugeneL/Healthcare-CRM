@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -45,10 +46,35 @@ class DiseaseController extends AbstractController
     #[Route('/delete/{diseaseId}', methods: ['DELETE'])]
     public function delete(Request $request): JsonResponse
     {
-        $id = $request->get('diseaseId');
-        if (!is_numeric($id))
-            $this->json('Incorrect ID format. ID should be a number.', 422);
-        $this->diseaseService->delete($id);
+        $diseaseId = (int) $request->get('diseaseId');
+        $this->diseaseService->delete($diseaseId);
         return $this->json('successfully deleted', 204);
+    }
+
+    /**
+     * @throws AlreadyExistException
+     * @throws NotFoundException
+     */
+    #[IsGranted('ROLE_DOCTOR')]
+    #[Route('/add-doctor/{diseaseId}', methods: ['PATCH'])]
+    public function addDoctor(Request $request, TokenStorageInterface $tokenStorage): JsonResponse
+    {
+        $diseaseId = (int) $request->get('diseaseId');
+        $doctorIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
+        $this->diseaseService->addDoctor($doctorIdentifier, $diseaseId);
+        return $this->json('Doctor successfully added', 201);
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    #[IsGranted('ROLE_DOCTOR')]
+    #[Route('/remove-doctor/{diseaseId}', methods: ['PATCH'])]
+    public function removeDoctor(Request $request, TokenStorageInterface $tokenStorage): JsonResponse
+    {
+        $diseaseId = (int) $request->get('diseaseId');
+        $doctorIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
+        $this->diseaseService->removeDoctor($doctorIdentifier, $diseaseId);
+        return $this->json('Doctor successfully removed', 201);
     }
 }
