@@ -102,7 +102,6 @@ class SpecializationService
 
     /**
      * @throws NotFoundException
-     * @throws AlreadyExistException
      */
     public function excludeDoctor(UpdateSpecializationDoctorsDto $dto): void
     {
@@ -110,7 +109,7 @@ class SpecializationService
         $doctor = $this->findDoctor($dto->getDoctorId());
 
         if (!$specialization->getDoctors()->contains($doctor))
-            throw new AlreadyExistException("Doctor doesn't have this speciality");
+            throw new NotFoundException("Doctor doesn't have this speciality");
 
         $specialization->removeDoctor($doctor);
         $this->specializationRepository->save($specialization, true);

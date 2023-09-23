@@ -93,7 +93,6 @@ class SpecializationController extends AbstractController
     /**
      * @throws DtoRequestException
      * @throws NotFoundException
-     * @throws AlreadyExistException
      */
     #[IsGranted('ROLE_MANAGER')]
     #[Route('/exclude-doctor', methods: ['PATCH'])]
