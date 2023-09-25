@@ -2,7 +2,7 @@
 
 namespace App\Entity\Doctor;
 
-use App\Entity\Auth\User;
+use App\Entity\User\User;
 use App\Entity\Disease;
 use App\Entity\Specialization;
 use App\Repository\DoctorRepository;

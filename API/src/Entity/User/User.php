@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Auth;
+namespace App\Entity\User;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,7 +11,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    // todo add profile photo class ------------------------------------------------------
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
