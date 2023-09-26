@@ -5,6 +5,7 @@ namespace App\Middleware;
 use App\Exception\AlreadyExistException;
 use App\Exception\DtoRequestException;
 use App\Exception\NotFoundException;
+use App\Exception\UnsupportedMediaType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -20,7 +21,6 @@ class ErrorHandlingMiddleware implements EventSubscriberInterface
     public function onKernelException(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
-
         if ($exception instanceof AlreadyExistException) {
             $response = new Response($exception->getMessage(),409);
         }
@@ -30,9 +30,12 @@ class ErrorHandlingMiddleware implements EventSubscriberInterface
         elseif ($exception instanceof DtoRequestException) {
             $response = new Response($exception->getMessage(), 422);
         }
+        elseif ($exception instanceof UnsupportedMediaType) {
+            $response = new Response($exception->getMessage(), 415);
+        }
         else {
             $response = new Response($exception, 500); // only for dev
-            // $response = new Response('Something went wrong', 500);
+//             $response = new Response('Something went wrong', 500);
         }
         $event->setResponse($response);
     }

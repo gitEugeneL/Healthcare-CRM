@@ -2,6 +2,7 @@
 
 namespace App\Entity\User;
 
+use App\Entity\Image;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -33,6 +34,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private array $roles = [];
+
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Image $image = null;
 
     public function getId(): ?int
     {
@@ -109,6 +113,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhone(?string $phone): static
     {
         $this->phone = $phone;
+        return $this;
+    }
+
+    public function getImage(): ?Image
+    {
+        return $this->image;
+    }
+
+    public function setImage(?Image $image): static
+    {
+        if ($image === null && $this->image !== null) {
+            $this->image->setUser(null);
+        }
+        if ($image !== null && $image->getUser() !== $this) {
+            $image->setUser($this);
+        }
+        $this->image = $image;
         return $this;
     }
 }
