@@ -113,7 +113,8 @@ class DoctorService
      */
     public function update(UpdateDoctorDto $dto, string $userIdentifier): ResponseDoctorDto
     {
-        if (!$dto->getFirstName() && !$dto->getLastName() && !$dto->getDescription() && !$dto->getEducation())
+        if (!$dto->getFirstName() && !$dto->getLastName()
+            && !$dto->getDescription() && !$dto->getEducation() &&  !$dto->getPhone())
             throw new NotFoundException('Nothing to change');
 
         $doctor = $this->doctorRepository->findOneByEmail($userIdentifier);
@@ -125,6 +126,8 @@ class DoctorService
             $user->setFirstName($dto->getFirstName());
         if (!is_null($dto->getLastName()))
             $user->setLastName($dto->getLastName());
+        if (!is_null($dto->getPhone()))
+            $user->setPhone($dto->getPhone());
         if (!is_null($dto->getDescription()))
             $doctor->setDescription($dto->getDescription());
         if (!is_null($dto->getEducation()))

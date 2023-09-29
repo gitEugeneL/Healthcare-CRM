@@ -2,72 +2,14 @@
 
 namespace App\Dto\Doctor;
 
-class ResponseDoctorDto
+use App\Dto\User\ResponseUserDto;
+
+class ResponseDoctorDto extends ResponseUserDto
 {
-    private int $id;
-    private string $firstName;
-    private string $lastName;
-    private string $email;
-    private ?string $phone;
     private ?string $education;
     private ?string $description;
     private ?array $specializations;
     private ?array $diseases;
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    public function setFirstName(string $firstName): static
-    {
-        $this->firstName = $firstName;
-        return $this;
-    }
-
-    public function getLastName(): string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(string $lastName): static
-    {
-        $this->lastName = $lastName;
-        return $this;
-    }
-
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-        return $this;
-    }
-
-    public function getPhone(): string
-    {
-        return $this->phone;
-    }
-
-    public function setPhone(?string $phone): static
-    {
-        $this->phone = $phone;
-        return $this;
-    }
 
     public function getEducation(): string
     {

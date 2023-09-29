@@ -148,7 +148,8 @@ class DoctorControllerTest extends TestCase
         $updateData = [
             'firstName' => "new doctor's name",
             'description' => 'new description',
-            'education' => 'new education'
+            'education' => 'new education',
+            'phone' => '+48999888999'
         ];
         $response = $this->patch(
             uri: '/api/doctor/update',
@@ -160,6 +161,9 @@ class DoctorControllerTest extends TestCase
         $this->assertSame($updateData['firstName'], $responseData['firstName']);
         $this->assertSame($updateData['description'], $responseData['description']);
         $this->assertSame($updateData['education'], $responseData['education']);
+        $this->assertSame($updateData['phone'], $responseData['phone']);
+        $this->assertSame($this->doctor['email'], $responseData['email']);
+
     }
 
     public function testUpdate_withInvalidData_returnsNotFound(): void
