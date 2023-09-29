@@ -40,4 +40,14 @@ class ManagerRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['user' => $user]);
     }
+
+    public function findOneByEmail(string $email): Manager|null
+    {
+        return $this->createQueryBuilder('m')
+            ->join('m.user', 'u')
+            ->where('u.email = :email')
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

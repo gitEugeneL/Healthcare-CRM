@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Dto\Manager\CreateManagerDto;
 use App\Dto\Manager\ResponseManagerDto;
+use App\Dto\Manager\UpdateManagerDto;
 use App\Entity\Manager;
 use App\Entity\User\Roles;
 use App\Entity\User\User;
@@ -38,6 +39,32 @@ class ManagerService
                 ->setFirstName($dto->getFirstName())
                 ->setLastName($dto->getLastName())
             );
+        $this->managerRepository->save($manager, true);
+        return $this->managerResponseDtoTransformer->transformFromObject($manager);
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    public function update(UpdateManagerDto $dto, string $userIdentifier): ResponseManagerDto
+    {
+        if (!$dto->getFirstName() && !$dto->getLastName() && !$dto->getPhone() && !$dto->getPosition())
+            throw new NotFoundException('Nothing to change');
+
+        $manager = $this->managerRepository->findOneByEmail($userIdentifier);
+        if (is_null($manager))
+            throw new NotFoundException("This manager doesn't exist");
+
+        $user = $manager->getUser();
+        if (!is_null($dto->getFirstName()))
+            $user->setFirstName($dto->getFirstName());
+        if (!is_null($dto->getLastName()))
+            $user->setLastName($dto->getLastName());
+        if (!is_null($dto->getPhone()))
+            $user->setPhone($dto->getPhone());
+        if (!is_null($dto->getPosition()))
+            $manager->setPosition($dto->getPosition());
+
         $this->managerRepository->save($manager, true);
         return $this->managerResponseDtoTransformer->transformFromObject($manager);
     }

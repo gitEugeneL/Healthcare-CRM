@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\Manager\CreateManagerDto;
+use App\Dto\Manager\UpdateManagerDto;
 use App\Exception\AlreadyExistException;
 use App\Exception\DtoRequestException;
 use App\Exception\NotFoundException;
@@ -38,6 +39,21 @@ class ManagerController extends AbstractController
 
         $result = $this->managerService->create($dto);
         return $this->json($result, 201);
+    }
+
+    /**
+     * @throws DtoRequestException
+     * @throws NotFoundException
+     */
+    #[Route('/update', methods: ['PATCH'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function update(Request $request, TokenStorageInterface $tokenStorage): JsonResponse
+    {
+        $dto = $this->serializer->deserialize($request->getContent(), UpdateManagerDto::class, 'json');
+        $this->dtoValidator->validate($dto);
+        $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
+        $result = $this->managerService->update($dto, $userIdentifier);
+        return $this->json($result, 200);
     }
 
     /**

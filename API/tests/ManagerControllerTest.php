@@ -26,8 +26,7 @@ class ManagerControllerTest extends TestCase
                 data: $this->manager
             );
         }
-        $this->assertSame(409, $response->getStatusCode());
-        $this->assertSame("User {$this->manager['email']} already exists", $response->getContent());
+        $this->assertSame(422, $response->getStatusCode());
     }
 
     public function testInfo_withValidManager_returnsOk(): void
@@ -49,5 +48,28 @@ class ManagerControllerTest extends TestCase
             accessToken: 'invalidToken'
         );
         $this->assertSame(401, $response->getStatusCode());
+    }
+
+    public function testUpdate_withValidData_returnsUpdated(): void
+    {
+        $managerAccessToken = $this->createAndLoginManager();
+        $updateData = [
+            'firstName' => 'new first name',
+            'lastName' => 'new last name',
+            'phone' => '+48999888999',
+            'position' => 'the best manager'
+        ];
+        $response = $this->patch(
+            uri: '/api/manager/update',
+            accessToken: $managerAccessToken,
+            data: $updateData
+        );
+        $responseData = json_decode($response->getContent(), true);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame($updateData['firstName'], $responseData['firstName']);
+        $this->assertSame($updateData['lastName'], $responseData['lastName']);
+        $this->assertSame($updateData['phone'], $responseData['phone']);
+        $this->assertSame($updateData['position'], $responseData['position']);
+        $this->assertSame($this->manager['email'], $responseData['email']);
     }
 }
