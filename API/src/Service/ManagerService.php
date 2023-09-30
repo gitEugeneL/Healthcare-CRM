@@ -35,7 +35,7 @@ class ManagerService
             ->setUser((new User())
                 ->setEmail($dto->getEmail())
                 ->setPassword(password_hash($dto->getPassword(), PASSWORD_DEFAULT))
-                ->setRoles([Roles::ROLE_MANAGER])
+                ->setRoles([Roles::MANAGER])
                 ->setFirstName($dto->getFirstName())
                 ->setLastName($dto->getLastName())
             );

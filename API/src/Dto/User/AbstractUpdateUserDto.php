@@ -3,7 +3,7 @@
 namespace App\Dto\User;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class UpdateUserDto
+abstract class AbstractUpdateUserDto
 {
     #[Assert\Length(min: 3, max: 50)]
     private ?string $firstName;

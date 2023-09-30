@@ -2,7 +2,7 @@
 
 namespace App\Dto\User;
 
-class ResponseUserDto
+abstract class AbstractResponseUserDto
 {
     private int $id;
     private string $firstName;

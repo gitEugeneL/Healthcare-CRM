@@ -2,9 +2,9 @@
 
 namespace App\Dto\Doctor;
 
-use App\Dto\User\ResponseUserDto;
+use App\Dto\User\AbstractResponseUserDto;
 
-class ResponseDoctorDto extends ResponseUserDto
+class ResponseDoctorDto extends AbstractResponseUserDto
 {
     private ?string $education;
     private ?string $description;

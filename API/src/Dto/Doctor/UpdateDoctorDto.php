@@ -2,10 +2,10 @@
 
 namespace App\Dto\Doctor;
 
-use App\Dto\User\UpdateUserDto;
+use App\Dto\User\AbstractUpdateUserDto;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class UpdateDoctorDto extends UpdateUserDto
+class UpdateDoctorDto extends AbstractUpdateUserDto
 {
     #[Assert\Length(min: 10, max: 250)]
     private ?string $description;

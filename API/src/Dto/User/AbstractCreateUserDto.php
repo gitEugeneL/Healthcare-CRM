@@ -5,7 +5,7 @@ namespace App\Dto\User;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator as AcmeAssert;
 
-class CreateUserDto
+abstract class AbstractCreateUserDto
 {
     #[Assert\NotBlank]
     #[Assert\NotNull]

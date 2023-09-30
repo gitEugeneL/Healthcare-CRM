@@ -2,9 +2,9 @@
 
 namespace App\Dto\Manager;
 
-use App\Dto\User\ResponseUserDto;
+use App\Dto\User\AbstractResponseUserDto;
 
-class ResponseManagerDto extends ResponseUserDto
+class ResponseManagerDto extends AbstractResponseUserDto
 {
     private string $position;
 

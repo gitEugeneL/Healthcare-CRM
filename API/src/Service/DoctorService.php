@@ -32,7 +32,7 @@ class DoctorService
             ->setUser((new User())
                 ->setEmail($dto->getEmail())
                 ->setPassword(password_hash($dto->getPassword(), PASSWORD_DEFAULT))
-                ->setRoles([Roles::ROLE_DOCTOR])
+                ->setRoles([Roles::DOCTOR])
                 ->setFirstName($dto->getFirstName())
                 ->setLastName($dto->getLastName())
             )

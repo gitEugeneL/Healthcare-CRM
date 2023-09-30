@@ -21,12 +21,11 @@ class AppTestDbFixtures extends Fixture
         $seedAdmin = (new User())
             ->setEmail('admin@admin.com')
             ->setPassword(password_hash('admin!1A', PASSWORD_DEFAULT))
-            ->setRoles([Roles::ROLE_ADMIN])
+            ->setRoles([Roles::ADMIN])
             ->setFirstName('admin')
             ->setLastName('admin');
 
-
-        // create test disease
+        // create test disease ------------------------------------------------------
         $seedDisease = (new Disease())
             ->setName('influenza');
 

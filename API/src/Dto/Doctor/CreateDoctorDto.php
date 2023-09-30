@@ -2,9 +2,9 @@
 
 namespace App\Dto\Doctor;
 
-use App\Dto\User\CreateUserDto;
+use App\Dto\User\AbstractCreateUserDto;
 
-class CreateDoctorDto extends CreateUserDto
+class CreateDoctorDto extends AbstractCreateUserDto
 {
 
 }

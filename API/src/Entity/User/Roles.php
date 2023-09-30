@@ -4,7 +4,8 @@ namespace App\Entity\User;
 
 enum Roles
 {
-    const ROLE_ADMIN = 'ROLE_ADMIN';
-    const ROLE_MANAGER = 'ROLE_MANAGER';
-    const ROLE_DOCTOR = 'ROLE_DOCTOR';
+    const ADMIN = 'ROLE_ADMIN';
+    const MANAGER = 'ROLE_MANAGER';
+    const DOCTOR = 'ROLE_DOCTOR';
+    const PATIENT ='ROLE_PATIENT';
 }
