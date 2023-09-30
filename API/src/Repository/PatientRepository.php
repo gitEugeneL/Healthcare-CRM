@@ -34,4 +34,30 @@ class PatientRepository extends ServiceEntityRepository
         if ($flush)
             $this->getEntityManager()->flush();
     }
+
+    public function findOneByEmail(string $email): Patient|null
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.user', 'u')
+            ->where('u.email = :email')
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findAllWithPagination(int $page, int $limit): array
+    {
+        $total = count($this->findAll());
+        $patients = $this->findBy([],[], $limit, ($page - 1) * $limit);
+
+        return [
+          'patients' => $patients,
+          'totalPages' => ceil($total / $limit)
+        ];
+    }
+
+    public function findOneById(int $patientId): Patient|null
+    {
+        return $this->findOneBy(['id' => $patientId]);
+    }
 }
