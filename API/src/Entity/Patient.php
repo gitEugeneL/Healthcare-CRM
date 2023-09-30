@@ -16,10 +16,10 @@ class Patient
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 11)]
+    #[ORM\Column(length: 11, nullable: true)]
     private ?string $pesel = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?DateTimeInterface $dateOfBirth = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -43,7 +43,7 @@ class Patient
         return $this->pesel;
     }
 
-    public function setPesel(string $pesel): static
+    public function setPesel(?string $pesel): static
     {
         $this->pesel = $pesel;
         return $this;
@@ -54,7 +54,7 @@ class Patient
         return $this->dateOfBirth;
     }
 
-    public function setDateOfBirth(DateTimeInterface $dateOfBirth): static
+    public function setDateOfBirth(?DateTimeInterface $dateOfBirth): static
     {
         $this->dateOfBirth = $dateOfBirth;
         return $this;
