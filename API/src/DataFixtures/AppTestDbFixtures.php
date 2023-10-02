@@ -2,6 +2,8 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Address;
+use App\Entity\Patient;
 use App\Entity\User\Roles;
 use App\Entity\User\User;
 use App\Entity\Disease;

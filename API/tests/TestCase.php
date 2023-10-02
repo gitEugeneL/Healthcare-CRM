@@ -28,10 +28,17 @@ abstract class TestCase extends WebTestCase
     ];
 
     protected array $doctor = [
-        'email' => 'doctor@doctor.com',
+        'email' => 'd@d.com',
         'password' => 'doctor!1',
-        'lastName' => 'doctor1',
-        'firstName' => 'doctor1'
+        'lastName' => 'doctor',
+        'firstName' => 'doctor'
+    ];
+
+    protected array $patient = [
+        'email' => 'p@p.com',
+        'password' => 'patient1!A',
+        'lastName' => 'patient',
+        'firstName' => 'patient'
     ];
 
     protected function setUp(): void
@@ -66,6 +73,11 @@ abstract class TestCase extends WebTestCase
     protected function patch(string $uri, string $accessToken = null, $data = []): Response
     {
         return $this->request('PATCH', $uri, $accessToken, $data);
+    }
+
+    protected function put(string $uri, string $accessToken = null, $data = []): Response
+    {
+        return $this->request('PUT', $uri, $accessToken, $data);
     }
 
     protected function get(string $uri, string $accessToken = null): Response
@@ -110,5 +122,14 @@ abstract class TestCase extends WebTestCase
             data: $this->doctor
         );
         return $this->login($this->doctor['email'], $this->doctor['password']);
+    }
+
+    protected function createAndLoginPatient(): string
+    {
+        $this->post(
+            uri: '/api/patient/create',
+            data: $this->patient
+        );
+        return $this->login($this->patient['email'], $this->patient['password']);
     }
 }
