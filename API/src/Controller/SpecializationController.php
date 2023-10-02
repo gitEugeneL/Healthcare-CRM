@@ -6,8 +6,8 @@ use App\Dto\Specialization\CreateSpecializationDto;
 use App\Dto\Specialization\UpdateSpecializationDoctorsDto;
 use App\Dto\Specialization\UpdateSpecializationDto;
 use App\Exception\AlreadyExistException;
-use App\Exception\DtoRequestException;
 use App\Exception\NotFoundException;
+use App\Exception\ValidationException;
 use App\Service\SpecializationService;
 use App\Validator\DtoValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,8 +28,8 @@ class SpecializationController extends AbstractController
     ) {}
 
     /**
-     * @throws DtoRequestException
      * @throws AlreadyExistException
+     * @throws ValidationException
      */
     #[IsGranted('ROLE_MANAGER')]
     #[Route('/create', methods: ['POST'])]
@@ -50,8 +50,8 @@ class SpecializationController extends AbstractController
     }
 
     /**
-     * @throws DtoRequestException
      * @throws NotFoundException
+     * @throws ValidationException
      */
     #[IsGranted('ROLE_MANAGER')]
     #[Route('/update/{specializationName}', methods: ['PATCH'])]
@@ -75,9 +75,9 @@ class SpecializationController extends AbstractController
     }
 
     /**
-     * @throws DtoRequestException
      * @throws NotFoundException
      * @throws AlreadyExistException
+     * @throws ValidationException
      */
     #[IsGranted('ROLE_MANAGER')]
     #[Route('/include-doctor', methods: ['PATCH'])]
@@ -91,8 +91,8 @@ class SpecializationController extends AbstractController
     }
 
     /**
-     * @throws DtoRequestException
      * @throws NotFoundException
+     * @throws ValidationException
      */
     #[IsGranted('ROLE_MANAGER')]
     #[Route('/exclude-doctor', methods: ['PATCH'])]

@@ -163,7 +163,6 @@ class DoctorControllerTest extends TestCase
         $this->assertSame($updateData['education'], $responseData['education']);
         $this->assertSame($updateData['phone'], $responseData['phone']);
         $this->assertSame($this->doctor['email'], $responseData['email']);
-
     }
 
     public function testUpdate_withInvalidData_returnsNotFound(): void
@@ -216,7 +215,7 @@ class DoctorControllerTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertCount(5, $responseData['items']);
         foreach ($responseData['items'] as $doctor) {
-            $this->assertSame('dentist', $doctor['specializations'][0]);
+            $this->assertSame('dentist', $doctor['specializations'][0]['name']);
         }
     }
 }

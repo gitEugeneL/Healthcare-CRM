@@ -2,7 +2,7 @@
 
 namespace App\Validator;
 
-use App\Exception\DtoRequestException;
+use App\Exception\ValidationException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DtoValidator
@@ -12,7 +12,7 @@ class DtoValidator
     ) {}
 
     /**
-     * @throws DtoRequestException
+     * @throws ValidationException
      */
     public function validate($dto): void
     {
@@ -24,7 +24,7 @@ class DtoValidator
                     $message = $error->getMessage();
                     $errorMessages[$field] = $message;
                 }
-                throw new DtoRequestException(json_encode($errorMessages));
+                throw new ValidationException(json_encode($errorMessages));
             }
     }
 }

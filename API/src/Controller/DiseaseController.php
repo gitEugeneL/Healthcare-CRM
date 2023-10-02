@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Dto\Disease\CreateDiseaseDto;
 use App\Exception\AlreadyExistException;
-use App\Exception\DtoRequestException;
 use App\Exception\NotFoundException;
+use App\Exception\ValidationException;
 use App\Service\DiseaseService;
 use App\Validator\DtoValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,8 +26,8 @@ class DiseaseController extends AbstractController
     ) {}
 
     /**
-     * @throws DtoRequestException
      * @throws AlreadyExistException
+     * @throws ValidationException
      */
     #[IsGranted('ROLE_MANAGER')]
     #[Route('/create', methods: ['POST'])]

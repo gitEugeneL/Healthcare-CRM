@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Exception\ValidationException;
 use Symfony\Component\ExpressionLanguage\Expression;
 use App\Dto\Patient\CreatePatientDto;
 use App\Dto\Patient\UpdatePatientDto;
@@ -28,7 +29,7 @@ class PatientController extends AbstractController
     ) {}
 
     /**
-     * @throws DtoRequestException
+     * @throws ValidationException
      */
     #[Route('/create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
@@ -41,7 +42,7 @@ class PatientController extends AbstractController
 
     /**
      * @throws NotFoundException
-     * @throws DtoRequestException
+     * @throws ValidationException
      */
     #[IsGranted(Roles::PATIENT)]
     #[Route('/update', methods: ['PATCH'])]

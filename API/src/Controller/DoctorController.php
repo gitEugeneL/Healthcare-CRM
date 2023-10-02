@@ -6,8 +6,8 @@ use App\Dto\Doctor\CreateDoctorDto;
 use App\Dto\Doctor\UpdateDoctorDto;
 use App\Dto\Doctor\UpdateStatusDoctorDto;
 use App\Exception\AlreadyExistException;
-use App\Exception\DtoRequestException;
 use App\Exception\NotFoundException;
+use App\Exception\ValidationException;
 use App\Service\DoctorService;
 use App\Validator\DtoValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +29,7 @@ class DoctorController extends AbstractController
     ) {}
 
     /**
-     * @throws DtoRequestException
+     * @throws ValidationException
      */
     #[IsGranted('ROLE_MANAGER')]
     #[Route('/create', methods: ['POST'])]
@@ -88,7 +88,7 @@ class DoctorController extends AbstractController
     /**
      * @throws AlreadyExistException
      * @throws NotFoundException
-     * @throws DtoRequestException
+     * @throws ValidationException
      */
     #[IsGranted('ROLE_MANAGER')]
     #[Route('/update-status', methods: ['PATCH'])]
@@ -102,8 +102,8 @@ class DoctorController extends AbstractController
     }
 
     /**
-     * @throws DtoRequestException
      * @throws NotFoundException
+     * @throws ValidationException
      */
     #[IsGranted('ROLE_DOCTOR')]
     #[Route('/update', methods: ['PATCH'])]

@@ -4,4 +4,4 @@ namespace App\Exception;
 
 use Exception;
 
-class DtoRequestException extends Exception {}
+class ValidationException extends Exception {}

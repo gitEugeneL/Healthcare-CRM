@@ -7,6 +7,7 @@ use App\Dto\Manager\UpdateManagerDto;
 use App\Exception\AlreadyExistException;
 use App\Exception\DtoRequestException;
 use App\Exception\NotFoundException;
+use App\Exception\ValidationException;
 use App\Service\ManagerService;
 use App\Validator\DtoValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,8 +28,8 @@ class ManagerController extends AbstractController
     ) {}
 
     /**
-     * @throws DtoRequestException
      * @throws AlreadyExistException
+     * @throws ValidationException
      */
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/create', methods: ['POST'])]
@@ -42,8 +43,8 @@ class ManagerController extends AbstractController
     }
 
     /**
-     * @throws DtoRequestException
      * @throws NotFoundException
+     * @throws ValidationException
      */
     #[Route('/update', methods: ['PATCH'])]
     #[IsGranted('ROLE_MANAGER')]
