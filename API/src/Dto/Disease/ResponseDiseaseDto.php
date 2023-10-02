@@ -6,7 +6,7 @@ class ResponseDiseaseDto
 {
     private int $id;
     private string $name;
-    private array $doctors;
+    private ?array $doctors;
 
     public function getName(): string
     {
@@ -30,12 +30,12 @@ class ResponseDiseaseDto
         return $this;
     }
 
-    public function getDoctors(): array
+    public function getDoctors(): ?array
     {
         return $this->doctors;
     }
 
-    public function setDoctors(array $doctors): static
+    public function setDoctors(?array $doctors): static
     {
         $this->doctors = $doctors;
         return $this;

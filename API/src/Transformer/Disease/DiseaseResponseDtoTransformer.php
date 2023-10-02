@@ -3,6 +3,7 @@
 namespace App\Transformer\Disease;
 
 use App\Dto\Disease\ResponseDiseaseDto;
+use App\Dto\Doctor\ResponseDoctorDto;
 use App\Transformer\AbstractResponseDtoTransformer;
 
 class DiseaseResponseDtoTransformer extends AbstractResponseDtoTransformer
@@ -12,11 +13,13 @@ class DiseaseResponseDtoTransformer extends AbstractResponseDtoTransformer
         $doctors = [];
         foreach ($disease->getDoctors() as $doctor) {
             $user = $doctor->getUser();
-            $doctors[] = [
-                'firstName' => $user->getFirstName(),
-                'lastName' => $user->getLastName(),
-                'email' => $user->getEmail()
-            ];
+            $doctors[] = (new ResponseDoctorDto())
+                ->setFirstName($user->getFirstName())
+                ->setLastName($user->getLastName())
+                ->setEmail($user->getEmail())
+                ->setPhone($user->getPhone())
+                ->setEducation($doctor->getEducation())
+                ->setDescription($doctor->getDescription());
         }
         return (new ResponseDiseaseDto())
             ->setId($disease->getId())

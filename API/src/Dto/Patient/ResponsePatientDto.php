@@ -2,6 +2,7 @@
 
 namespace App\Dto\Patient;
 
+use App\Dto\Address\ResponseAddressDto;
 use App\Dto\User\AbstractResponseUserDto;
 use App\Entity\Address;
 use DateTimeInterface;
@@ -11,7 +12,7 @@ class ResponsePatientDto extends AbstractResponseUserDto
     private ?string $pesel;
     private ?DateTimeInterface $dateOfBirth;
     private ?string $insurance;
-    private ?Address $address;
+    private ?ResponseAddressDto $address;
 
     public function getPesel(): ?string
     {
@@ -46,12 +47,12 @@ class ResponsePatientDto extends AbstractResponseUserDto
         return $this;
     }
 
-    public function getAddress(): ?Address
+    public function getAddress(): ?ResponseAddressDto
     {
         return $this->address;
     }
 
-    public function setAddress(?Address $address): static
+    public function setAddress(?ResponseAddressDto $address): static
     {
         $this->address = $address;
         return $this;

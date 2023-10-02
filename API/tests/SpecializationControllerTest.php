@@ -137,7 +137,7 @@ class SpecializationControllerTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertCount(5, $responseData['items']);
         foreach ($responseData['items'] as $doctor) {
-            $this->assertSame('dentist', $doctor['specializations'][0]);
+            $this->assertSame('dentist', $doctor['specializations'][0]['name']);
         }
     }
 

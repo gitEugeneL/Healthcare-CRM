@@ -10,7 +10,6 @@ class PaginatorResponseTransformer
             'currentPage' => $currentPage,
             'totalPages' => $totalPage,
             'items' => $items
-
         ];
     }
 }
