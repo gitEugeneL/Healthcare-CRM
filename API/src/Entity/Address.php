@@ -4,9 +4,6 @@ namespace App\Entity;
 
 use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
 
 #[ORM\Entity(repositoryClass: AddressRepository::class)]
 class Address
@@ -16,31 +13,26 @@ class Address
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $city = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $street = null;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\Column(length: 10, nullable: true)]
     private ?string $houseNumber = null;
 
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $apartmentNumber = null;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\Column(length: 10, nullable: true)]
     private ?string $postalCode = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $province = null;
 
-    #[ORM\OneToMany(mappedBy: 'address', targetEntity: Patient::class)]
-    private Collection $patients;
-
-    public function __construct()
-    {
-        $this->patients = new ArrayCollection();
-    }
+    #[ORM\OneToOne(mappedBy: 'address', cascade: ['persist', 'remove'])]
+    private ?Patient $patient = null;
 
     public function getId(): ?int
     {
@@ -113,29 +105,17 @@ class Address
         return $this;
     }
 
-    /**
-     * @return Collection<int, Patient>
-     */
-    public function getPatients(): Collection
+    public function getPatient(): ?Patient
     {
-        return $this->patients;
+        return $this->patient;
     }
 
-    public function addPatient(Patient $patient): static
+    public function setPatient(Patient $patient): static
     {
-        if (!$this->patients->contains($patient)) {
-            $this->patients->add($patient);
+        if ($patient->getAddress() !== $this) {
             $patient->setAddress($this);
         }
-        return $this;
-    }
-
-    public function removePatient(Patient $patient): static
-    {
-        if ($this->patients->removeElement($patient)) {
-            if ($patient->getAddress() === $this)
-                $patient->setAddress(null);
-        }
+        $this->patient = $patient;
         return $this;
     }
 }

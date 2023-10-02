@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Dto\Patient\CreatePatientDto;
 use App\Dto\Patient\ResponsePatientDto;
 use App\Dto\Patient\UpdatePatientDto;
+use App\Entity\Address;
 use App\Entity\Patient;
 use App\Entity\User\Roles;
 use App\Entity\User\User;
@@ -13,6 +14,7 @@ use App\Repository\PatientRepository;
 use App\Transformer\Paginator\PaginatorResponseTransformer;
 use App\Transformer\Patient\PatientResponseDtoTransformer;
 use DateTime;
+use Exception;
 
 class PatientService
 {
@@ -27,6 +29,7 @@ class PatientService
     public function create(CreatePatientDto $dto): ResponsePatientDto
     {
         $patient = (new Patient())
+            ->setAddress(new Address())
             ->setUser((new User())
                 ->setEmail($dto->getEmail())
                 ->setPassword(password_hash($dto->getPassword(), PASSWORD_DEFAULT))
@@ -40,7 +43,7 @@ class PatientService
 
     /**
      * @throws NotFoundException
-     * @throws \Exception
+     * @throws Exception
      */
     public function update(UpdatePatientDto $dto, string $userIdentifier): ResponsePatientDto
     {

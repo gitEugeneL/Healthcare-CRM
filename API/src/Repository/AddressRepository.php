@@ -20,4 +20,29 @@ class AddressRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Address::class);
     }
+
+    public function save(Address $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+        if ($flush)
+            $this->getEntityManager()->flush();
+    }
+
+    public function remove(Address $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+        if ($flush)
+            $this->getEntityManager()->flush();
+    }
+
+    public function findOneByPatientEmail(string $email): Address|null
+    {
+        return $this->createQueryBuilder('a')
+            ->join('a.patient', 'p')
+            ->join('p.user', 'u')
+            ->where('u.email = :email')
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

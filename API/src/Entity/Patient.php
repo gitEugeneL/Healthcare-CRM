@@ -25,7 +25,8 @@ class Patient
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $insurance = null;
 
-    #[ORM\ManyToOne(inversedBy: 'patient')]
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Address $address = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
