@@ -5,44 +5,45 @@ namespace App\Controller;
 use App\Dto\Doctor\CreateDoctorDto;
 use App\Dto\Doctor\UpdateDoctorDto;
 use App\Dto\Doctor\UpdateStatusDoctorDto;
+use App\Entity\User\Roles;
 use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
 use App\Service\DoctorService;
-use App\Validator\DtoValidator;
+use App\Utils\DtoInspector;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[Route('/api/doctor')]
 class DoctorController extends AbstractController
 {
     public function __construct(
         private readonly SerializerInterface $serializer,
-        private readonly DtoValidator $dtoValidator,
+        private readonly DtoInspector $dtoInspector,
         private readonly DoctorService $doctorService
     ) {}
 
     /**
      * @throws ValidationException
      */
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(Roles::MANAGER)]
     #[Route('/create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         $dto = $this->serializer->deserialize($request->getContent(), CreateDoctorDto::class, 'json');
-        $this->dtoValidator->validate($dto);
+        $this->dtoInspector->inspect($dto);
 
         $result = $this->doctorService->create($dto);
         return $this->json($result, 201);
     }
 
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(Roles::MANAGER)]
     #[Route('/show', methods: ['GET'])]
     public function show(Request $request): JsonResponse
     {
@@ -54,7 +55,7 @@ class DoctorController extends AbstractController
     /**
      * @throws NotFoundException
      */
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(Roles::MANAGER)]
     #[Route('/show/{doctorId}', methods: ['GET'])]
     public function showOne(Request $request): JsonResponse
     {
@@ -62,7 +63,7 @@ class DoctorController extends AbstractController
         return $this->json($result, 200);
     }
 
-    #[IsGranted(new Expression('is_granted("ROLE_PATIENT") or is_granted("ROLE_MANAGER")'))]
+    #[IsGranted(new Expression('is_granted("'.Roles::PATIENT.'") or is_granted("'.Roles::MANAGER.'")'))]
     #[Route('/show-by-specialization/{specializationName}')]
     public function showBySpecialization(Request $request): JsonResponse
     {
@@ -75,7 +76,7 @@ class DoctorController extends AbstractController
     /**
      * @throws NotFoundException
      */
-    #[IsGranted(new Expression('is_granted("ROLE_PATIENT") or is_granted("ROLE_MANAGER")'))]
+    #[IsGranted(new Expression('is_granted("'.Roles::PATIENT.'") or is_granted("'.Roles::MANAGER.'")'))]
     #[Route('/show-by-disease/{diseaseId}')]
     public function showByDisease(Request $request): JsonResponse
     {
@@ -90,13 +91,12 @@ class DoctorController extends AbstractController
      * @throws NotFoundException
      * @throws ValidationException
      */
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(Roles::MANAGER)]
     #[Route('/update-status', methods: ['PATCH'])]
     public function updateStatus(Request $request): JsonResponse
     {
         $dto = $this->serializer->deserialize($request->getContent(), UpdateStatusDoctorDto::class, 'json');
-        $this->dtoValidator->validate($dto);
-
+        $this->dtoInspector->inspect($dto);
         $this->doctorService->updateStatus($dto);
         return $this->json('Successfully updated', 200);
     }
@@ -105,12 +105,12 @@ class DoctorController extends AbstractController
      * @throws NotFoundException
      * @throws ValidationException
      */
-    #[IsGranted('ROLE_DOCTOR')]
+    #[IsGranted(Roles::DOCTOR)]
     #[Route('/update', methods: ['PATCH'])]
     public function update(Request $request, TokenStorageInterface $tokenStorage): JsonResponse
     {
         $dto = $this->serializer->deserialize($request->getContent(), UpdateDoctorDto::class, 'json');
-        $this->dtoValidator->validate($dto);
+        $this->dtoInspector->inspect($dto);
         $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
         $result = $this->doctorService->update($dto, $userIdentifier);
         return $this->json($result, 200);

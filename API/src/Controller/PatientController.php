@@ -2,18 +2,17 @@
 
 namespace App\Controller;
 
-use App\Exception\ValidationException;
-use Symfony\Component\ExpressionLanguage\Expression;
 use App\Dto\Patient\CreatePatientDto;
 use App\Dto\Patient\UpdatePatientDto;
 use App\Entity\User\Roles;
-use App\Exception\DtoRequestException;
 use App\Exception\NotFoundException;
+use App\Exception\ValidationException;
 use App\Service\PatientService;
-use App\Validator\DtoValidator;
-use Symfony\Component\HttpFoundation\Request;
+use App\Utils\DtoInspector;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -24,7 +23,7 @@ class PatientController extends AbstractController
 {
     public function __construct(
         private readonly SerializerInterface $serializer,
-        private readonly DtoValidator $dtoValidator,
+        private readonly DtoInspector $dtoInspector,
         private readonly PatientService $patientService
     ) {}
 
@@ -35,7 +34,7 @@ class PatientController extends AbstractController
     public function create(Request $request): JsonResponse
     {
         $dto = $this->serializer->deserialize($request->getContent(), CreatePatientDto::class, 'json');
-        $this->dtoValidator->validate($dto);
+        $this->dtoInspector->inspect($dto);
         $result = $this->patientService->create($dto);
         return $this->json($result, 201);
     }
@@ -50,7 +49,7 @@ class PatientController extends AbstractController
     {
         $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
         $dto = $this->serializer->deserialize($request->getContent(), UpdatePatientDto::class, 'json');
-        $this->dtoValidator->validate($dto);
+        $this->dtoInspector->inspect($dto);
         $result = $this->patientService->update($dto, $userIdentifier);
         return $this->json($result, 200);
     }

@@ -2,15 +2,15 @@
 
 namespace App\Dto\User;
 
-use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator as AcmeAssert;
+use Symfony\Component\Validator\Constraints as Assert;
 
 abstract class AbstractCreateUserDto
 {
     #[Assert\NotBlank]
     #[Assert\NotNull]
     #[Assert\Email]
-    #[AcmeAssert\Constraints\User\UserNotExist]
+    #[AcmeAssert\Constraints\UserNotExist]
     private string $email;
 
     #[Assert\NotBlank]

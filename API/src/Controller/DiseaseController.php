@@ -3,11 +3,12 @@
 namespace App\Controller;
 
 use App\Dto\Disease\CreateDiseaseDto;
+use App\Entity\User\Roles;
 use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
 use App\Service\DiseaseService;
-use App\Validator\DtoValidator;
+use App\Utils\DtoInspector;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +22,7 @@ class DiseaseController extends AbstractController
 {
     public function __construct(
         private readonly SerializerInterface $serializer,
-        private readonly DtoValidator $dtoValidator,
+        private readonly DtoInspector $dtoInspector,
         private readonly DiseaseService $diseaseService
     ) {}
 
@@ -29,12 +30,12 @@ class DiseaseController extends AbstractController
      * @throws AlreadyExistException
      * @throws ValidationException
      */
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(Roles::MANAGER)]
     #[Route('/create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         $dto = $this->serializer->deserialize($request->getContent(), CreateDiseaseDto::class, 'json');
-        $this->dtoValidator->validate($dto);
+        $this->dtoInspector->inspect($dto);
         $result = $this->diseaseService->create($dto);
         return $this->json($result, 201);
     }
@@ -42,7 +43,7 @@ class DiseaseController extends AbstractController
     /**
      * @throws NotFoundException
      */
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted(Roles::MANAGER)]
     #[Route('/delete/{diseaseId}', methods: ['DELETE'])]
     public function delete(Request $request): JsonResponse
     {
@@ -55,7 +56,7 @@ class DiseaseController extends AbstractController
      * @throws AlreadyExistException
      * @throws NotFoundException
      */
-    #[IsGranted('ROLE_DOCTOR')]
+    #[IsGranted(Roles::DOCTOR)]
     #[Route('/add-doctor/{diseaseId}', methods: ['PATCH'])]
     public function addDoctor(Request $request, TokenStorageInterface $tokenStorage): JsonResponse
     {
@@ -68,7 +69,7 @@ class DiseaseController extends AbstractController
     /**
      * @throws NotFoundException
      */
-    #[IsGranted('ROLE_DOCTOR')]
+    #[IsGranted(Roles::DOCTOR)]
     #[Route('/remove-doctor/{diseaseId}', methods: ['PATCH'])]
     public function removeDoctor(Request $request, TokenStorageInterface $tokenStorage): JsonResponse
     {

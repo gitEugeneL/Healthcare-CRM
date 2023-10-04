@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Validator\Constraints\User;
+namespace App\Validator;
 
 use App\Repository\UserRepository;
 use Symfony\Component\Validator\Constraint;

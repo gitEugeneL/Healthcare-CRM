@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Validator;
+namespace App\Utils;
 
 use App\Exception\ValidationException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class DtoValidator
+class DtoInspector
 {
     public function __construct(
         private readonly ValidatorInterface $validatorInterface
@@ -14,7 +14,7 @@ class DtoValidator
     /**
      * @throws ValidationException
      */
-    public function validate($dto): void
+    public function inspect($dto): void
     {
         $errors = $this->validatorInterface->validate($dto);
             if (count($errors) > 0) {
