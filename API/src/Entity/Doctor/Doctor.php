@@ -2,6 +2,7 @@
 
 namespace App\Entity\Doctor;
 
+use App\Entity\Appointment;
 use App\Entity\User\User;
 use App\Entity\Disease;
 use App\Entity\Specialization;
@@ -38,10 +39,14 @@ class Doctor
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\OneToMany(mappedBy: 'doctor', targetEntity: Appointment::class)]
+    private Collection $appointments;
+
     public function __construct()
     {
         $this->specializations = new ArrayCollection();
         $this->diseases = new ArrayCollection();
+        $this->appointments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -140,6 +145,32 @@ class Doctor
     public function setUser(User $user): static
     {
         $this->user = $user;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Appointment>
+     */
+    public function getAppointments(): Collection
+    {
+        return $this->appointments;
+    }
+
+    public function addAppointment(Appointment $appointment): static
+    {
+        if (!$this->appointments->contains($appointment)) {
+            $this->appointments->add($appointment);
+            $appointment->setDoctor($this);
+        }
+        return $this;
+    }
+
+    public function removeAppointment(Appointment $appointment): static
+    {
+        if ($this->appointments->removeElement($appointment)) {
+            if ($appointment->getDoctor() === $this)
+                $appointment->setDoctor(null);
+        }
         return $this;
     }
 }
