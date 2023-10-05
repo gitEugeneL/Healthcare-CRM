@@ -2,13 +2,15 @@
 
 namespace App\Validator;
 
-use DateTimeImmutable;
+use DateTime;
 use Exception;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 class DateInTheFutureValidator extends ConstraintValidator
 {
+    private const  MAX_DATE = '+1 month';
+
     /**
      * @throws Exception
      */
@@ -17,7 +19,10 @@ class DateInTheFutureValidator extends ConstraintValidator
         if ($value === null || $value === '')
             return;
 
-        if (new DateTimeImmutable($value) <= new DateTimeImmutable()) {
+        $currentDate = new DateTime();
+        $valueDate = new DateTime($value);
+
+        if ($valueDate <= $currentDate || $valueDate >= $currentDate->modify(self::MAX_DATE)) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();
         }
