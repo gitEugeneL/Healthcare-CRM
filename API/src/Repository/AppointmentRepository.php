@@ -27,26 +27,20 @@ class AppointmentRepository extends ServiceEntityRepository
     /**
      * @throws Exception
      */
-    public function findFreeHours(int $doctorId, DateTime $date, string $startTime, string $endTime, string $interval): array
+    public function findFreeHours(
+        int $doctorId, DateTime $date, DateTime $startDateTime, DateTime $endDateTime, string $interval): array
     {
         $visits = $this->createQueryBuilder('appointment')
             ->join('appointment.doctor', 'doctor')
             ->where('doctor.id = :doctorId')
             ->andWhere('appointment.date = :date')
+            ->andWhere('appointment.isCanceled = false')
             ->setParameter('doctorId', $doctorId)
             ->setParameter('date', $date->format('Y-m-d'))
             ->getQuery()
             ->getResult();
 
-        $startDateTime = new DateTime($startTime);
-        $endDateTime = new DateTime($endTime);
         $interval = new DateInterval("PT{$interval}");
-
-        // todo ----------------------------------------------------------------
-        // $interval = new DateInterval('PT15M'); // 15min
-        // get number of day 1 - monday
-        // var_dump($date->format('N'));
-        // todo -----------------------------------------------------------------
 
         $busyTime = [];
         foreach ($visits as $visit) {

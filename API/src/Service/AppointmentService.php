@@ -12,10 +12,6 @@ use Exception;
 
 class AppointmentService
 {
-    private const START_TIME = '08:00';
-    private const END_TIME = '19:00';
-    private const INTERVAL = '1H';
-
     public function __construct(
         private readonly AppointmentRepository $appointmentRepository,
         private readonly DoctorRepository $doctorRepository
@@ -31,10 +27,18 @@ class AppointmentService
         if (is_null($doctor) || $doctor->getStatus() === Status::DISABLED)
             throw new NotFoundException("Doctor does not exist or doctor is inactive");
 
-        // todo get doctor startTime, endTime, interval and days
+        $doctorConfig = $doctor->getDoctorConfig();
+        $date = new DateTime($dto->getDate());
+        $day = $date->format('N');
+        if (!in_array($day, $doctorConfig->getWorkdays()))
+            throw new NotFoundException("Doctor does not work on this day");
 
-        return $this->appointmentRepository
-            ->findFreeHours($doctor->getId(),
-                new DateTime($dto->getDate()), self::START_TIME, self::END_TIME, self::INTERVAL);
+        return $this->appointmentRepository->findFreeHours(
+                $doctor->getId(),
+                new DateTime($dto->getDate()),
+                $doctorConfig->getStartTime(),
+                $doctorConfig->getEndTime(),
+                $doctorConfig->getInterval()
+        );
     }
 }

@@ -8,6 +8,7 @@ use App\Dto\Doctor\UpdateDoctorDto;
 use App\Dto\Doctor\UpdateStatusDoctorDto;
 use App\Entity\Doctor\Doctor;
 use App\Entity\Doctor\Status;
+use App\Entity\DoctorConfig;
 use App\Entity\User\Roles;
 use App\Entity\User\User;
 use App\Exception\AlreadyExistException;
@@ -15,6 +16,7 @@ use App\Exception\NotFoundException;
 use App\Repository\DoctorRepository;
 use App\Transformer\Doctor\DoctorResponseDtoTransformer;
 use App\Transformer\Paginator\PaginatorResponseTransformer;
+use DateTime;
 
 class DoctorService
 {
@@ -35,6 +37,12 @@ class DoctorService
                 ->setRoles([Roles::DOCTOR])
                 ->setFirstName($dto->getFirstName())
                 ->setLastName($dto->getLastName())
+            )
+            ->setDoctorConfig((new DoctorConfig())
+                ->setStartTime(new DateTime('08:00'))
+                ->setEndTime(new DateTime('17:00'))
+                ->setInterval('1H')
+                ->setWorkdays([1, 2, 3, 4, 5])
             )
             ->setStatus(Status::ACTIVE);
         $this->doctorRepository->save($doctor, true);

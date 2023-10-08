@@ -28,6 +28,9 @@ class Appointment
     #[ORM\Column]
     private ?bool $isCompleted = null;
 
+    #[ORM\Column]
+    private ?bool $isCanceled = null;
+
     #[ORM\ManyToOne(inversedBy: 'appointments')]
     private ?Patient $patient = null;
 
@@ -80,6 +83,17 @@ class Appointment
     public function setIsCompleted(bool $isCompleted): static
     {
         $this->isCompleted = $isCompleted;
+        return $this;
+    }
+
+    public function isCanceled(): ?bool
+    {
+        return $this->isCanceled;
+    }
+
+    public function setIsCanceled(bool $isCanceled): static
+    {
+        $this->isCanceled = $isCanceled;
         return $this;
     }
 

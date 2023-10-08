@@ -3,6 +3,7 @@
 namespace App\Entity\Doctor;
 
 use App\Entity\Appointment;
+use App\Entity\DoctorConfig;
 use App\Entity\User\User;
 use App\Entity\Disease;
 use App\Entity\Specialization;
@@ -41,6 +42,10 @@ class Doctor
 
     #[ORM\OneToMany(mappedBy: 'doctor', targetEntity: Appointment::class)]
     private Collection $appointments;
+
+    #[ORM\OneToOne(inversedBy: 'doctor', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?DoctorConfig $doctorConfig = null;
 
     public function __construct()
     {
@@ -171,6 +176,21 @@ class Doctor
             if ($appointment->getDoctor() === $this)
                 $appointment->setDoctor(null);
         }
+        return $this;
+    }
+
+    public function getDoctorConfig(): ?DoctorConfig
+    {
+        return $this->doctorConfig;
+    }
+
+    public function setDoctorConfig(DoctorConfig $doctorConfig): static
+    {
+        if ($doctorConfig->getDoctor() !== $this) {
+            $doctorConfig->setDoctor($this);
+        }
+
+        $this->doctorConfig = $doctorConfig;
         return $this;
     }
 }
