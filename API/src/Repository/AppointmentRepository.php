@@ -24,6 +24,20 @@ class AppointmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Appointment::class);
     }
 
+    public function save(Appointment $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+        if ($flush)
+            $this->getEntityManager()->flush();
+    }
+
+    public function remove(Appointment $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+        if ($flush)
+            $this->getEntityManager()->flush();
+    }
+
     /**
      * @throws Exception
      */
@@ -61,5 +75,21 @@ class AppointmentRepository extends ServiceEntityRepository
             $startDateTime->add($interval);
         }
         return $freeTimeSegments;
+    }
+
+    public function isAppointmentExist(DateTime $date, DateTime $startTime, int $doctorId): bool
+    {
+        $visit = $this->createQueryBuilder('appointment')
+            ->join('appointment.doctor', 'doctor')
+            ->where('doctor.id = :doctorId')
+            ->andWhere('appointment.date = :date')
+            ->andWhere('appointment.startTime = :startTime')
+            ->andWhere('appointment.isCanceled = false')
+            ->setParameter('doctorId', $doctorId)
+            ->setParameter('date', $date)
+            ->setParameter('startTime', $startTime)
+            ->getQuery()
+            ->getResult();
+        return (count($visit) > 0);
     }
 }

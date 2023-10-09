@@ -25,6 +25,12 @@ class RequestAppointmentDto
     )]
     private string $date;
 
+    #[Assert\Regex(
+        pattern: '/^(?:0[7-9]|1[0-6]):(?:00|15|30|45)$/',
+        message: 'incorrect time format (07:00|15|30|45 to 16:00|15|30|45)'
+    )]
+    private ?string $startTime;
+
     public function getDoctorId(): mixed
     {
         return $this->doctorId;
@@ -43,5 +49,15 @@ class RequestAppointmentDto
     public function setDate(string $date): void
     {
         $this->date = $date;
+    }
+
+    public function getStartTime(): ?string
+    {
+        return $this->startTime;
+    }
+
+    public function setStartTime(?string $startTime): void
+    {
+        $this->startTime = $startTime;
     }
 }

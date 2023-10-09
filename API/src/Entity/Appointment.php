@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Doctor\Doctor;
 use App\Repository\AppointmentRepository;
-use DateTimeInterface;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -17,13 +17,13 @@ class Appointment
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?DateTimeInterface $date = null;
+    private ?DateTime $date = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?DateTimeInterface $startTime = null;
+    private ?DateTime $startTime = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?DateTimeInterface $endTime = null;
+    private ?DateTime $endTime = null;
 
     #[ORM\Column]
     private ?bool $isCompleted = null;
@@ -42,34 +42,34 @@ class Appointment
         return $this->id;
     }
 
-    public function getDate(): ?DateTimeInterface
+    public function getDate(): ?DateTime
     {
         return $this->date;
     }
 
-    public function setDate(DateTimeInterface $date): static
+    public function setDate(DateTime $date): static
     {
         $this->date = $date;
         return $this;
     }
 
-    public function getStartTime(): ?DateTimeInterface
+    public function getStartTime(): ?DateTime
     {
         return $this->startTime;
     }
 
-    public function setStartTime(DateTimeInterface $startTime): static
+    public function setStartTime(DateTime $startTime): static
     {
         $this->startTime = $startTime;
         return $this;
     }
 
-    public function getEndTime(): ?DateTimeInterface
+    public function getEndTime(): ?DateTime
     {
         return $this->endTime;
     }
 
-    public function setEndTime(DateTimeInterface $endTime): static
+    public function setEndTime(DateTime $endTime): static
     {
         $this->endTime = $endTime;
         return $this;
