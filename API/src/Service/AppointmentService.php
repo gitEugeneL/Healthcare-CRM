@@ -3,10 +3,12 @@
 namespace App\Service;
 
 use App\Dto\Appointment\RequestAppointmentDto;
+use App\Dto\Appointment\ResponseAppointmentDto;
 use App\Entity\Appointment;
 use App\Entity\Doctor\Doctor;
 use App\Entity\Doctor\Status;
 use App\Exception\NotFoundException;
+use App\Exception\ValidationException;
 use App\Repository\AppointmentRepository;
 use App\Repository\DoctorRepository;
 use App\Repository\PatientRepository;
@@ -78,6 +80,12 @@ class AppointmentService
         return $endTime;
     }
 
+    private function checkDatePattern(string $dateString): bool
+    {
+        $pattern = '/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/';
+        return preg_match($pattern, $dateString);
+    }
+
     /**
      * @throws NotFoundException
      * @throws Exception
@@ -98,7 +106,7 @@ class AppointmentService
      * @throws NotFoundException
      * @throws Exception
      */
-    public function create(RequestAppointmentDto $dto, string $userIdentifier)
+    public function create(RequestAppointmentDto $dto, string $userIdentifier): ResponseAppointmentDto
     {
         $doctor = $this->findDoctor($dto->getDoctorId());
         $doctorConfig = $doctor->getDoctorConfig();
@@ -130,5 +138,32 @@ class AppointmentService
 
         $this->appointmentRepository->save($appointment, true);
         return $this->appointmentResponseDtoTransformer->transformFromObject($appointment);
+    }
+
+    /**
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function showForManager(string $dateString): iterable
+    {
+        if (!$this->checkDatePattern($dateString))
+            throw new ValidationException('date must be Y-m-d');
+
+        $appointments = $this->appointmentRepository->findByDate(new DateTime($dateString));
+        return $this->appointmentResponseDtoTransformer->transformFromObjects($appointments);
+    }
+
+    /**
+     * @throws ValidationException
+     * @throws Exception
+     */
+    public function showForDoctor(string $userIdentifier, string $dateString, string $userType): iterable
+    {
+        if (!$this->checkDatePattern($dateString))
+            throw new ValidationException('date must be Y-m-d');
+
+        $appointments = $this->appointmentRepository
+            ->findByDateForUserEmail(new DateTime($dateString), $userIdentifier, 'doctor');
+        return $this->appointmentResponseDtoTransformer->transformFromObjects($appointments);
     }
 }

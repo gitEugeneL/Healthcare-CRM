@@ -53,4 +53,45 @@ class AppointmentController extends AbstractController
         $result = $this->appointmentService->create($dto, $userIdentifier);
         return $this->json($result, 201);
     }
+
+    /**
+     * @throws ValidationException
+     */
+    #[IsGranted(Roles::MANAGER)]
+    #[Route('/show-for-manager', methods: ['GET'])]
+    public function showForManager(Request $request): JsonResponse
+    {
+        $dateString = $request->query->getString('date'); // ?date=2030-12-31
+        $result = $this->appointmentService->showForManager($dateString);
+        return $this->json($result, 200);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    #[IsGranted(Roles::DOCTOR)]
+    #[Route('/show-for-doctor', methods: ['GET'])]
+    public function showForDoctor(TokenStorageInterface $tokenStorage, Request $request): JsonResponse
+    {
+        $dateString = $request->query->getString('date'); // ?date=2030-12-31
+        $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
+        $result = $this->appointmentService->showForDoctor($userIdentifier, $dateString, 'doctor');
+        return $this->json($result, 200);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    #[IsGranted(Roles::PATIENT)]
+    #[Route('/show-for-patient', methods: ['GET'])]
+    public function showForPatient(TokenStorageInterface $tokenStorage, Request $request): JsonResponse
+    {
+        $dateString = $request->query->getString('date'); // ?date=2030-12-31
+        $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
+        $result = $this->appointmentService->showForDoctor($userIdentifier, $dateString, 'patient');
+        return $this->json($result, 200);
+    }
+
+    // todo cancel visit
+    // todo update visit
 }

@@ -92,4 +92,24 @@ class AppointmentRepository extends ServiceEntityRepository
             ->getResult();
         return (count($visit) > 0);
     }
+
+    public function findByDate(DateTime $date): array
+    {
+        return $this->findBy(['date' => $date]);
+    }
+
+    public function findByDateForUserEmail(DateTime $date, string $email, string $userType = null): array
+    {
+        if ($userType !== 'patient'&& $userType  !== 'doctor')
+            return [];
+        return $this->createQueryBuilder('appointment')
+            ->join("appointment.{$userType}", 'u')
+            ->join('u.user', 'user')
+            ->where('appointment.date = :date')
+            ->andWhere('user.email = :email')
+            ->setParameter('date', $date)
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getResult();
+    }
 }
