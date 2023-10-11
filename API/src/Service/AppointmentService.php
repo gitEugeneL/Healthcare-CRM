@@ -7,6 +7,7 @@ use App\Dto\Appointment\ResponseAppointmentDto;
 use App\Entity\Appointment;
 use App\Entity\Doctor\Doctor;
 use App\Entity\Doctor\Status;
+use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
 use App\Repository\AppointmentRepository;
@@ -144,26 +145,39 @@ class AppointmentService
      * @throws ValidationException
      * @throws Exception
      */
-    public function showForManager(string $dateString): iterable
-    {
-        if (!$this->checkDatePattern($dateString))
-            throw new ValidationException('date must be Y-m-d');
-
-        $appointments = $this->appointmentRepository->findByDate(new DateTime($dateString));
-        return $this->appointmentResponseDtoTransformer->transformFromObjects($appointments);
-    }
-
-    /**
-     * @throws ValidationException
-     * @throws Exception
-     */
-    public function showForDoctor(string $userIdentifier, string $dateString, string $userType): iterable
+    public function showForUser(?string $userIdentifier, string $dateString, string $userType): iterable
     {
         if (!$this->checkDatePattern($dateString))
             throw new ValidationException('date must be Y-m-d');
 
         $appointments = $this->appointmentRepository
-            ->findByDateForUserEmail(new DateTime($dateString), $userIdentifier, 'doctor');
+            ->findByDateForUser(new DateTime($dateString), $userIdentifier, $userType);
         return $this->appointmentResponseDtoTransformer->transformFromObjects($appointments);
+    }
+
+    /**
+     * @throws NotFoundException
+     * @throws AlreadyExistException
+     */
+    public function update(int $appointmentId, string $userIdentifier, string $action): ResponseAppointmentDto
+    {
+        if ($appointmentId <= 0)
+            throw new NotFoundException("The appointment doesn't exist");
+
+        $appointment = $this->appointmentRepository->findOneById($appointmentId);
+        if (is_null($appointment) || $appointment->getDoctor()->getUser()->getEmail() !== $userIdentifier)
+            throw new NotFoundException("The appointment doesn't exist or the doctor doesn't have access");
+
+        if ($action === 'finalize') {
+            if ($appointment->isCompleted())
+                throw new AlreadyExistException('The appointment is already over');
+            $appointment->setIsCompleted(true);
+        } elseif ($action === 'cancel') {
+            if ($appointment->isCanceled())
+                throw new AlreadyExistException('The appointment is already canceled');
+            $appointment->setIsCanceled(true);
+        }
+        $this->appointmentRepository->save($appointment, true);
+        return $this->appointmentResponseDtoTransformer->transformFromObject($appointment);
     }
 }

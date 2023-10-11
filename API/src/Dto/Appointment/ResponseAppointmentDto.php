@@ -7,11 +7,25 @@ use App\Dto\Patient\ResponsePatientDto;
 
 class ResponseAppointmentDto
 {
+    private int $id;
     private string $date;
     private string $start;
     private string $end;
     private ResponsePatientDto $patient;
     private ResponseDoctorDto $doctor;
+    private bool $isCompleted;
+    private bool $isCanceled;
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+        return $this;
+    }
 
     public function getDate(): string
     {
@@ -65,6 +79,28 @@ class ResponseAppointmentDto
     public function setDoctor(ResponseDoctorDto $doctor): static
     {
         $this->doctor = $doctor;
+        return $this;
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->isCompleted;
+    }
+
+    public function setIsCompleted(bool $isCompleted): static
+    {
+        $this->isCompleted = $isCompleted;
+        return $this;
+    }
+
+    public function isCanceled(): bool
+    {
+        return $this->isCanceled;
+    }
+
+    public function setIsCanceled(bool $isCanceled): static
+    {
+        $this->isCanceled = $isCanceled;
         return $this;
     }
 }

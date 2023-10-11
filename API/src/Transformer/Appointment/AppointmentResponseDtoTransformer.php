@@ -18,9 +18,12 @@ class AppointmentResponseDtoTransformer extends AbstractResponseDtoTransformer
         $doctorUser = $doctor->getUser();
 
         return (new ResponseAppointmentDto())
+            ->setId($appointment->getId())
             ->setDate(($appointment->getDate())->format('Y-m-d'))
             ->setStart(($appointment->getStartTime())->format('H:i'))
             ->setEnd(($appointment->getEndTime())->format('H:i'))
+            ->setIsCompleted($appointment->isCompleted())
+            ->setIsCanceled($appointment->isCanceled())
             ->setPatient((new ResponsePatientDto())
                 ->setId($patient->getId())
                 ->setFirstName($patientUser->getFirstName())

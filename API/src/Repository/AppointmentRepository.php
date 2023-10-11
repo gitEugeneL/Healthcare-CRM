@@ -93,15 +93,18 @@ class AppointmentRepository extends ServiceEntityRepository
         return (count($visit) > 0);
     }
 
-    public function findByDate(DateTime $date): array
+    public function findOneById(int $appointmentId): Appointment|null
     {
-        return $this->findBy(['date' => $date]);
+        return $this->findOneBy(['id' => $appointmentId]);
     }
 
-    public function findByDateForUserEmail(DateTime $date, string $email, string $userType = null): array
+    public function findByDateForUser(DateTime $date, string $email, string $userType = null): array
     {
-        if ($userType !== 'patient'&& $userType  !== 'doctor')
+        if ($userType !== 'patient'&& $userType  !== 'doctor' && $userType !== 'manager')
             return [];
+        elseif ($userType === 'manager')
+            return $this->findBy(['date' => $date]);
+
         return $this->createQueryBuilder('appointment')
             ->join("appointment.{$userType}", 'u')
             ->join('u.user', 'user')

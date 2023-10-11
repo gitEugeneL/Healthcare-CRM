@@ -9,6 +9,7 @@ use App\Exception\ValidationException;
 use App\Service\AppointmentService;
 use App\Utils\DtoInspector;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,6 +25,25 @@ class AppointmentController extends AbstractController
         private readonly DtoInspector $dtoInspector,
         private readonly AppointmentService $appointmentService
     ) {}
+
+    /**
+     * @throws ValidationException
+     */
+    private function showForUser(TokenStorageInterface $tokenStorage, Request $request, string $action): JsonResponse
+    {
+        $dateString = $request->query->getString('date'); // ?date=2030-12-31
+        $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
+        $result = $this->appointmentService->showForUser($userIdentifier, $dateString, $action);
+        return $this->json($result, 200);
+    }
+
+    private function update(TokenStorageInterface $tokenStorage, Request $request, string $action): JsonResponse
+    {
+        $appointmentId = (int) $request->get('appointmentId');
+        $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
+        $result = $this->appointmentService->update($appointmentId, $userIdentifier, $action);
+        return $this->json($result, 200);
+    }
 
     /**
      * @throws ValidationException
@@ -59,11 +79,9 @@ class AppointmentController extends AbstractController
      */
     #[IsGranted(Roles::MANAGER)]
     #[Route('/show-for-manager', methods: ['GET'])]
-    public function showForManager(Request $request): JsonResponse
+    public function showForManager(TokenStorageInterface $tokenStorage, Request $request): JsonResponse
     {
-        $dateString = $request->query->getString('date'); // ?date=2030-12-31
-        $result = $this->appointmentService->showForManager($dateString);
-        return $this->json($result, 200);
+        return $this->showForUser($tokenStorage, $request, 'manager');
     }
 
     /**
@@ -73,10 +91,7 @@ class AppointmentController extends AbstractController
     #[Route('/show-for-doctor', methods: ['GET'])]
     public function showForDoctor(TokenStorageInterface $tokenStorage, Request $request): JsonResponse
     {
-        $dateString = $request->query->getString('date'); // ?date=2030-12-31
-        $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
-        $result = $this->appointmentService->showForDoctor($userIdentifier, $dateString, 'doctor');
-        return $this->json($result, 200);
+        return $this->showForUser($tokenStorage, $request, 'doctor');
     }
 
     /**
@@ -86,12 +101,20 @@ class AppointmentController extends AbstractController
     #[Route('/show-for-patient', methods: ['GET'])]
     public function showForPatient(TokenStorageInterface $tokenStorage, Request $request): JsonResponse
     {
-        $dateString = $request->query->getString('date'); // ?date=2030-12-31
-        $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
-        $result = $this->appointmentService->showForDoctor($userIdentifier, $dateString, 'patient');
-        return $this->json($result, 200);
+        return $this->showForUser($tokenStorage, $request, 'patient');
     }
 
-    // todo cancel visit
-    // todo update visit
+    #[IsGranted(Roles::DOCTOR)]
+    #[Route('/{appointmentId}/finalize', methods: ['PATCH'])]
+    public function finalize(TokenStorageInterface $tokenStorage, Request $request): JsonResponse
+    {
+        return $this->update($tokenStorage, $request, 'finalize');
+    }
+
+    #[IsGranted(new Expression('is_granted("'.Roles::DOCTOR.'") or is_granted("'.Roles::MANAGER.'")'))]
+    #[Route('/{appointmentId}/cancel', methods: ['PATCH'])]
+    public function cancel(TokenStorageInterface $tokenStorage, Request $request): JsonResponse
+    {
+        return $this->update($tokenStorage, $request, 'cancel');
+    }
 }
