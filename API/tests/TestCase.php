@@ -102,34 +102,39 @@ abstract class TestCase extends WebTestCase
         return json_decode($response->getContent(), true)['token'];
     }
 
-    protected function createAndLoginManager(): string
+    protected function decodeResponse(Response $response): array
     {
-        $adminAccessToken = $this->login($this->admin['username'], $this->admin['password']);
-        $this->post(
-            uri: '/api/manager/create',
-            accessToken: $adminAccessToken,
-            data: $this->manager,
-        );
-        return $this->login($this->manager['email'], $this->manager['password']);
+        return json_decode($response->getContent(), true);
     }
 
-    protected function createAndLoginDoctor(): string
+    protected function createManager(): Response
     {
-        $managerAccessToken = $this->createAndLoginManager();
-        $this->post(
+        $adminAccessToken = $this->login($this->admin['username'], $this->admin['password']);
+
+        return $this->post(
+            uri: '/api/manager/create',
+            accessToken: $adminAccessToken,
+            data: $this->manager
+        );
+    }
+
+    protected function createDoctor(): Response
+    {
+        $this->createManager();
+        $managerAccessToken = $this->login($this->manager['email'], $this->manager['password']);
+
+        return $this->post(
             uri: '/api/doctor/create',
             accessToken: $managerAccessToken,
             data: $this->doctor
         );
-        return $this->login($this->doctor['email'], $this->doctor['password']);
     }
 
-    protected function createAndLoginPatient(): string
+    protected function createPatient(): Response
     {
-        $this->post(
+        return $this->post(
             uri: '/api/patient/create',
             data: $this->patient
         );
-        return $this->login($this->patient['email'], $this->patient['password']);
     }
 }

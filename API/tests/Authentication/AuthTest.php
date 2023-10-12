@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Authentication;
 
+use App\Tests\TestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 
