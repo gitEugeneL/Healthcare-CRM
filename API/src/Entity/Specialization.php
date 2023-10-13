@@ -26,9 +26,13 @@ class Specialization
     #[ORM\ManyToMany(targetEntity: Doctor::class, mappedBy: 'specializations')]
     private Collection $doctors;
 
+    #[ORM\OneToMany(mappedBy: 'specialization', targetEntity: MedicalRecord::class)]
+    private Collection $medicalRecords;
+
     public function __construct()
     {
         $this->doctors = new ArrayCollection();
+        $this->medicalRecords = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -80,6 +84,36 @@ class Specialization
         if ($this->doctors->removeElement($doctor)) {
             $doctor->removeSpecialization($this);
         }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MedicalRecord>
+     */
+    public function getMedicalRecords(): Collection
+    {
+        return $this->medicalRecords;
+    }
+
+    public function addMedicalRecord(MedicalRecord $medicalRecord): static
+    {
+        if (!$this->medicalRecords->contains($medicalRecord)) {
+            $this->medicalRecords->add($medicalRecord);
+            $medicalRecord->setSpecialization($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedicalRecord(MedicalRecord $medicalRecord): static
+    {
+        if ($this->medicalRecords->removeElement($medicalRecord)) {
+            // set the owning side to null (unless already changed)
+            if ($medicalRecord->getSpecialization() === $this) {
+                $medicalRecord->setSpecialization(null);
+            }
+        }
+
         return $this;
     }
 }

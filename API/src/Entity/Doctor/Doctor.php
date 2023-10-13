@@ -4,6 +4,7 @@ namespace App\Entity\Doctor;
 
 use App\Entity\Appointment;
 use App\Entity\DoctorConfig;
+use App\Entity\MedicalRecord;
 use App\Entity\User\User;
 use App\Entity\Disease;
 use App\Entity\Specialization;
@@ -47,11 +48,15 @@ class Doctor
     #[ORM\JoinColumn(nullable: false)]
     private ?DoctorConfig $doctorConfig = null;
 
+    #[ORM\OneToMany(mappedBy: 'doctor', targetEntity: MedicalRecord::class)]
+    private Collection $medicalRecords;
+
     public function __construct()
     {
         $this->specializations = new ArrayCollection();
         $this->diseases = new ArrayCollection();
         $this->appointments = new ArrayCollection();
+        $this->medicalRecords = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -191,6 +196,36 @@ class Doctor
         }
 
         $this->doctorConfig = $doctorConfig;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MedicalRecord>
+     */
+    public function getMedicalRecords(): Collection
+    {
+        return $this->medicalRecords;
+    }
+
+    public function addMedicalRecord(MedicalRecord $medicalRecord): static
+    {
+        if (!$this->medicalRecords->contains($medicalRecord)) {
+            $this->medicalRecords->add($medicalRecord);
+            $medicalRecord->setDoctor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedicalRecord(MedicalRecord $medicalRecord): static
+    {
+        if ($this->medicalRecords->removeElement($medicalRecord)) {
+            // set the owning side to null (unless already changed)
+            if ($medicalRecord->getDoctor() === $this) {
+                $medicalRecord->setDoctor(null);
+            }
+        }
+
         return $this;
     }
 }

@@ -37,6 +37,9 @@ class Appointment
     #[ORM\ManyToOne(inversedBy: 'appointments')]
     private ?Doctor $doctor = null;
 
+    #[ORM\OneToOne(inversedBy: 'medicalRecord')]
+    private ?MedicalRecord $medicalRecord;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -116,6 +119,17 @@ class Appointment
     public function setDoctor(?Doctor $doctor): static
     {
         $this->doctor = $doctor;
+        return $this;
+    }
+
+    public function getMedicalRecord(): ?MedicalRecord
+    {
+        return $this->medicalRecord;
+    }
+
+    public function setMedicalRecord(?MedicalRecord $medicalRecord): static
+    {
+        $this->medicalRecord = $medicalRecord;
         return $this;
     }
 }

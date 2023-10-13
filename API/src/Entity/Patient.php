@@ -38,9 +38,13 @@ class Patient
     #[ORM\OneToMany(mappedBy: 'patient', targetEntity: Appointment::class)]
     private Collection $appointments;
 
+    #[ORM\OneToMany(mappedBy: 'patient', targetEntity: MedicalRecord::class)]
+    private Collection $medicalRecords;
+
     public function __construct()
     {
         $this->appointments = new ArrayCollection();
+        $this->medicalRecords = new ArrayCollection();
     }
 
 
@@ -127,6 +131,36 @@ class Patient
             if ($appointment->getPatient() === $this)
                 $appointment->setPatient(null);
         }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MedicalRecord>
+     */
+    public function getMedicalRecords(): Collection
+    {
+        return $this->medicalRecords;
+    }
+
+    public function addMedicalRecord(MedicalRecord $medicalRecord): static
+    {
+        if (!$this->medicalRecords->contains($medicalRecord)) {
+            $this->medicalRecords->add($medicalRecord);
+            $medicalRecord->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedicalRecord(MedicalRecord $medicalRecord): static
+    {
+        if ($this->medicalRecords->removeElement($medicalRecord)) {
+            // set the owning side to null (unless already changed)
+            if ($medicalRecord->getPatient() === $this) {
+                $medicalRecord->setPatient(null);
+            }
+        }
+
         return $this;
     }
 }
