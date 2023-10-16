@@ -21,28 +21,28 @@ class MedicalRecordRepository extends ServiceEntityRepository
         parent::__construct($registry, MedicalRecord::class);
     }
 
-//    /**
-//     * @return MedicalRecord[] Returns an array of MedicalRecord objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function save(MedicalRecord $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+        if ($flush)
+            $this->getEntityManager()->flush();
+    }
 
-//    public function findOneBySomeField($value): ?MedicalRecord
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function remove(MedicalRecord $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+        if ($flush)
+            $this->getEntityManager()->flush();
+    }
+
+    public function doesAppointmentExist(int $appointmentId): bool
+    {
+        return !is_null($this->createQueryBuilder('medicalRecord')
+            ->join('medicalRecord.appointment', 'appointment')
+            ->where('appointment.id = :id')
+            ->setParameter('id', $appointmentId)
+            ->getQuery()
+            ->getOneOrNullResult()
+        );
+    }
 }

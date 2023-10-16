@@ -39,4 +39,9 @@ class SpecializationRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['name' => $name]);
     }
+
+    public function findOneById(int $id): Specialization|null
+    {
+        return $this->findOneBy(['id' => $id]);
+    }
 }

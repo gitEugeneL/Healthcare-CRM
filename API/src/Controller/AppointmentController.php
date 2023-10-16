@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Dto\Appointment\RequestAppointmentDto;
 use App\Entity\User\Roles;
+use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
 use App\Service\AppointmentService;
@@ -37,6 +38,10 @@ class AppointmentController extends AbstractController
         return $this->json($result, 200);
     }
 
+    /**
+     * @throws AlreadyExistException
+     * @throws NotFoundException
+     */
     private function update(TokenStorageInterface $tokenStorage, Request $request, string $action): JsonResponse
     {
         $appointmentId = (int) $request->get('appointmentId');
@@ -104,6 +109,10 @@ class AppointmentController extends AbstractController
         return $this->showForUser($tokenStorage, $request, 'patient');
     }
 
+    /**
+     * @throws AlreadyExistException
+     * @throws NotFoundException
+     */
     #[IsGranted(Roles::DOCTOR)]
     #[Route('/{appointmentId}/finalize', methods: ['PATCH'])]
     public function finalize(TokenStorageInterface $tokenStorage, Request $request): JsonResponse
@@ -111,6 +120,10 @@ class AppointmentController extends AbstractController
         return $this->update($tokenStorage, $request, 'finalize');
     }
 
+    /**
+     * @throws AlreadyExistException
+     * @throws NotFoundException
+     */
     #[IsGranted(new Expression('is_granted("'.Roles::DOCTOR.'") or is_granted("'.Roles::MANAGER.'")'))]
     #[Route('/{appointmentId}/cancel', methods: ['PATCH'])]
     public function cancel(TokenStorageInterface $tokenStorage, Request $request): JsonResponse

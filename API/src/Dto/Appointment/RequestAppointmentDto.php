@@ -12,7 +12,7 @@ class RequestAppointmentDto
     #[Assert\NotNull]
     #[Assert\Regex(
         pattern: '/^[1-9]\d*$/',
-        message: 'doctorID  must be an integer and greater than 0'
+        message: 'doctorID must be an integer and greater than 0'
     )]
     private mixed $doctorId;
 
