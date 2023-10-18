@@ -45,4 +45,30 @@ class MedicalRecordRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         );
     }
+
+    public function findByPatientIdWithPagination(int $patientId, int $page, int $limit): array
+    {
+        $qb = $this->createQueryBuilder('mr');
+
+        $qb->join('mr.patient', 'p')
+            ->where('p.id = :patientId')
+            ->setParameter('patientId', $patientId)
+            ->getQuery()
+            ->getResult();
+
+        $total = $qb->select('COUNT(mr.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $medicalRecords = $qb->select('mr')
+            ->setMaxResults($limit)
+            ->setFirstResult(($page - 1) * $limit)
+            ->getQuery()
+            ->getResult();
+
+        return [
+            'medicalRecords' => $medicalRecords,
+            'totalPages' => ceil($total / $limit)
+        ];
+    }
 }

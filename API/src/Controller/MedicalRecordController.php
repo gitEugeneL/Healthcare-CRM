@@ -41,4 +41,23 @@ class MedicalRecordController extends AbstractController
         $result = $this->medicalRecordService->create($doctorIdentifier, $dto);
         return $this->json($result, 201);
     }
+
+    /**
+     * @throws NotFoundException
+     */
+    #[IsGranted(Roles::PATIENT)]
+    #[Route('/show-for-patient', methods: ['GET'])]
+    public function showForPatient(TokenStorageInterface $tokenStorage, Request $request): JsonResponse
+    {
+        $page = $request->query->getInt('page', 1); // ?page=1
+        $patientIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
+        $result = $this->medicalRecordService->showForPatient($patientIdentifier, $page);
+        return $this->json($result, 200);
+    }
+
+    // todo show for doctor
+
+    // todo show one (for patient, for doctor)
+
+    // todo  update medicalRecord (doctor)
 }

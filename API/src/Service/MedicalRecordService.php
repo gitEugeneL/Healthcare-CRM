@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Dto\MedicalRecord\RequestMedicalRecordDto;
 use App\Dto\MedicalRecord\ResponseMedicalRecordDto;
 use App\Entity\MedicalRecord;
+use App\Entity\Patient;
 use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
 use App\Repository\AppointmentRepository;
@@ -13,17 +14,32 @@ use App\Repository\MedicalRecordRepository;
 use App\Repository\PatientRepository;
 use App\Repository\SpecializationRepository;
 use App\Transformer\MedicalRecord\MedicalRecordResponseDtoTransformer;
+use App\Transformer\Paginator\PaginatorResponseTransformer;
 
 class MedicalRecordService
 {
+    const ITEM_PER_PAGE = 10;
+
     public function __construct(
         private readonly MedicalRecordRepository $medicalRecordRepository,
         private readonly DoctorRepository $doctorRepository,
         private readonly PatientRepository $patientRepository,
         private readonly AppointmentRepository $appointmentRepository,
         private readonly SpecializationRepository $specializationRepository,
-        private readonly MedicalRecordResponseDtoTransformer $medicalRecordResponseDtoTransformer
+        private readonly MedicalRecordResponseDtoTransformer $medicalRecordResponseDtoTransformer,
+        private readonly PaginatorResponseTransformer $paginatorResponseTransformer
     ) {}
+
+    /**
+     * @throws NotFoundException
+     */
+    private function findPatient($email): Patient
+    {
+        $patient = $this->patientRepository->findOneByEmail($email);
+        if (is_null($patient))
+            throw new NotFoundException('Patient does not exist');
+        return $patient;
+    }
 
     /**
      * @throws NotFoundException
@@ -36,10 +52,8 @@ class MedicalRecordService
         if (is_null($doctor))
             throw new NotFoundException('Doctor does not exist');
 
-        // find out if the patient exists
-        $patient = $this->patientRepository->findOneById($dto->getPatientId());
-        if (is_null($patient))
-            throw new NotFoundException('Patient does not exist');
+        // find patient or throw
+        $patient = $this->findPatient($dto->getPatientEmail());
 
         // find out if the appointment exists and check medical record
         $appointment = $this->appointmentRepository->findOneById($dto->getAppointmentId());
@@ -68,5 +82,22 @@ class MedicalRecordService
 
         $this->medicalRecordRepository->save($record, true);
         return $this->medicalRecordResponseDtoTransformer->transformFromObject($record);
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    public function showForPatient(string $patientIdentifier, int $page): array
+    {
+        $patient = $this->findPatient($patientIdentifier);
+
+        $result = $this->medicalRecordRepository
+            ->findByPatientIdWithPagination($patient->getId(), $page, self::ITEM_PER_PAGE);
+        $totalPages = $result['totalPages'];
+        $medicalRecords = $result['medicalRecords'];
+
+        return $this->paginatorResponseTransformer
+            ->transformToArray($this->medicalRecordResponseDtoTransformer
+                ->transformFromObjects($medicalRecords), $page, $totalPages);
     }
 }

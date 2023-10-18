@@ -21,11 +21,8 @@ class RequestMedicalRecordDto
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Regex(
-        pattern: '/^[1-9]\d*$/',
-        message: 'patientID must be an integer and greater than 0'
-    )]
-    private  mixed $patientId;
+    #[Assert\Email]
+    private  string $patientEmail;
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
@@ -73,14 +70,14 @@ class RequestMedicalRecordDto
         $this->doctorNote = trim($doctorNote);
     }
 
-    public function getPatientId(): mixed
+    public function getPatientEmail(): string
     {
-        return $this->patientId;
+        return $this->patientEmail;
     }
 
-    public function setPatientId(mixed $patientId): void
+    public function setPatientEmail(string $patientEmail): void
     {
-        $this->patientId = $patientId;
+        $this->patientEmail = $patientEmail;
     }
 
     public function getSpecializationId(): mixed
