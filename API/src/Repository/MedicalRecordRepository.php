@@ -46,13 +46,16 @@ class MedicalRecordRepository extends ServiceEntityRepository
         );
     }
 
-    public function findByPatientIdWithPagination(int $patientId, int $page, int $limit): array
+    public function findByPatientIdOrDoctorIdWithPagination(int $id, int $page, int $limit, string $userType = null): array
     {
+        if ($userType !== 'patient' && $userType  !== 'doctor')
+            return [];
+
         $qb = $this->createQueryBuilder('mr');
 
-        $qb->join('mr.patient', 'p')
-            ->where('p.id = :patientId')
-            ->setParameter('patientId', $patientId)
+        $qb->join("mr.{$userType}", 'u')
+            ->where('u.id = :id')
+            ->setParameter('id', $id)
             ->getQuery()
             ->getResult();
 
