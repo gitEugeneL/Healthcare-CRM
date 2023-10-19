@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Dto\Appointment\RequestAppointmentDto;
 use App\Entity\User\Roles;
 use App\Exception\AlreadyExistException;
+use App\Exception\NoAccessException;
 use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
 use App\Service\AppointmentService;
@@ -39,6 +40,7 @@ class AppointmentController extends AbstractController
     }
 
     /**
+     * @throws NoAccessException
      * @throws AlreadyExistException
      * @throws NotFoundException
      */
@@ -111,6 +113,7 @@ class AppointmentController extends AbstractController
 
     /**
      * @throws AlreadyExistException
+     * @throws NoAccessException
      * @throws NotFoundException
      */
     #[IsGranted(Roles::DOCTOR)]
@@ -121,6 +124,7 @@ class AppointmentController extends AbstractController
     }
 
     /**
+     * @throws NoAccessException
      * @throws AlreadyExistException
      * @throws NotFoundException
      */

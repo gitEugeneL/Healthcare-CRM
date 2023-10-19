@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Appointment;
+use App\Exception\NotFoundException;
 use DateInterval;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -77,7 +78,8 @@ class AppointmentRepository extends ServiceEntityRepository
         return $freeTimeSegments;
     }
 
-    public function isAppointmentExist(DateTime $date, DateTime $startTime, int $doctorId): bool
+
+    public function doesAppointmentExist(DateTime $date, DateTime $startTime, int $doctorId): bool
     {
         $visit = $this->createQueryBuilder('appointment')
             ->join('appointment.doctor', 'doctor')
@@ -93,9 +95,15 @@ class AppointmentRepository extends ServiceEntityRepository
         return (count($visit) > 0);
     }
 
-    public function findOneById(int $appointmentId): Appointment|null
+    /**
+     * @throws NotFoundException
+     */
+    public function findOneByIdOrThrow(int $appointmentId): Appointment
     {
-        return $this->findOneBy(['id' => $appointmentId]);
+        $appointment = $this->findOneBy(['id' => $appointmentId]);
+        if (is_null($appointment))
+            throw new NotFoundException("Appointment id: {$appointmentId} doesn't exist");
+        return $appointment;
     }
 
     public function findByDateForUser(DateTime $date, string $email, string $userType = null): array

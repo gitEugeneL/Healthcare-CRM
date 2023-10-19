@@ -8,6 +8,7 @@ use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
 use App\Service\AddressService;
 use App\Utils\DtoInspector;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +28,7 @@ class AddressController extends AbstractController
 
     /**
      * @throws ValidationException
+     * @throws NonUniqueResultException
      * @throws NotFoundException
      */
     #[IsGranted(Roles::PATIENT)]

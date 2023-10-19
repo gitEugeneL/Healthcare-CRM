@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Specialization;
+use App\Exception\NotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -35,13 +36,30 @@ class SpecializationRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
     }
 
-    public function findOneByName(string $name): Specialization|null
+    public function doesSpecializationExistByName(string $name): bool
     {
-        return $this->findOneBy(['name' => $name]);
+        return !is_null($this->findOneBy(['name' => $name]));
     }
 
-    public function findOneById(int $id): Specialization|null
+    /**
+     * @throws NotFoundException
+     */
+    public function findOneByNameOrThrow(string $name): Specialization
     {
-        return $this->findOneBy(['id' => $id]);
+        $specialization = $this->findOneBy(['name' => $name]);
+        if (is_null($specialization))
+            throw new NotFoundException("Specialization: {$name} doesn't exist");
+        return $specialization;
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    public function findOneByIdOrThrow(int $id): Specialization
+    {
+        $specialization = $this->findOneBy(['id' => $id]);
+        if (is_null($specialization))
+            throw new NotFoundException("Specialization id: {$id} doesn't exist");
+        return $specialization;
     }
 }

@@ -8,6 +8,7 @@ use App\Entity\Appointment;
 use App\Entity\Doctor\Doctor;
 use App\Entity\Doctor\Status;
 use App\Exception\AlreadyExistException;
+use App\Exception\NoAccessException;
 use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
 use App\Repository\AppointmentRepository;
@@ -31,9 +32,9 @@ class AppointmentService
      */
     private function findDoctor(int $doctorId): Doctor
     {
-        $doctor = $this->doctorRepository->findOneById($doctorId);
-        if (is_null($doctor) || $doctor->getStatus() === Status::DISABLED)
-            throw new NotFoundException("Doctor does not exist or doctor is inactive");
+        $doctor = $this->doctorRepository->findOneByIdOrThrow($doctorId);
+        if ($doctor->getStatus() === Status::DISABLED)
+            throw new NotFoundException("Doctor is inactive");
         return $doctor;
     }
 
@@ -124,9 +125,7 @@ class AppointmentService
         if (!$this->isDoctorAvailableOnDay($date, $startTime, $doctor))
             throw new NotFoundException('Doctor is not available at this time');
 
-        $patient = $this->patientRepository->findOneByEmail($userIdentifier);
-        if (is_null($patient))
-            throw new NotFoundException("Patient doesn't exist");
+        $patient = $this->patientRepository->findOneByEmailOrThrow($userIdentifier);
 
         $appointment = (new Appointment())
             ->setDate($date)
@@ -157,16 +156,17 @@ class AppointmentService
 
     /**
      * @throws NotFoundException
+     * @throws NoAccessException
      * @throws AlreadyExistException
      */
     public function update(int $appointmentId, string $userIdentifier, string $action): ResponseAppointmentDto
     {
         if ($appointmentId <= 0)
-            throw new NotFoundException("The appointment doesn't exist");
+            throw new NotFoundException("The appointment doesn't exist"); // todo refactor text
 
-        $appointment = $this->appointmentRepository->findOneById($appointmentId);
-        if (is_null($appointment) || $appointment->getDoctor()->getUser()->getEmail() !== $userIdentifier)
-            throw new NotFoundException("The appointment doesn't exist or the doctor doesn't have access");
+        $appointment = $this->appointmentRepository->findOneByIdOrThrow($appointmentId);
+        if ($appointment->getDoctor()->getUser()->getEmail() !== $userIdentifier)
+            throw new NoAccessException("Doctor doesn't have access");
 
         if ($action === 'finalize') {
             if ($appointment->isCompleted())

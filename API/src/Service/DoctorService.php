@@ -17,6 +17,7 @@ use App\Repository\DoctorRepository;
 use App\Transformer\Doctor\DoctorResponseDtoTransformer;
 use App\Transformer\Paginator\PaginatorResponseTransformer;
 use DateTime;
+use Doctrine\ORM\NonUniqueResultException;
 
 class DoctorService
 {
@@ -63,9 +64,7 @@ class DoctorService
      */
     public function showOne(int $doctorId): ResponseDoctorDto
     {
-        $doctor = $this->doctorRepository->findOneById($doctorId);
-        if (is_null($doctor))
-            throw new NotFoundException("User id: {$doctorId} not found");
+        $doctor = $this->doctorRepository->findOneByIdOrThrow($doctorId);
         return $this->doctorResponseDtoTransformer->transformFromObject($doctor);
     }
 
@@ -102,9 +101,7 @@ class DoctorService
     {
         $doctorId = $dto->getDoctorId();
         $newStatus = $dto->getStatus();
-        $doctor = $this->doctorRepository->findOneById($doctorId);
-        if (is_null($doctor))
-            throw new NotFoundException("Doctor id:{$doctorId} not found");
+        $doctor = $this->doctorRepository->findOneByIdOrThrow($doctorId);
 
         $status = $doctor->getStatus();
         if ($status === $newStatus)
@@ -118,6 +115,7 @@ class DoctorService
 
     /**
      * @throws NotFoundException
+     * @throws NonUniqueResultException
      */
     public function update(UpdateDoctorDto $dto, string $userIdentifier): ResponseDoctorDto
     {
@@ -125,10 +123,7 @@ class DoctorService
             && !$dto->getDescription() && !$dto->getEducation() &&  !$dto->getPhone())
             throw new NotFoundException('Nothing to change');
 
-        $doctor = $this->doctorRepository->findOneByEmail($userIdentifier);
-        if (is_null($doctor))
-            throw new NotFoundException("This doctor doesn't exist");
-
+        $doctor = $this->doctorRepository->findOneByEmailOrThrow($userIdentifier);
         $user = $doctor->getUser();
         if (!is_null($dto->getFirstName()))
             $user->setFirstName($dto->getFirstName());

@@ -51,10 +51,7 @@ class PatientService
             && !$dto->getInsurance() && !$dto->getDateOfBirth())
             throw new NotFoundException('Nothing to change');
 
-        $patient = $this->patientRepository->findOneByEmail($userIdentifier);
-        if (is_null($patient))
-            throw new NotFoundException("This patient doesn't exist");
-
+        $patient = $this->patientRepository->findOneByEmailOrThrow($userIdentifier);
         $user = $patient->getUser();
         if (!is_null($dto->getFirstName()))
             $user->setFirstName($dto->getFirstName());
@@ -89,9 +86,7 @@ class PatientService
     {
         if ($patientId <= 0)
             throw new NotFoundException('patient id must be greater than zero');
-        $patient = $this->patientRepository->findOneById($patientId);
-        if (is_null($patient))
-            throw new NotFoundException('patient not found');
+        $patient = $this->patientRepository->findOneByIdOrThrow($patientId);
         return $this->patientResponseDtoTransformer->transformFromObject($patient);
     }
 }

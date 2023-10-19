@@ -17,7 +17,7 @@ class UserNotExistValidator extends ConstraintValidator
         if ($value === null || $value === '')
             return;
 
-        if ($this->userRepository->isUserExist($value)) {
+        if ($this->userRepository->doesUserExist($value)) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();

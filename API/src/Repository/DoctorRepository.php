@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Doctor\Doctor;
+use App\Exception\NotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -95,18 +96,31 @@ class DoctorRepository extends ServiceEntityRepository
         ];
     }
 
-    public function findOneById(int $id): Doctor|null
+    /**
+     * @throws NotFoundException
+     */
+    public function findOneByIdOrThrow(int $id): Doctor
     {
-        return $this->findOneBy(['id' => $id]);
+        $doctor = $this->findOneBy(['id' => $id]);
+        if (is_null($doctor))
+            throw new NotFoundException("Doctor id: {$id} doesn't exist");
+        return $doctor;
     }
 
-    public function findOneByEmail(string $email): Doctor|null
+    /**
+     * @throws NotFoundException
+     * @throws NonUniqueResultException
+     */
+    public function findOneByEmailOrThrow(string $email): Doctor
     {
-        return $this->createQueryBuilder('d')
+        $doctor = $this->createQueryBuilder('d')
             ->join('d.user', 'u')
             ->where('u.email = :email')
             ->setParameter('email', $email)
             ->getQuery()
             ->getOneOrNullResult();
+        if (is_null($doctor))
+            throw new NotFoundException("Doctor: {$email} doesn't exist");
+        return $doctor;
     }
 }

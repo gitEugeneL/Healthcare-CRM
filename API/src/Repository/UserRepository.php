@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User\User;
+use App\Exception\NotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -21,13 +22,19 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    public function isUserExist(string $email): bool
+    public function doesUserExist(string $email): bool
     {
         return !is_null($this->findOneBy(["email" => $email]));
     }
 
-    public function findOneByEmail(string $email): User|null
+    /**
+     * @throws NotFoundException
+     */
+    public function findOneByEmailOrThrow(string $email): User
     {
-        return $this->findOneBy(['email' => $email]);
+        $user = $this->findOneBy(['email' => $email]);
+        if (is_null($user))
+            throw new NotFoundException("User: {$email} doesn't exist");
+        return $user;
     }
 }

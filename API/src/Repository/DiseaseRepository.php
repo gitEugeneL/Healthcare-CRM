@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Disease;
+use App\Exception\NotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -35,13 +36,30 @@ class DiseaseRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
     }
 
-    public function findOneByName(string $name): Disease|null
+    public function doesDiseaseExistByName(string $name): bool
     {
-        return $this->findOneBy(['name' => $name]);
+        return !is_null($this->findOneBy(['name' => $name]));
     }
 
-    public function findOneById(int $id): Disease|null
+    /**
+     * @throws NotFoundException
+     */
+    public function findOneByNameOrThrow(string $name): Disease
     {
-        return $this->findOneBy(['id' => $id]);
+        $disease = $this->findOneBy(['name' => $name]);
+        if (is_null($disease))
+            throw new NotFoundException("Disease: {$name} doesn't exist");
+        return $disease;
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    public function findOneByIdOrThrow(int $id): Disease
+    {
+        $disease = $this->findOneBy(['id' => $id]);
+        if (is_null($disease))
+            throw new NotFoundException("Disease id: {$id} doesn't exist");
+        return $disease;
     }
 }

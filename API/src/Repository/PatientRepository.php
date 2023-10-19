@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Patient;
+use App\Exception\NotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -35,14 +37,32 @@ class PatientRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
     }
 
-    public function findOneByEmail(string $email): Patient|null
+    /**
+     * @throws NonUniqueResultException
+     * @throws NotFoundException
+     */
+    public function findOneByEmailOrThrow(string $email): Patient
     {
-        return $this->createQueryBuilder('p')
+        $patient = $this->createQueryBuilder('p')
             ->join('p.user', 'u')
             ->where('u.email = :email')
             ->setParameter('email', $email)
             ->getQuery()
             ->getOneOrNullResult();
+        if (is_null($patient))
+            throw new NotFoundException("Patient: {$email} doesn't exist");
+        return $patient;
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    public function findOneByIdOrThrow(int $patientId): Patient
+    {
+        $patient = $this->findOneBy(['id' => $patientId]);
+        if (is_null($patient))
+            throw new NotFoundException("Patient id: {$patientId} doesn't exist");
+        return $patient;
     }
 
     public function findAllWithPagination(int $page, int $limit): array
@@ -54,10 +74,5 @@ class PatientRepository extends ServiceEntityRepository
           'patients' => $patients,
           'totalPages' => ceil($total / $limit)
         ];
-    }
-
-    public function findOneById(int $patientId): Patient|null
-    {
-        return $this->findOneBy(['id' => $patientId]);
     }
 }

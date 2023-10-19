@@ -3,6 +3,7 @@
 namespace App\Middleware;
 
 use App\Exception\AlreadyExistException;
+use App\Exception\NoAccessException;
 use App\Exception\NotFoundException;
 use App\Exception\UnsupportedMediaType;
 use App\Exception\ValidationException;
@@ -21,22 +22,19 @@ class ErrorHandlingMiddleware implements EventSubscriberInterface
     public function onKernelException(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
-        if ($exception instanceof AlreadyExistException) {
+        if ($exception instanceof AlreadyExistException)
             $response = new Response($exception->getMessage(),409);
-        }
-        elseif ($exception instanceof NotFoundException) {
+        elseif ($exception instanceof NotFoundException)
             $response = new Response($exception->getMessage(), 404);
-        }
-        elseif ($exception instanceof ValidationException) {
+        elseif ($exception instanceof ValidationException)
             $response = new Response($exception->getMessage(), 422);
-        }
-        elseif ($exception instanceof UnsupportedMediaType) {
+        elseif ($exception instanceof UnsupportedMediaType)
             $response = new Response($exception->getMessage(), 415);
-        }
-        else {
+        elseif ($exception instanceof NoAccessException)
+            $response = new Response($exception->getMessage(), 403);
+        else
             $response = new Response($exception, 500); // only for dev
 //             $response = new Response('Something went wrong', 500);
-        }
         $event->setResponse($response);
     }
 }

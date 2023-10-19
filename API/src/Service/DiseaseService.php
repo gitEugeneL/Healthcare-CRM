@@ -5,13 +5,12 @@ namespace App\Service;
 use App\Dto\Disease\CreateDiseaseDto;
 use App\Dto\Disease\ResponseDiseaseDto;
 use App\Entity\Disease;
-use App\Entity\Doctor\Doctor;
 use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
 use App\Repository\DiseaseRepository;
 use App\Repository\DoctorRepository;
 use App\Transformer\Disease\DiseaseResponseDtoTransformer;
-use function PHPUnit\Framework\throwException;
+use Doctrine\ORM\NonUniqueResultException;
 
 class DiseaseService
 {
@@ -28,21 +27,7 @@ class DiseaseService
     {
         if ($diseaseId <= 0)
             throw new NotFoundException('disease id must be greater than zero');
-        $disease = $this->diseaseRepository->findOneById($diseaseId);
-        if (is_null($disease))
-            throw new NotFoundException('disease not found');
-        return $disease;
-    }
-
-    /**
-     * @throws NotFoundException
-     */
-    private function findDoctor(string $email): Doctor
-    {
-        $doctor = $this->doctorRepository->findOneByEmail($email);
-        if (is_null($doctor))
-            throw new NotFoundException('Doctor not found');
-        return $doctor;
+        return $this->diseaseRepository->findOneByIdOrThrow($diseaseId);
     }
 
     /**
@@ -50,12 +35,11 @@ class DiseaseService
      */
     public function create(CreateDiseaseDto $dto): ResponseDiseaseDto
     {
-        $name = $dto->getName();
-        $disease = $this->diseaseRepository->findOneByName($name);
-        if (!is_null($disease))
-            throw new AlreadyExistException("Disease {$name} already exist");
+        $diseaseName = $dto->getName();
+        if ($this->diseaseRepository->doesDiseaseExistByName($diseaseName))
+            throw new AlreadyExistException("Disease {$diseaseName} already exists");
 
-        $disease = (new Disease())->setName($name);
+        $disease = (new Disease())->setName($diseaseName);
         $this->diseaseRepository->save($disease, true);
         return $this->diseaseResponseDtoTransformer->transformFromObject($disease);
     }
@@ -70,14 +54,15 @@ class DiseaseService
     }
 
     /**
-     * @throws NotFoundException
+     * @throws NonUniqueResultException
      * @throws AlreadyExistException
+     * @throws NotFoundException
      */
     public function addDoctor(string $doctorIdentifier, int $diseaseId): void
     {
-        $doctor = $this->findDoctor($doctorIdentifier);
+        $doctor = $this->doctorRepository->findOneByEmailOrThrow($doctorIdentifier);
         $disease = $this->findDisease($diseaseId);
-
+        // verify that the doctor doesn't have this disease
         if ($disease->getDoctors()->contains($doctor))
             throw new AlreadyExistException('This Doctor has already been added');
 
@@ -86,13 +71,14 @@ class DiseaseService
     }
 
     /**
+     * @throws NonUniqueResultException
      * @throws NotFoundException
      */
     public function removeDoctor(string $doctorIdentifier, int $diseaseId): void
     {
-        $doctor = $this->findDoctor($doctorIdentifier);
+        $doctor = $this->doctorRepository->findOneByEmailOrThrow($doctorIdentifier);
         $disease = $this->findDisease($diseaseId);
-
+        // verify that the doctor has this disease
         if (!$disease->getDoctors()->contains($doctor))
             throw new NotFoundException("Doctor doesn't have this disease");
 

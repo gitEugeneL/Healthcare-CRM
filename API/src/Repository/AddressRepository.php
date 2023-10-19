@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Address;
+use App\Exception\NotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -35,14 +37,21 @@ class AddressRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
     }
 
-    public function findOneByPatientEmail(string $email): Address|null
+    /**
+     * @throws NonUniqueResultException
+     * @throws NotFoundException
+     */
+    public function findOneByPatientEmailOrThrow(string $email): Address
     {
-        return $this->createQueryBuilder('a')
+        $address = $this->createQueryBuilder('a')
             ->join('a.patient', 'p')
             ->join('p.user', 'u')
             ->where('u.email = :email')
             ->setParameter('email', $email)
             ->getQuery()
             ->getOneOrNullResult();
+        if (is_null($address))
+            throw new NotFoundException("Address by patient: {$email} doesn't exist");
+        return $address;
     }
 }

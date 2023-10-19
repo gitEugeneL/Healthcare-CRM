@@ -7,6 +7,7 @@ use App\Dto\Patient\ResponsePatientDto;
 use App\Exception\NotFoundException;
 use App\Repository\AddressRepository;
 use App\Transformer\Patient\PatientResponseDtoTransformer;
+use Doctrine\ORM\NonUniqueResultException;
 
 class AddressService
 {
@@ -17,12 +18,11 @@ class AddressService
 
     /**
      * @throws NotFoundException
+     * @throws NonUniqueResultException
      */
     public function update(string $userIdentifier, UpdateAddressDto $dto): ResponsePatientDto
     {
-        $address = $this->addressRepository->findOneByPatientEmail($userIdentifier);
-        if (is_null($address))
-            throw new NotFoundException('This patient does not exist');
+        $address = $this->addressRepository->findOneByPatientEmailOrThrow($userIdentifier);
 
         $address->setCity($dto->getCity())
             ->setProvince($dto->getProvince())

@@ -11,6 +11,7 @@ use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
 use App\Service\DoctorService;
 use App\Utils\DtoInspector;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -102,8 +103,9 @@ class DoctorController extends AbstractController
     }
 
     /**
-     * @throws NotFoundException
      * @throws ValidationException
+     * @throws NonUniqueResultException
+     * @throws NotFoundException
      */
     #[IsGranted(Roles::DOCTOR)]
     #[Route('/update', methods: ['PATCH'])]

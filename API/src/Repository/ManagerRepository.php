@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\User\User;
 use App\Entity\Manager;
+use App\Exception\NotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -41,13 +43,20 @@ class ManagerRepository extends ServiceEntityRepository
         return $this->findOneBy(['user' => $user]);
     }
 
-    public function findOneByEmail(string $email): Manager|null
+    /**
+     * @throws NonUniqueResultException
+     * @throws NotFoundException
+     */
+    public function findOneByEmailOrThrow(string $email): Manager
     {
-        return $this->createQueryBuilder('m')
+        $manager = $this->createQueryBuilder('m')
             ->join('m.user', 'u')
             ->where('u.email = :email')
             ->setParameter('email', $email)
             ->getQuery()
             ->getOneOrNullResult();
+        if (is_null($manager))
+            throw new NotFoundException("Manager: {$email} doesn't exist");
+        return $manager;
     }
 }

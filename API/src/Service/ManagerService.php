@@ -13,6 +13,7 @@ use App\Exception\NotFoundException;
 use App\Repository\ManagerRepository;
 use App\Repository\UserRepository;
 use App\Transformer\Manager\ManagerResponseDtoTransformer;
+use Doctrine\ORM\NonUniqueResultException;
 
 class ManagerService
 {
@@ -27,13 +28,14 @@ class ManagerService
      */
     public function create(CreateManagerDto $dto): ResponseManagerDto
     {
-        if ($this->userRepository->isUserExist($dto->getEmail()))
-            throw new AlreadyExistException("User {$dto->getEmail()} already exists");
+        $userEmail = $dto->getEmail();
+        if ($this->userRepository->doesUserExist($userEmail))
+            throw new AlreadyExistException("User: {$userEmail} already exists");
 
         $manager = (new Manager())
             ->setPosition("new manager")
             ->setUser((new User())
-                ->setEmail($dto->getEmail())
+                ->setEmail($userEmail)
                 ->setPassword(password_hash($dto->getPassword(), PASSWORD_DEFAULT))
                 ->setRoles([Roles::MANAGER])
                 ->setFirstName($dto->getFirstName())
@@ -45,16 +47,14 @@ class ManagerService
 
     /**
      * @throws NotFoundException
+     * @throws NonUniqueResultException
      */
     public function update(UpdateManagerDto $dto, string $userIdentifier): ResponseManagerDto
     {
         if (!$dto->getFirstName() && !$dto->getLastName() && !$dto->getPhone() && !$dto->getPosition())
             throw new NotFoundException('Nothing to change');
 
-        $manager = $this->managerRepository->findOneByEmail($userIdentifier);
-        if (is_null($manager))
-            throw new NotFoundException("This manager doesn't exist");
-
+        $manager = $this->managerRepository->findOneByEmailOrThrow($userIdentifier);
         $user = $manager->getUser();
         if (!is_null($dto->getFirstName()))
             $user->setFirstName($dto->getFirstName());
@@ -74,10 +74,7 @@ class ManagerService
      */
     public function info(string $userIdentifier): ResponseManagerDto
     {
-        $user = $this->userRepository->findOneByEmail($userIdentifier);
-        if (is_null($user))
-            throw new NotFoundException("This Manager doesn't exist");
-
+        $user = $this->userRepository->findOneByEmailOrThrow($userIdentifier);
         $manager = $this->managerRepository->findByUser($user);
         return $this->managerResponseDtoTransformer->transformFromObject($manager);
     }
