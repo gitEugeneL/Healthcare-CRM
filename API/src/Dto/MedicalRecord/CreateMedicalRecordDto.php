@@ -4,7 +4,7 @@ namespace App\Dto\MedicalRecord;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class RequestMedicalRecordDto
+class CreateMedicalRecordDto
 {
     #[Assert\NotBlank]
     #[Assert\NotNull]

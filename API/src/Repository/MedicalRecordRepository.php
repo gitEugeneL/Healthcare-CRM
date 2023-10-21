@@ -3,7 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\MedicalRecord;
+use App\Entity\User\Roles;
+use App\Exception\NotFoundException;
+use App\Service\MedicalRecordService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -35,7 +39,7 @@ class MedicalRecordRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
     }
 
-    public function doesAppointmentExist(int $appointmentId): bool
+    public function doesMedicalRecordExist(int $appointmentId): bool
     {
         return !is_null($this->createQueryBuilder('medicalRecord')
             ->join('medicalRecord.appointment', 'appointment')
@@ -46,16 +50,15 @@ class MedicalRecordRepository extends ServiceEntityRepository
         );
     }
 
-    public function findByPatientIdOrDoctorIdWithPagination(int $id, int $page, int $limit, string $userType = null): array
+    public function findForDoctorIdWithPagination(int $doctorId, int $patientId, int $page, int $limit): array
     {
-        if ($userType !== 'patient' && $userType  !== 'doctor')
-            return [];
-
         $qb = $this->createQueryBuilder('mr');
-
-        $qb->join("mr.{$userType}", 'u')
-            ->where('u.id = :id')
-            ->setParameter('id', $id)
+        $qb->join('mr.doctor', 'd')
+            ->join('mr.patient', 'p')
+            ->where('d.id = :doctorId')
+            ->andWhere('p.id = :patientId')
+            ->setParameter('doctorId', $doctorId)
+            ->setParameter('patientId', $patientId)
             ->getQuery()
             ->getResult();
 
@@ -73,5 +76,61 @@ class MedicalRecordRepository extends ServiceEntityRepository
             'medicalRecords' => $medicalRecords,
             'totalPages' => ceil($total / $limit)
         ];
+    }
+
+    public function findForPatientIdWithPagination(int $patientId, int $page, int $limit): array
+    {
+        $qb = $this->createQueryBuilder('mr');
+        $qb->join('mr.patient', 'p')
+            ->where('p.id = :id')
+            ->setParameter('id', $patientId)
+            ->getQuery()
+            ->getResult();
+
+        $total = $qb->select('COUNT(mr.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $medicalRecords = $qb->select('mr')
+            ->setMaxResults($limit)
+            ->setFirstResult(($page - 1) * $limit)
+            ->getQuery()
+            ->getResult();
+
+        return [
+            'medicalRecords' => $medicalRecords,
+            'totalPages' => ceil($total / $limit)
+        ];
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    public function findOneByIdOrThrow(int $medicalRecordId): MedicalRecord
+    {
+        $medicalRecord = $this->findOneBy(['id' => $medicalRecordId]);
+        if (is_null($medicalRecord))
+            throw new NotFoundException("Medical record id: {$medicalRecordId} doesn't exist");
+        return $medicalRecord;
+    }
+
+    /**
+     * @throws NotFoundException
+     * @throws NonUniqueResultException
+     */
+    public function findOneByIdForPatientOrThrow(int $medicalRecordId, int $patientId): MedicalRecord
+    {
+        $medicalRecord = $this->createQueryBuilder('mr')
+            ->join('mr.patient', 'p')
+            ->where('mr.id = :medicalRecordId')
+            ->andWhere('p.id = :patientId')
+            ->setParameter('medicalRecordId', $medicalRecordId)
+            ->setParameter('patientId', $patientId)
+            ->getQuery()
+            ->getOneOrNullResult();
+        if (is_null($medicalRecord))
+            throw  new NotFoundException(
+                "Medical record id: {$medicalRecordId} doesn't exist or patient id: {$patientId} doesn't have access");
+        return $medicalRecord;
     }
 }

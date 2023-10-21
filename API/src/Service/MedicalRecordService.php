@@ -2,11 +2,10 @@
 
 namespace App\Service;
 
-use App\Dto\MedicalRecord\RequestMedicalRecordDto;
+use App\Dto\MedicalRecord\CreateMedicalRecordDto;
 use App\Dto\MedicalRecord\ResponseMedicalRecordDto;
-use App\Entity\Doctor\Doctor;
+use App\Dto\MedicalRecord\UpdateMedicalRecordDto;
 use App\Entity\MedicalRecord;
-use App\Entity\Patient;
 use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
 use App\Repository\AppointmentRepository;
@@ -17,6 +16,7 @@ use App\Repository\SpecializationRepository;
 use App\Transformer\MedicalRecord\MedicalRecordResponseDtoTransformer;
 use App\Transformer\Paginator\PaginatorResponseTransformer;
 use Doctrine\ORM\NonUniqueResultException;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 
 class MedicalRecordService
 {
@@ -29,15 +29,24 @@ class MedicalRecordService
         private readonly AppointmentRepository $appointmentRepository,
         private readonly SpecializationRepository $specializationRepository,
         private readonly MedicalRecordResponseDtoTransformer $medicalRecordResponseDtoTransformer,
-        private readonly PaginatorResponseTransformer $paginatorResponseTransformer
+        private readonly PaginatorResponseTransformer $paginatorResponseTransformer,
     ) {}
+
+    private function createPaginationResponse(array $result, int $page): array
+    {
+        $totalPages = $result['totalPages'];
+        $medicalRecords = $result['medicalRecords'];
+        return  $this->paginatorResponseTransformer
+            ->transformToArray($this->medicalRecordResponseDtoTransformer
+                ->transformFromObjects($medicalRecords), $page, $totalPages);
+    }
 
     /**
      * @throws NotFoundException
      * @throws AlreadyExistException
      * @throws NonUniqueResultException
      */
-    public function create(string $doctorIdentifier, RequestMedicalRecordDto $dto): ResponseMedicalRecordDto
+    public function create(string $doctorIdentifier, CreateMedicalRecordDto $dto): ResponseMedicalRecordDto
     {
         // find doctor or throw
         $doctor = $this->doctorRepository->findOneByEmailOrThrow($doctorIdentifier);
@@ -46,7 +55,7 @@ class MedicalRecordService
         // find appointment or throw
         $appointment = $this->appointmentRepository->findOneByIdOrThrow($dto->getAppointmentId());
         // check if a medical record already exists
-        if ($this->medicalRecordRepository->doesAppointmentExist($appointment->getId()))
+        if ($this->medicalRecordRepository->doesMedicalRecordExist($appointment->getId()))
             throw new AlreadyExistException('Appointment already has a medical record');
         // find specialization or throw
         $specialization = $this->specializationRepository->findOneByIdOrThrow($dto->getSpecializationId());
@@ -71,24 +80,68 @@ class MedicalRecordService
      * @throws NonUniqueResultException
      * @throws NotFoundException
      */
-    public function showForPatientOrDoctor(string $userIdentifier, int $page, string $userType): array
+    public function showForDoctor(string $doctorIdentifier,  int $patientId, int $page): array
     {
-        if ($userType !== 'patient' && $userType !== 'doctor')
-            return [];
-
-        if ($userType === 'doctor')
-            $user = $this->doctorRepository->findOneByEmailOrThrow($userIdentifier);
-        if ($userType === 'patient')
-            $user = $this->patientRepository->findOneByEmailOrThrow($userIdentifier);
-
+        $doctor = $this->doctorRepository->findOneByEmailOrThrow($doctorIdentifier);
+        $patient = $this->patientRepository->findOneByIdOrThrow($patientId);
         $result = $this->medicalRecordRepository
-            ->findByPatientIdOrDoctorIdWithPagination(
-                $user->getId(), $page, self::ITEM_PER_PAGE, $userType);
-        $totalPages = $result['totalPages'];
-        $medicalRecords = $result['medicalRecords'];
+            ->findForDoctorIdWithPagination($doctor->getId(), $patient->getId(), $page, self::ITEM_PER_PAGE);
+        return $this->createPaginationResponse($result, $page);
+    }
 
-        return $this->paginatorResponseTransformer
-            ->transformToArray($this->medicalRecordResponseDtoTransformer
-                ->transformFromObjects($medicalRecords), $page, $totalPages);
+    /**
+     * @throws NonUniqueResultException
+     * @throws NotFoundException
+     */
+    public function showForPatient(string $patientIdentifier, int $page): array
+    {
+        $patient = $this->patientRepository->findOneByEmailOrThrow($patientIdentifier);
+        $result = $this->medicalRecordRepository
+            ->findForPatientIdWithPagination($patient->getId(), $page, self::ITEM_PER_PAGE);
+        return $this->createPaginationResponse($result, $page);
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    public function showOneForDoctor(int $medicalRecordId): ResponseMedicalRecordDto
+    {
+        $medicalRecord = $this->medicalRecordRepository->findOneByIdOrThrow($medicalRecordId);
+        return $this->medicalRecordResponseDtoTransformer->transformFromObject($medicalRecord);
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     * @throws NotFoundException
+     */
+    public function showOneForPatient(string $patientIdentifier, int $medicalRecordId): ResponseMedicalRecordDto
+    {
+        $patient = $this->patientRepository->findOneByEmailOrThrow($patientIdentifier);
+        $medicalRecord = $this->medicalRecordRepository->findOneByIdForPatientOrThrow($medicalRecordId, $patient->getId());
+        return $this->medicalRecordResponseDtoTransformer->transformFromObject($medicalRecord);
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     * @throws NotFoundException
+     */
+    public function update(string $doctorIdentifier, int $medicalRecordId, UpdateMedicalRecordDto $dto): ResponseMedicalRecordDto
+    {
+        if (!$dto->getTitle() && !$dto->getDescription() && !$dto->getDoctorNote())
+            throw new NotFoundException('Nothing to change');
+
+        $doctor = $this->doctorRepository->findOneByEmailOrThrow($doctorIdentifier);
+        $medicalRecord = $this->medicalRecordRepository->findOneByIdOrThrow($medicalRecordId);
+        if ($medicalRecord->getDoctor() !== $doctor)
+            throw new AccessDeniedException("Doctor doesn't have access to update this medical record");
+
+        if (!is_null($dto->getTitle()))
+            $medicalRecord->setTitle($dto->getTitle());
+        if (!is_null($dto->getDescription()))
+            $medicalRecord->setDescription($dto->getDescription());
+        if (!is_null($dto->getDoctorNote()))
+            $medicalRecord->setDoctorNote($dto->getDoctorNote());
+        $this->medicalRecordRepository->save($medicalRecord, true);
+        return $this->medicalRecordResponseDtoTransformer->transformFromObject($medicalRecord);
     }
 }
