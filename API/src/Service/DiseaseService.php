@@ -21,16 +21,6 @@ class DiseaseService
     ) {}
 
     /**
-     * @throws NotFoundException
-     */
-    private function findDisease(int $diseaseId): Disease
-    {
-        if ($diseaseId <= 0)
-            throw new NotFoundException('disease id must be greater than zero');
-        return $this->diseaseRepository->findOneByIdOrThrow($diseaseId);
-    }
-
-    /**
      * @throws AlreadyExistException
      */
     public function create(CreateDiseaseDto $dto): ResponseDiseaseDto
@@ -49,7 +39,7 @@ class DiseaseService
      */
     public function delete(int $diseaseId): void
     {
-        $disease = $this->findDisease($diseaseId);
+        $disease = $this->diseaseRepository->findOneByIdOrThrow($diseaseId);
         $this->diseaseRepository->remove($disease, true);
     }
 
@@ -61,7 +51,7 @@ class DiseaseService
     public function addDoctor(string $doctorIdentifier, int $diseaseId): void
     {
         $doctor = $this->doctorRepository->findOneByEmailOrThrow($doctorIdentifier);
-        $disease = $this->findDisease($diseaseId);
+        $disease = $this->diseaseRepository->findOneByIdOrThrow($diseaseId);
         // verify that the doctor doesn't have this disease
         if ($disease->getDoctors()->contains($doctor))
             throw new AlreadyExistException('This Doctor has already been added');
@@ -77,7 +67,7 @@ class DiseaseService
     public function removeDoctor(string $doctorIdentifier, int $diseaseId): void
     {
         $doctor = $this->doctorRepository->findOneByEmailOrThrow($doctorIdentifier);
-        $disease = $this->findDisease($diseaseId);
+        $disease = $this->diseaseRepository->findOneByIdOrThrow($diseaseId);
         // verify that the doctor has this disease
         if (!$disease->getDoctors()->contains($doctor))
             throw new NotFoundException("Doctor doesn't have this disease");

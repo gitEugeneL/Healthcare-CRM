@@ -5,7 +5,6 @@ namespace App\Dto\Patient;
 use App\Dto\User\AbstractUpdateUserDto;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 class UpdatePatientDto extends AbstractUpdateUserDto
 {
     #[Assert\Length(11)]

@@ -78,14 +78,8 @@ class DoctorService
             ->transformToArray($this->doctorResponseDtoTransformer->transformFromObjects($doctors), $page, $totalPages);
     }
 
-    /**
-     * @throws NotFoundException
-     */
     public function showByDisease(int $diseaseId, int $page): array
     {
-        if ($diseaseId <= 0)
-            throw new NotFoundException('disease id must be greater than zero');
-
         $result = $this->doctorRepository->findByDiseaseWithPagination($diseaseId, $page, self::ITEM_PER_PAGE);
         $doctors = $result['doctors'];
         $totalPage = $result['totalPages'];

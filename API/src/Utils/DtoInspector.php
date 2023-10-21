@@ -14,17 +14,18 @@ class DtoInspector
     /**
      * @throws ValidationException
      */
-    public function inspect($dto): void
+    public function inspect($dto): bool
     {
         $errors = $this->validatorInterface->validate($dto);
-            if (count($errors) > 0) {
-                $errorMessages = [];
-                foreach ($errors as $error) {
-                    $field = $error->getPropertyPath();
-                    $message = $error->getMessage();
-                    $errorMessages[$field] = $message;
-                }
-                throw new ValidationException(json_encode($errorMessages));
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $field = $error->getPropertyPath();
+                $message = $error->getMessage();
+                $errorMessages[$field] = $message;
             }
+            throw new ValidationException(json_encode($errorMessages));
+        }
+        return true;
     }
 }

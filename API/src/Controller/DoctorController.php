@@ -11,6 +11,7 @@ use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
 use App\Service\DoctorService;
 use App\Utils\DtoInspector;
+use App\Utils\QueryParamsInspector;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -27,7 +28,8 @@ class DoctorController extends AbstractController
     public function __construct(
         private readonly SerializerInterface $serializer,
         private readonly DtoInspector $dtoInspector,
-        private readonly DoctorService $doctorService
+        private readonly DoctorService $doctorService,
+        private readonly QueryParamsInspector $paramsInspector
     ) {}
 
     /**
@@ -55,12 +57,15 @@ class DoctorController extends AbstractController
 
     /**
      * @throws NotFoundException
+     * @throws ValidationException
      */
     #[IsGranted(Roles::MANAGER)]
     #[Route('/show/{doctorId}', methods: ['GET'])]
     public function showOne(Request $request): JsonResponse
     {
-        $result = $this->doctorService->showOne((int) $request->get('doctorId'));
+        $doctorId = (int) $request->get('doctorId');
+        $this->paramsInspector->inspect($doctorId);
+        $result = $this->doctorService->showOne($doctorId);
         return $this->json($result, 200);
     }
 
@@ -76,6 +81,7 @@ class DoctorController extends AbstractController
 
     /**
      * @throws NotFoundException
+     * @throws ValidationException
      */
     #[IsGranted(new Expression('is_granted("'.Roles::PATIENT.'") or is_granted("'.Roles::MANAGER.'")'))]
     #[Route('/show-by-disease/{diseaseId}')]
@@ -83,6 +89,7 @@ class DoctorController extends AbstractController
     {
         $page = $request->query->getInt('page', 1);
         $diseaseId = (int) $request->get('diseaseId');
+        $this->paramsInspector->inspect($diseaseId);
         $result = $this->doctorService->showByDisease($diseaseId, $page);
         return $this->json($result, 200);
     }

@@ -10,6 +10,7 @@ use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
 use App\Service\AppointmentService;
 use App\Utils\DtoInspector;
+use App\Utils\QueryParamsInspector;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,7 +26,8 @@ class AppointmentController extends AbstractController
     public function __construct(
         private readonly SerializerInterface $serializer,
         private readonly DtoInspector $dtoInspector,
-        private readonly AppointmentService $appointmentService
+        private readonly AppointmentService $appointmentService,
+        private readonly QueryParamsInspector $paramsInspector
     ) {}
 
     /**
@@ -43,10 +45,12 @@ class AppointmentController extends AbstractController
      * @throws NoAccessException
      * @throws AlreadyExistException
      * @throws NotFoundException
+     * @throws ValidationException
      */
     private function update(TokenStorageInterface $tokenStorage, Request $request, string $action): JsonResponse
     {
         $appointmentId = (int) $request->get('appointmentId');
+        $this->paramsInspector->inspect($appointmentId);
         $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
         $result = $this->appointmentService->update($appointmentId, $userIdentifier, $action);
         return $this->json($result, 200);

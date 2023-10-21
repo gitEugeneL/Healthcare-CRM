@@ -9,6 +9,7 @@ use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
 use App\Service\DiseaseService;
 use App\Utils\DtoInspector;
+use App\Utils\QueryParamsInspector;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,7 +25,8 @@ class DiseaseController extends AbstractController
     public function __construct(
         private readonly SerializerInterface $serializer,
         private readonly DtoInspector $dtoInspector,
-        private readonly DiseaseService $diseaseService
+        private readonly DiseaseService $diseaseService,
+        private readonly QueryParamsInspector $paramsInspector
     ) {}
 
     /**
@@ -43,12 +45,14 @@ class DiseaseController extends AbstractController
 
     /**
      * @throws NotFoundException
+     * @throws ValidationException
      */
     #[IsGranted(Roles::MANAGER)]
     #[Route('/delete/{diseaseId}', methods: ['DELETE'])]
     public function delete(Request $request): JsonResponse
     {
         $diseaseId = (int) $request->get('diseaseId');
+        $this->paramsInspector->inspect($diseaseId);
         $this->diseaseService->delete($diseaseId);
         return $this->json('successfully deleted', 204);
     }
@@ -58,12 +62,14 @@ class DiseaseController extends AbstractController
      * @throws NonUniqueResultException
      * @throws AlreadyExistException
      * @throws NotFoundException
+     * @throws ValidationException
      */
     #[IsGranted(Roles::DOCTOR)]
     #[Route('/add-doctor/{diseaseId}', methods: ['PATCH'])]
     public function addDoctor(Request $request, TokenStorageInterface $tokenStorage): JsonResponse
     {
         $diseaseId = (int) $request->get('diseaseId');
+        $this->paramsInspector->inspect($diseaseId);
         $doctorIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
         $this->diseaseService->addDoctor($doctorIdentifier, $diseaseId);
         return $this->json('Doctor successfully added', 201);
@@ -73,12 +79,14 @@ class DiseaseController extends AbstractController
     /**
      * @throws NonUniqueResultException
      * @throws NotFoundException
+     * @throws ValidationException
      */
     #[IsGranted(Roles::DOCTOR)]
     #[Route('/remove-doctor/{diseaseId}', methods: ['PATCH'])]
     public function removeDoctor(Request $request, TokenStorageInterface $tokenStorage): JsonResponse
     {
         $diseaseId = (int) $request->get('diseaseId');
+        $this->paramsInspector->inspect($diseaseId);
         $doctorIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
         $this->diseaseService->removeDoctor($doctorIdentifier, $diseaseId);
         return $this->json('Doctor successfully removed', 201);

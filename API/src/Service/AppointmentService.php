@@ -116,17 +116,14 @@ class AppointmentService
         $date = new DateTime($dto->getDate());
         $startTime = new DateTime($dto->getStartTime());
         $endTime = $this->createEndTime($startTime, $doctorConfig->getInterval());
-
         // check that the doctor sees patients on this day of the week
         if ($this->checkWorkday($date, $doctorConfig->getWorkdays()))
             throw new NotFoundException('Doctor does not work on this day');
-
         // check that you are available at this time
         if (!$this->isDoctorAvailableOnDay($date, $startTime, $doctor))
             throw new NotFoundException('Doctor is not available at this time');
 
         $patient = $this->patientRepository->findOneByEmailOrThrow($userIdentifier);
-
         $appointment = (new Appointment())
             ->setDate($date)
             ->setStartTime($startTime)
@@ -135,7 +132,6 @@ class AppointmentService
             ->setIsCompleted(false)
             ->setDoctor($doctor)
             ->setPatient($patient);
-
         $this->appointmentRepository->save($appointment, true);
         return $this->appointmentResponseDtoTransformer->transformFromObject($appointment);
     }
@@ -161,9 +157,6 @@ class AppointmentService
      */
     public function update(int $appointmentId, string $userIdentifier, string $action): ResponseAppointmentDto
     {
-        if ($appointmentId <= 0)
-            throw new NotFoundException("The appointment doesn't exist"); // todo refactor text
-
         $appointment = $this->appointmentRepository->findOneByIdOrThrow($appointmentId);
         if ($appointment->getDoctor()->getUser()->getEmail() !== $userIdentifier)
             throw new NoAccessException("Doctor doesn't have access");

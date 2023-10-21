@@ -84,8 +84,6 @@ class PatientService
      */
     public function showOne(int $patientId): ResponsePatientDto
     {
-        if ($patientId <= 0)
-            throw new NotFoundException('patient id must be greater than zero');
         $patient = $this->patientRepository->findOneByIdOrThrow($patientId);
         return $this->patientResponseDtoTransformer->transformFromObject($patient);
     }

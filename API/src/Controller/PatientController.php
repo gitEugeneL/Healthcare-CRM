@@ -9,6 +9,7 @@ use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
 use App\Service\PatientService;
 use App\Utils\DtoInspector;
+use App\Utils\QueryParamsInspector;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,7 +25,8 @@ class PatientController extends AbstractController
     public function __construct(
         private readonly SerializerInterface $serializer,
         private readonly DtoInspector $dtoInspector,
-        private readonly PatientService $patientService
+        private readonly PatientService $patientService,
+        private readonly QueryParamsInspector $paramsInspector
     ) {}
 
     /**
@@ -65,12 +67,15 @@ class PatientController extends AbstractController
 
     /**
      * @throws NotFoundException
+     * @throws ValidationException
      */
     #[IsGranted(new Expression('is_granted("'.Roles::DOCTOR.'") or is_granted("'.Roles::MANAGER.'")'))]
     #[Route('/show/{patientId}', methods: ['GET'])]
     public function showOne(Request $request): JsonResponse
     {
-        $result = $this->patientService->showOne((int) $request->get('patientId'));
+        $patientId = (int) $request->get('patientId');
+        $this->paramsInspector->inspect($patientId);
+        $result = $this->patientService->showOne($patientId);
         return $this->json($result, 200);
     }
 }

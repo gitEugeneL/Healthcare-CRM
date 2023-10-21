@@ -27,7 +27,7 @@ class MedicalRecordController extends AbstractController
         private readonly SerializerInterface $serializer,
         private readonly DtoInspector $dtoInspector,
         private readonly QueryParamsInspector $paramsInspector,
-        private readonly MedicalRecordService $medicalRecordService
+        private readonly MedicalRecordService $medicalRecordService,
     ) {}
 
     /**
