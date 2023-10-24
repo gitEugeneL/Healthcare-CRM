@@ -84,7 +84,7 @@ class SpecializationControllerTest extends TestCase
     {
         $this->createManager();
         $managerAccessToken = $this->login($this->manager['email'], $this->manager['password']);
-        $this->specialization['name'] = 'new test name';
+        $this->specialization['name'] = 'specialization1';
         $this->specialization['description'] = 'new test description';
 
         $response = $this->patch(
@@ -94,7 +94,7 @@ class SpecializationControllerTest extends TestCase
         );
 
         $this->assertSame(404, $response->getStatusCode());
-        $this->assertSame('Specialization not found', $response->getContent());
+        $this->assertSame("Specialization: {$this->specialization['name']} doesn't exist", $response->getContent());
     }
 
     public function testDelete_witInvalidData_returnsDeleted(): void

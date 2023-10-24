@@ -75,7 +75,7 @@ class PatientControllerTest extends TestCase
         );
 
         $this->assertSame(404, $response->getStatusCode());
-        $this->assertSame('patient not found', $response->getContent());
+        $this->assertSame("Patient id: 777 doesn't exist", $response->getContent());
     }
 
     public function testUpdate_withValidData_returnsUpdated(): void

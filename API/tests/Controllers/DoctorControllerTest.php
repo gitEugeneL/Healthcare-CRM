@@ -70,7 +70,7 @@ class DoctorControllerTest extends TestCase
         );
 
         $this->assertSame(404, $response->getStatusCode());
-        $this->assertSame('User id: 777 not found', $response->getContent());
+        $this->assertSame("Doctor id: 777 doesn't exist", $response->getContent());
     }
 
     public function testUpdateStatus_withValidStatus_returnsUpdated(): void
@@ -107,7 +107,7 @@ class DoctorControllerTest extends TestCase
         );
 
         $this->assertSame(404, $response->getStatusCode());
-        $this->assertSame('Doctor id:777 not found', $response->getContent());
+        $this->assertSame("Doctor id: 777 doesn't exist", $response->getContent());
     }
 
     public function testUpdateStatus_withInvalidStatus_returnsAlreadyUpdated(): void
