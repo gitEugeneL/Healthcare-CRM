@@ -14,31 +14,31 @@ abstract class TestCase extends WebTestCase
     ];
 
     protected KernelBrowser $client;
-
-    protected array $admin = [
-        'username' => 'admin@admin.com',
-        'password' => 'admin!1A'
-    ];
-
-    protected array $manager = [
-        'lastName' => 'manager',
-        'firstName' => 'manager',
-        'email' => 'm@m.com',
-        'password' => 'manager!1M',
-    ];
-
-    protected array $doctor = [
-        'email' => 'd@d.com',
-        'password' => 'doctor!1',
-        'lastName' => 'doctor',
-        'firstName' => 'doctor'
-    ];
-
-    protected array $patient = [
-        'email' => 'p@p.com',
-        'password' => 'patient1!A',
-        'lastName' => 'patient',
-        'firstName' => 'patient'
+    protected array $user = [
+        'admin' => [
+            'lastName' => 'admin',
+            'firstName' => 'admin',
+            'email' => 'a@a.com',
+            'password' => 'admin!1A'
+        ],
+        'manager' => [
+            'lastName' => 'manager',
+            'firstName' => 'manager',
+            'email' => 'm@m.com',
+            'password' => 'manager!1M',
+        ],
+        'doctor' => [
+            'email' => 'd@d.com',
+            'password' => 'doctor!1',
+            'lastName' => 'doctor',
+            'firstName' => 'doctor'
+        ],
+        'patient' => [
+            'email' => 'p@p.com',
+            'password' => 'patient1!A',
+            'lastName' => 'patient',
+            'firstName' => 'patient'
+        ]
     ];
 
     protected function setUp(): void
@@ -51,7 +51,20 @@ abstract class TestCase extends WebTestCase
         $this->headers['HTTP_AUTHORIZATION'] = 'Bearer ' . $accessToken;
     }
 
-    private function request(string $method, string $uri, string $accessToken = null, array $data = []): Response
+    private function login(string $username, string $password): string
+    {
+        $response = $this->request(
+            method: 'POST',
+            uri: '/api/token/login',
+            data: [
+                'username' => $username,
+                'password' => $password
+            ]
+        );
+        return json_decode($response->getContent(), true)['token'];
+    }
+
+    protected function request(string $method, string $uri, string $accessToken = null, array $data = []): Response
     {
         if ($accessToken)
             $this->setAccessToken($accessToken);
@@ -65,76 +78,29 @@ abstract class TestCase extends WebTestCase
         return $this->client->getResponse();
     }
 
-    protected function post(string $uri, string $accessToken = null, array $data = []): Response
-    {
-        return $this->request('POST', $uri, $accessToken, $data);
-    }
-
-    protected function patch(string $uri, string $accessToken = null, $data = []): Response
-    {
-        return $this->request('PATCH', $uri, $accessToken, $data);
-    }
-
-    protected function put(string $uri, string $accessToken = null, $data = []): Response
-    {
-        return $this->request('PUT', $uri, $accessToken, $data);
-    }
-
-    protected function get(string $uri, string $accessToken = null): Response
-    {
-        return $this->request('GET', $uri, $accessToken);
-    }
-
-    protected function delete(string $uri, string $accessToken = null): Response
-    {
-        return $this->request('DELETE', $uri, $accessToken);
-    }
-
-    protected function login(string $username, string $password): string
-    {
-        $response = $this->post(
-            uri: '/api/token/login',
-            data: [
-                'username' => $username,
-                'password' => $password
-            ]
-        );
-        return json_decode($response->getContent(), true)['token'];
-    }
-
     protected function decodeResponse(Response $response): array
     {
         return json_decode($response->getContent(), true);
     }
 
-    protected function createManager(): Response
+    protected function createUser(string $userType, string $accessToken = null): Response|null
     {
-        $adminAccessToken = $this->login($this->admin['username'], $this->admin['password']);
-
-        return $this->post(
-            uri: '/api/manager/create',
-            accessToken: $adminAccessToken,
-            data: $this->manager
-        );
+        if ($userType === 'manager' || $userType === 'doctor' || $userType === 'patient') {
+            return $this->request(
+                method: 'POST',
+                uri: "/api/{$userType}/create",
+                accessToken: $accessToken,
+                data: $this->user[$userType]
+            );
+        }
+        return null;
     }
 
-    protected function createDoctor(): Response
+    protected function accessToken(string $userType): string
     {
-        $this->createManager();
-        $managerAccessToken = $this->login($this->manager['email'], $this->manager['password']);
-
-        return $this->post(
-            uri: '/api/doctor/create',
-            accessToken: $managerAccessToken,
-            data: $this->doctor
-        );
-    }
-
-    protected function createPatient(): Response
-    {
-        return $this->post(
-            uri: '/api/patient/create',
-            data: $this->patient
-        );
+        if ($userType === 'admin' || $userType === 'manager' || $userType === 'doctor' || $userType === 'patient')
+            return $this->login($this->user[$userType]['email'], $this->user[$userType]['password']);
+        else
+            return '';
     }
 }

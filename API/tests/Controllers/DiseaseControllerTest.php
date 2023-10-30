@@ -13,10 +13,10 @@ class DiseaseControllerTest extends TestCase
 
     private function createDisease(): Response
     {
-        $this->createManager();
-        $managerAccessToken = $this->login($this->manager['email'], $this->manager['password']);
+        $managerAccessToken = $this->accessToken('manager');
 
-        return $this->post(
+        return $this->request(
+            method: 'POST',
             uri: '/api/disease/create',
             accessToken: $managerAccessToken,
             data: $this->disease
@@ -41,12 +41,13 @@ class DiseaseControllerTest extends TestCase
 
     public function testDelete_withValidId_returnsDeleted(): void
     {
-        $this->createManager();
-        $managerAccessToken = $this->login($this->manager['email'], $this->manager['password']);
-        $disease = json_decode($this->createDisease()->getContent(), true);
+        $managerAccessToken = $this->accessToken('manager');
 
-        $response = $this->delete(
-            uri: "/api/disease/delete/{$disease['id']}",
+        $responseData = $this->decodeResponse($this->createDisease());
+
+        $response = $this->request(
+            method: 'DELETE',
+            uri: "/api/disease/delete/{$responseData['id']}",
             accessToken: $managerAccessToken,
         );
 
@@ -55,10 +56,10 @@ class DiseaseControllerTest extends TestCase
 
     public function testDelete_withInvalidId_returnsNotFound(): void
     {
-        $this->createManager();
-        $managerAccessToken = $this->login($this->manager['email'], $this->manager['password']);
+        $managerAccessToken = $this->accessToken('manager');
 
-        $response = $this->delete(
+        $response = $this->request(
+            method: 'DELETE',
             uri: '/api/disease/delete/777',
             accessToken: $managerAccessToken,
         );
@@ -68,23 +69,25 @@ class DiseaseControllerTest extends TestCase
 
     public function testAddDoctor_withValidDoctorAndDiseaseId_returnsAdded(): void
     {
-        $this->createDoctor();
-        $doctorAccessToken = $this->login($this->doctor['email'], $this->doctor['password']);
-        $disease = json_decode($this->createDisease()->getContent(), true);
+        $doctorAccessToken = $this->accessToken('doctor');
 
-        $response = $this->patch(
+        $disease = $this->decodeResponse($this->createDisease());
+        $response = $this->request(
+            method: 'PATCH',
             uri: "/api/disease/add-doctor/{$disease['id']}",
             accessToken: $doctorAccessToken
         );
 
         $this->assertSame(201, $response->getStatusCode());
+        $this->assertSame('"Doctor successfully added"', $response->getContent());
     }
 
     public function testAddDoctor_withInvalidDoctorAndValidDiseaseId_returnsUnauthorized(): void
     {
-        $disease = json_decode($this->createDisease()->getContent(), true);
+        $disease = $this->decodeResponse($this->createDisease());
 
-        $response = $this->patch(
+        $response = $this->request(
+            method: 'PATCH',
             uri: "/api/disease/add-doctor/{$disease['id']}",
             accessToken: 'doctor invalid token'
         );
@@ -94,10 +97,10 @@ class DiseaseControllerTest extends TestCase
 
     public function testAddDoctor_witValidDoctorAndInvalidDiseaseId_returnsNotFound(): void
     {
-        $this->createDoctor();
-        $doctorAccessToken = $this->login($this->doctor['email'], $this->doctor['password']);
+        $doctorAccessToken = $this->accessToken('doctor');
 
-        $response = $this->patch(
+        $response = $this->request(
+            method: 'PATCH',
             uri: '/api/disease/add-doctor/777',
             accessToken: $doctorAccessToken
         );
@@ -107,15 +110,17 @@ class DiseaseControllerTest extends TestCase
 
     public function testRemoveDoctor_withValidDoctorAndDisease_returnsRemoved(): void
     {
-        $this->createDoctor();
-        $doctorAccessToken = $this->login($this->doctor['email'], $this->doctor['password']);
-        $disease = json_decode($this->createDisease()->getContent(), true);
+        $doctorAccessToken = $this->accessToken('doctor');
 
-        $this->patch(
+        $disease = $this->decodeResponse($this->createDisease());
+
+        $this->request(
+            method: 'PATCH',
             uri: "/api/disease/add-doctor/{$disease['id']}",
             accessToken: $doctorAccessToken
         );
-        $response = $this->patch(
+        $response = $this->request(
+            method: 'PATCH',
             uri: "/api/disease/remove-doctor/{$disease['id']}",
             accessToken: $doctorAccessToken
         );
@@ -125,10 +130,10 @@ class DiseaseControllerTest extends TestCase
 
     public function testRemoveDoctor_withValidDoctorAndInvalidDisease_returnsNotFound(): void
     {
-        $this->createDoctor();
-        $doctorAccessToken = $this->login($this->doctor['email'], $this->doctor['password']);
+        $doctorAccessToken = $this->accessToken('doctor');
 
-        $response = $this->patch(
+        $response = $this->request(
+            method: 'PATCH',
             uri: '/api/disease/remove-doctor/777',
             accessToken: $doctorAccessToken
         );
@@ -137,9 +142,10 @@ class DiseaseControllerTest extends TestCase
 
     public function testRemoveDoctor_withInvalidDoctorAndValidDisease_returnsUnauthorized(): void
     {
-        $disease = json_decode($this->createDisease()->getContent(), true);
+        $disease = $this->decodeResponse($this->createDisease());
 
-        $response = $this->patch(
+        $response = $this->request(
+            method: 'PATCH',
             uri: "/api/disease/remove-doctor/{$disease['id']}",
             accessToken: 'doctor invalid token'
         );
@@ -148,11 +154,11 @@ class DiseaseControllerTest extends TestCase
 
     public function testRemoveDoctor_doctorNotHaveDisease_returnsNotFound(): void
     {
-        $this->createDoctor();
-        $doctorAccessToken = $this->login($this->doctor['email'], $this->doctor['password']);
-        $disease = json_decode($this->createDisease()->getContent(), true);
+        $doctorAccessToken = $this->accessToken('doctor');
 
-        $response = $this->patch(
+        $disease = $this->decodeResponse($this->createDisease());
+        $response = $this->request(
+            method: 'PATCH',
             uri: "/api/disease/remove-doctor/{$disease['id']}",
             accessToken: $doctorAccessToken
         );

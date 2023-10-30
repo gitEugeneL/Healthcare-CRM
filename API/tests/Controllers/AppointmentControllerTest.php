@@ -9,16 +9,16 @@ class AppointmentControllerTest extends TestCase
 {
     public function testCreate_withValidData_returnsCreated(): void
     {
-        $doctor = $this->decodeResponse($this->createDoctor());
-        $patient = $this->decodeResponse($this->createPatient());
-        $patientAccessToken = $this->login($this->patient['email'], $this->patient['password']);
+        $patientAccessToken = $this->accessToken('patient');
+
         $data = [
-            'doctorId' => $doctor['id'],
+            'doctorId' => 1,
             'date' => (new DateTime())->modify('+1 day')->format('Y-m-d'),
             'startTime' => '08:00'
         ];
 
-        $response = $this->post(
+        $response = $this->request(
+            method: 'POST',
             uri: '/api/appointment/create',
             accessToken: $patientAccessToken,
             data: $data
@@ -28,8 +28,8 @@ class AppointmentControllerTest extends TestCase
         $this->assertSame(201, $response->getStatusCode());
         $this->assertSame($data['date'], $responseData['date']);
         $this->assertSame($data['startTime'], $responseData['start']);
-        $this->assertSame($doctor['email'], $responseData['doctor']['email']);
-        $this->assertSame($patient['email'], $responseData['patient']['email']);
+        $this->assertSame($this->user['doctor']['email'], $responseData['doctor']['email']);
+        $this->assertSame($this->user['patient']['email'], $responseData['patient']['email']);
     }
 
 

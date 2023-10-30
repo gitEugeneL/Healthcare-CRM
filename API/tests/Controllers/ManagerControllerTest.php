@@ -3,43 +3,51 @@
 namespace App\Tests\Controllers;
 
 use App\Tests\TestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class ManagerControllerTest extends TestCase
 {
+    private function createNewManager(string $adminAccessToken): Response
+    {
+        $this->user['manager']['email'] = 'test@m.com';
+        return $this->createUser('manager', $adminAccessToken);
+    }
+
+
     public function testCreate_withValidData_returnsCreated(): void
     {
-        $createManagerResponse = $this->createManager();
-        $responseData = $this->decodeResponse($createManagerResponse);
+        $response = $this->createNewManager($this->accessToken('admin'));
+        $responseData = $this->decodeResponse($response);
 
-        $this->assertSame(201, $createManagerResponse->getStatusCode());
-        $this->assertSame($this->manager['email'], $responseData['email']);
+        $this->assertSame(201, $response->getStatusCode());
+        $this->assertSame($this->user['manager']['email'], $responseData['email']);
     }
 
     public function testCreate_witExistentManager_returnsAlreadyExist(): void
     {
-        for ($i = 0; $i < 2; $i++)
-            $response = $this->createManager();
+        $response = $this->createUser('manager', $this->accessToken('admin'));
 
         $this->assertSame(422, $response->getStatusCode());
     }
 
     public function testInfo_withValidManager_returnsOk(): void
     {
-        $this->createManager();
-        $managerAccessToken = $this->login($this->manager['email'], $this->manager['password']);
+        $managerAccessToken = $this->accessToken('manager');
 
-        $response = $this->get(
+        $response = $this->request(
+            method: 'GET',
             uri: '/api/manager/info',
             accessToken: $managerAccessToken
         );
 
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame($this->manager['email'], $this->decodeResponse($response)['email']);
+        $this->assertSame($this->user['manager']['email'], $this->decodeResponse($response)['email']);
     }
 
     public function testInfo_withInvalidUser_returnsUnauthorized(): void
     {
-        $response = $this->get(
+        $response = $this->request(
+            method: 'GET',
             uri: '/api/manager/info',
             accessToken: 'invalidToken'
         );
@@ -49,8 +57,8 @@ class ManagerControllerTest extends TestCase
 
     public function testUpdate_withValidData_returnsUpdated(): void
     {
-        $this->createManager();
-        $managerAccessToken = $this->login($this->manager['email'], $this->manager['password']);
+        $managerAccessToken = $this->accessToken('manager');
+
         $updateData = [
             'firstName' => 'new first name',
             'lastName' => 'new last name',
@@ -58,7 +66,8 @@ class ManagerControllerTest extends TestCase
             'position' => 'the best manager'
         ];
 
-        $response = $this->patch(
+        $response = $this->request(
+            method: 'PATCH',
             uri: '/api/manager/update',
             accessToken: $managerAccessToken,
             data: $updateData
@@ -70,6 +79,6 @@ class ManagerControllerTest extends TestCase
         $this->assertSame($updateData['lastName'], $responseData['lastName']);
         $this->assertSame($updateData['phone'], $responseData['phone']);
         $this->assertSame($updateData['position'], $responseData['position']);
-        $this->assertSame($this->manager['email'], $responseData['email']);
+        $this->assertSame($this->user['manager']['email'], $responseData['email']);
     }
 }

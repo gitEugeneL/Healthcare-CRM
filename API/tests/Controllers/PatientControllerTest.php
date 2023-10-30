@@ -4,72 +4,76 @@ namespace App\Tests\Controllers;
 
 
 use App\Tests\TestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class PatientControllerTest extends TestCase
 {
+    private function createNewPatient(): Response
+    {
+        $this->user['patient']['email'] = 'test@p.com';
+        return $this->createUser('patient');
+    }
+
     public function testCreatePatient_withValidData_returnsCreated(): void
     {
-        $response = $this->createPatient();
+        $response = $this->createNewPatient();
         $responseData = $this->decodeResponse($response);
 
-        $this->assertSame($this->patient['email'], $responseData['email']);
-        $this->assertSame($this->patient['firstName'], $responseData['firstName']);
-        $this->assertSame($this->patient['lastName'], $responseData['lastName']);
+        $this->assertSame($this->user['patient']['email'], $responseData['email']);
+        $this->assertSame($this->user['patient']['firstName'], $responseData['firstName']);
+        $this->assertSame($this->user['patient']['lastName'], $responseData['lastName']);
         $this->assertSame(201, $response->getStatusCode());
     }
 
     public function testCreate_withExistentPatient_returnsAlreadyExist(): void
     {
-        for ($i = 0; $i < 2; $i++) {
-            $response = $this->createDoctor();
-        }
+        $response = $this->createUser('patient');
 
         $this->assertSame(422, $response->getStatusCode());
     }
 
     public function testShow_validRequest_returnsOk(): void
     {
-        $this->createManager();
-        $managerAccessToken = $this->login($this->manager['email'], $this->manager['password']);
+        $managerAccessToken = $this->accessToken('manager');
 
         for ($i = 0; $i < 15; $i++) {
-            $this->patient['email'] = "patient{$i}@patient.com";
-            $this->createPatient();
+            $this->user['patient']['email'] = "patient{$i}@patient.com";
+            $this->createUser('patient');
         }
-        $response = $this->get(
+        $response = $this->request(
+            method: 'GET',
             uri: '/api/patient/show?page=1',
             accessToken: $managerAccessToken
         );
+
         $responseData = $this->decodeResponse($response);
 
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame(1, $responseData['currentPage']);
         $this->assertSame(2, $responseData['totalPages']);
+        $this->assertCount(10, $responseData['items']);
     }
 
     public function testShowOne_withValidId_returnsOK(): void
     {
-        $this->createManager();
-        $managerAccessToken = $this->login($this->manager['email'], $this->manager['password']);
-        $patient = $this->decodeResponse($this->createPatient());
-
-        $response = $this->get(
-            uri: "/api/patient/show/{$patient['id']}",
+        $managerAccessToken = $this->accessToken('manager');
+        $response = $this->request(
+            method: 'GET',
+            uri: '/api/patient/show/1',
             accessToken: $managerAccessToken
         );
         $responseData = $this->decodeResponse($response);
 
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame($patient['id'], $responseData['id']);
-        $this->assertSame($this->patient['email'], $responseData['email']);
+        $this->assertSame(1, $responseData['id']);
+        $this->assertSame($this->user['patient']['email'], $responseData['email']);
     }
 
     public function testShowOne_withInvalidId_returnsNotFound(): void
     {
-        $this->createManager();
-        $managerAccessToken = $this->login($this->manager['email'], $this->manager['password']);
-
-        $response = $this->get(
+        $managerAccessToken = $this->accessToken('manager');
+        $response = $this->request(
+            method: 'GET',
             uri: '/api/patient/show/777',
             accessToken: $managerAccessToken
         );
@@ -80,8 +84,7 @@ class PatientControllerTest extends TestCase
 
     public function testUpdate_withValidData_returnsUpdated(): void
     {
-        $this->createPatient();
-        $patientAccessToken = $this->login($this->patient['email'], $this->patient['password']);
+        $patientAccessToken = $this->accessToken('patient');
         $updateData = [
             'firstName' => 'updated patient',
             'phone' => '123456789',
@@ -90,10 +93,11 @@ class PatientControllerTest extends TestCase
             'insurance' => 'nfz'
         ];
 
-        $response = $this->patch(
-          uri: '/api/patient/update',
-          accessToken: $patientAccessToken,
-          data: $updateData
+        $response = $this->request(
+            method: 'PATCH',
+            uri: '/api/patient/update',
+            accessToken: $patientAccessToken,
+            data: $updateData
         );
         $responseData = $this->decodeResponse($response);
 
@@ -101,16 +105,16 @@ class PatientControllerTest extends TestCase
         $this->assertSame($updateData['firstName'], $responseData['firstName']);
         $this->assertSame($updateData['phone'], $responseData['phone']);
         $this->assertSame($updateData['pesel'], $responseData['pesel']);
-        $this->assertSame($this->patient['email'], $responseData['email']);
-        $this->assertSame($this->patient['lastName'], $responseData['lastName']);
+        $this->assertSame($this->user['patient']['email'], $responseData['email']);
+        $this->assertSame($this->user['patient']['lastName'], $responseData['lastName']);
     }
 
     public function testUpdate_withInvalidData_returnsNotFound(): void
     {
-        $this->createPatient();
-        $patientAccessToken = $this->login($this->patient['email'], $this->patient['password']);
+        $patientAccessToken = $this->accessToken('patient');
 
-        $response = $this->patch(
+        $response = $this->request(
+            method: 'PATCH',
             uri: '/api/patient/update',
             accessToken: $patientAccessToken,
         );

@@ -8,8 +8,7 @@ class AddressControllerTest extends TestCase
 {
     public function testUpdate_withValidData_returnsUpdated(): void
     {
-        $patient = $this->decodeResponse($this->createPatient());
-        $patientAccessToken = $this->login($this->patient['email'], $this->patient['password']);
+        $patientAccessToken = $this->accessToken('patient');
 
         $updateData = [
             'city' => 'warszawa',
@@ -20,16 +19,16 @@ class AddressControllerTest extends TestCase
             'apartment' => '3B'
         ];
 
-        $response = $this->put(
+        $response = $this->request(
+            method: 'PUT',
             uri: '/api/address/update',
             accessToken: $patientAccessToken,
             data: $updateData
         );
-
         $responseData = $this->decodeResponse($response);
 
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame($patient['email'], $responseData['email']);
+        $this->assertSame($this->user['patient']['email'], $responseData['email']);
         $this->assertSame($updateData['city'], $responseData['address']['city']);
         $this->assertSame($updateData['street'], $responseData['address']['street']);
     }
