@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Dto\Address\UpdateAddressDto;
+use App\Dto\Address\RequestAddressDto;
 use App\Dto\Patient\ResponsePatientDto;
 use App\Exception\NotFoundException;
 use App\Repository\AddressRepository;
@@ -20,7 +20,7 @@ class AddressService
      * @throws NotFoundException
      * @throws NonUniqueResultException
      */
-    public function update(string $userIdentifier, UpdateAddressDto $dto): ResponsePatientDto
+    public function update(string $userIdentifier, RequestAddressDto $dto): ResponsePatientDto
     {
         $address = $this->addressRepository->findOneByPatientEmailOrThrow($userIdentifier);
 

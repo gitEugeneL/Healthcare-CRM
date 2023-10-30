@@ -4,7 +4,7 @@ namespace App\Dto\Address;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class UpdateAddressDto
+class RequestAddressDto
 {
     #[Assert\NotBlank]
     #[Assert\NotNull]

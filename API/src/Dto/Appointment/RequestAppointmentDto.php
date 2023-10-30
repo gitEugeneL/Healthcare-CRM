@@ -5,7 +5,6 @@ namespace App\Dto\Appointment;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator as AcmeAssert;
 
-
 class RequestAppointmentDto
 {
     #[Assert\NotBlank]

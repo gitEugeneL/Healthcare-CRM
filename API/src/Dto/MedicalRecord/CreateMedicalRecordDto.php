@@ -62,7 +62,7 @@ class CreateMedicalRecordDto
 
     public function getDoctorNote(): ?string
     {
-        return $this->doctorNote;
+        return $this->doctorNote ?? null;
     }
 
     public function setDoctorNote(?string $doctorNote): void

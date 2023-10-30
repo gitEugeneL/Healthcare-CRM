@@ -6,14 +6,14 @@ use App\Dto\User\AbstractResponseUserDto;
 
 class ResponseManagerDto extends AbstractResponseUserDto
 {
-    private string $position;
+    private ?string $position;
 
-    public function getPosition(): string
+    public function getPosition(): ?string
     {
-        return $this->position;
+        return $this->position ?? null;
     }
 
-    public function setPosition(string $position): static
+    public function setPosition(?string $position): static
     {
         $this->position = $position;
         return $this;

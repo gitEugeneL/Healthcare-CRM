@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Dto\Address\UpdateAddressDto;
+use App\Dto\Address\RequestAddressDto;
 use App\Entity\User\Roles;
 use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
@@ -36,7 +36,7 @@ class AddressController extends AbstractController
     public function update(Request $request, TokenStorageInterface $tokenStorage): JsonResponse
     {
         $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
-        $dto = $this->serializer->deserialize($request->getContent(), UpdateAddressDto::class, 'json');
+        $dto = $this->serializer->deserialize($request->getContent(), RequestAddressDto::class, 'json');
         $this->dtoInspector->inspect($dto);
         $result = $this->addressService->update($userIdentifier, $dto);
         return $this->json($result, 200);
