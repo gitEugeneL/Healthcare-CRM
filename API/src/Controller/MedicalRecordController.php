@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Dto\MedicalRecord\CreateMedicalRecordDto;
 use App\Dto\MedicalRecord\UpdateMedicalRecordDto;
 use App\Entity\User\Roles;
+use App\Exception\AccessException;
 use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
@@ -109,9 +110,10 @@ class MedicalRecordController extends AbstractController
     }
 
     /**
+     * @throws AccessException
+     * @throws NotFoundException
      * @throws ValidationException
      * @throws NonUniqueResultException
-     * @throws NotFoundException
      */
     #[IsGranted(Roles::DOCTOR)]
     #[Route('/{medicalRecordId}', methods: ['PATCH'])]

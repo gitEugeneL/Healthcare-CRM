@@ -6,6 +6,7 @@ use App\Dto\MedicalRecord\CreateMedicalRecordDto;
 use App\Dto\MedicalRecord\ResponseMedicalRecordDto;
 use App\Dto\MedicalRecord\UpdateMedicalRecordDto;
 use App\Entity\MedicalRecord;
+use App\Exception\AccessException;
 use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
 use App\Repository\AppointmentRepository;
@@ -16,7 +17,6 @@ use App\Repository\SpecializationRepository;
 use App\Transformer\MedicalRecord\MedicalRecordResponseDtoTransformer;
 use App\Transformer\Paginator\PaginatorResponseTransformer;
 use Doctrine\ORM\NonUniqueResultException;
-use Symfony\Component\Finder\Exception\AccessDeniedException;
 
 class MedicalRecordService
 {
@@ -122,8 +122,9 @@ class MedicalRecordService
     }
 
     /**
-     * @throws NonUniqueResultException
+     * @throws AccessException
      * @throws NotFoundException
+     * @throws NonUniqueResultException
      */
     public function update(string $doctorIdentifier, int $medicalRecordId, UpdateMedicalRecordDto $dto): ResponseMedicalRecordDto
     {
@@ -133,7 +134,7 @@ class MedicalRecordService
         $doctor = $this->doctorRepository->findOneByEmailOrThrow($doctorIdentifier);
         $medicalRecord = $this->medicalRecordRepository->findOneByIdOrThrow($medicalRecordId);
         if ($medicalRecord->getDoctor() !== $doctor)
-            throw new AccessDeniedException("Doctor doesn't have access to update this medical record");
+            throw new AccessException("Doctor doesn't have access to update this medical record");
 
         if (!is_null($dto->getTitle()))
             $medicalRecord->setTitle($dto->getTitle());

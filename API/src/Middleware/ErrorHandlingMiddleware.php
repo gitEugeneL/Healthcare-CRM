@@ -3,7 +3,7 @@
 namespace App\Middleware;
 
 use App\Exception\AlreadyExistException;
-use App\Exception\NoAccessException;
+use App\Exception\AccessException;
 use App\Exception\NotFoundException;
 use App\Exception\UnsupportedMediaType;
 use App\Exception\ValidationException;
@@ -30,7 +30,7 @@ class ErrorHandlingMiddleware implements EventSubscriberInterface
             $response = new Response($exception->getMessage(), 422);
         elseif ($exception instanceof UnsupportedMediaType)
             $response = new Response($exception->getMessage(), 415);
-        elseif ($exception instanceof NoAccessException)
+        elseif ($exception instanceof AccessException)
             $response = new Response($exception->getMessage(), 403);
         else
             $response = new Response($exception, 500); // only for dev

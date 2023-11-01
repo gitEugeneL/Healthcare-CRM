@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Dto\Appointment\RequestAppointmentDto;
 use App\Entity\User\Roles;
 use App\Exception\AlreadyExistException;
-use App\Exception\NoAccessException;
+use App\Exception\AccessException;
 use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
 use App\Service\AppointmentService;
@@ -42,7 +42,7 @@ class AppointmentController extends AbstractController
     }
 
     /**
-     * @throws NoAccessException
+     * @throws AccessException
      * @throws AlreadyExistException
      * @throws NotFoundException
      * @throws ValidationException
@@ -116,9 +116,10 @@ class AppointmentController extends AbstractController
     }
 
     /**
-     * @throws AlreadyExistException
-     * @throws NoAccessException
+     * @throws AccessException
      * @throws NotFoundException
+     * @throws ValidationException
+     * @throws AlreadyExistException
      */
     #[IsGranted(Roles::DOCTOR)]
     #[Route('/{appointmentId}/finalize', methods: ['PATCH'])]
@@ -128,9 +129,10 @@ class AppointmentController extends AbstractController
     }
 
     /**
-     * @throws NoAccessException
-     * @throws AlreadyExistException
+     * @throws AccessException
      * @throws NotFoundException
+     * @throws ValidationException
+     * @throws AlreadyExistException
      */
     #[IsGranted(new Expression('is_granted("'.Roles::DOCTOR.'") or is_granted("'.Roles::MANAGER.'")'))]
     #[Route('/{appointmentId}/cancel', methods: ['PATCH'])]

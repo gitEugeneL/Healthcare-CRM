@@ -8,7 +8,7 @@ use App\Entity\Appointment;
 use App\Entity\Doctor\Doctor;
 use App\Entity\Doctor\Status;
 use App\Exception\AlreadyExistException;
-use App\Exception\NoAccessException;
+use App\Exception\AccessException;
 use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
 use App\Repository\AppointmentRepository;
@@ -152,14 +152,14 @@ class AppointmentService
 
     /**
      * @throws NotFoundException
-     * @throws NoAccessException
+     * @throws AccessException
      * @throws AlreadyExistException
      */
     public function update(int $appointmentId, string $userIdentifier, string $action): ResponseAppointmentDto
     {
         $appointment = $this->appointmentRepository->findOneByIdOrThrow($appointmentId);
         if ($appointment->getDoctor()->getUser()->getEmail() !== $userIdentifier)
-            throw new NoAccessException("Doctor doesn't have access");
+            throw new AccessException("Doctor doesn't have access");
 
         if ($action === 'finalize') {
             if ($appointment->isCompleted())
