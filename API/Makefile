@@ -18,3 +18,6 @@ down:
 
 app_bash:
 	docker-compose -f ./docker/docker-compose.yml exec -u www-data php bash
+
+create_test_data:
+	docker-compose -f ./docker/docker-compose.yml exec -u www-data php bin/console --env=test doctrine:fixtures:load
