@@ -140,13 +140,13 @@ class AppointmentService
      * @throws ValidationException
      * @throws Exception
      */
-    public function showForUser(?string $userIdentifier, string $dateString, string $userType): iterable
+    public function showForUser(?string $userIdentifier, string $date, string $userType): iterable
     {
-        if (!$this->checkDatePattern($dateString))
+        if (!$this->checkDatePattern($date))
             throw new ValidationException('date must be Y-m-d');
 
         $appointments = $this->appointmentRepository
-            ->findByDateForUser(new DateTime($dateString), $userIdentifier, $userType);
+            ->findByDateForUser($date, $userIdentifier, $userType);
         return $this->appointmentResponseDtoTransformer->transformFromObjects($appointments);
     }
 

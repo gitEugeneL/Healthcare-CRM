@@ -106,18 +106,28 @@ class AppointmentRepository extends ServiceEntityRepository
         return $appointment;
     }
 
-    public function findByDateForUser(DateTime $date, string $email, string $userType = null): array
+    /**
+     * @throws Exception
+     */
+    public function findByDateForUser(string $date, string $email, string $userType = null): array
     {
         if ($userType !== 'patient'&& $userType  !== 'doctor' && $userType !== 'manager')
             return [];
+
         elseif ($userType === 'manager')
-            return $this->findBy(['date' => $date]);
+            return $this->createQueryBuilder('appointment')
+                ->where('appointment.date = :date')
+                ->orderBy('appointment.startTime')
+                ->setParameter('date', $date)
+                ->getQuery()
+                ->getResult();
 
         return $this->createQueryBuilder('appointment')
             ->join("appointment.{$userType}", 'u')
             ->join('u.user', 'user')
             ->where('appointment.date = :date')
             ->andWhere('user.email = :email')
+            ->orderBy('appointment.startTime')
             ->setParameter('date', $date)
             ->setParameter('email', $email)
             ->getQuery()

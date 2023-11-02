@@ -35,9 +35,9 @@ class AppointmentController extends AbstractController
      */
     private function showForUser(TokenStorageInterface $tokenStorage, Request $request, string $action): JsonResponse
     {
-        $dateString = $request->query->getString('date'); // ?date=2030-12-31
+        $date = $request->query->getString('date'); // ?date=2030-12-31
         $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
-        $result = $this->appointmentService->showForUser($userIdentifier, $dateString, $action);
+        $result = $this->appointmentService->showForUser($userIdentifier, $date, $action);
         return $this->json($result, 200);
     }
 
