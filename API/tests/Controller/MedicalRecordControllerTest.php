@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controllers;
+namespace App\Tests\Controller;
 
 use App\Tests\TestCase;
 use DateTime;
