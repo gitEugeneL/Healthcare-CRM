@@ -18,6 +18,6 @@ class UpdateSpecializationDto
 
     public function setDescription(string $description): void
     {
-        $this->description = trim($description);
+        $this->description = ucfirst(strtolower(trim($description)));
     }
 }

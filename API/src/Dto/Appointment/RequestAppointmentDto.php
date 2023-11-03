@@ -2,6 +2,7 @@
 
 namespace App\Dto\Appointment;
 
+use App\Validator\Constraints\PositiveNumber;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator as AcmeAssert;
 
@@ -9,10 +10,7 @@ class RequestAppointmentDto
 {
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Regex(
-        pattern: '/^[1-9]\d*$/',
-        message: 'doctorID must be an integer and greater than 0'
-    )]
+    #[PositiveNumber]
     private mixed $doctorId;
 
     #[Assert\NotBlank]
@@ -47,7 +45,7 @@ class RequestAppointmentDto
 
     public function setDate(string $date): void
     {
-        $this->date = $date;
+        $this->date = trim($date);
     }
 
     public function getStartTime(): ?string
@@ -57,6 +55,6 @@ class RequestAppointmentDto
 
     public function setStartTime(?string $startTime): void
     {
-        $this->startTime = $startTime;
+        $this->startTime = trim($startTime);
     }
 }

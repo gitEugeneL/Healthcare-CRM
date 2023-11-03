@@ -56,7 +56,7 @@ class RequestAddressDto
 
     public function setStreet(string $street): void
     {
-        $this->street = trim($street);
+        $this->street = ucfirst(strtolower(trim($street)));;
     }
 
     public function getPostalCode(): string
@@ -76,7 +76,7 @@ class RequestAddressDto
 
     public function setProvince(string $province): void
     {
-        $this->province = trim($province);
+        $this->province = ucfirst(strtolower(trim($province)));;
     }
 
     public function getHouse(): string

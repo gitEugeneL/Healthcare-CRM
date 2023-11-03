@@ -28,10 +28,9 @@ class UpdatePatientDto extends AbstractUpdateUserDto
         return $this->pesel ?? null;
     }
 
-    public function setPesel(?string $pesel): static
+    public function setPesel(?string $pesel): void
     {
-        $this->pesel = $pesel;
-        return $this;
+        $this->pesel = trim($pesel);
     }
 
     public function getDateOfBirth(): ?string
@@ -39,10 +38,9 @@ class UpdatePatientDto extends AbstractUpdateUserDto
         return $this->dateOfBirth ?? null;
     }
 
-    public function setDateOfBirth(?string $dateOfBirth): static
+    public function setDateOfBirth(?string $dateOfBirth): void
     {
-        $this->dateOfBirth = $dateOfBirth;
-        return $this;
+        $this->dateOfBirth = trim($dateOfBirth);
     }
 
     public function getInsurance(): ?string
@@ -50,9 +48,8 @@ class UpdatePatientDto extends AbstractUpdateUserDto
         return $this->insurance ?? null;
     }
 
-    public function setInsurance(?string $insurance): static
+    public function setInsurance(?string $insurance): void
     {
-        $this->insurance = $insurance;
-        return $this;
+        $this->insurance = ucfirst(strtolower(trim($insurance)));
     }
 }

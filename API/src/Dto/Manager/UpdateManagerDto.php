@@ -17,6 +17,6 @@ class UpdateManagerDto extends AbstractUpdateUserDto
 
     public function setPosition(?string $position): void
     {
-        $this->position = trim($position);
+        $this->position = ucfirst(strtolower(trim($position)));
     }
 }

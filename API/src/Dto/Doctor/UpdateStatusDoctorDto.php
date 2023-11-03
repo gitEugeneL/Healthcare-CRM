@@ -9,20 +9,23 @@ class UpdateStatusDoctorDto
 {
     #[Assert\NotNull]
     #[Assert\NotBlank]
-    #[Assert\Positive]
-    private int $doctorId;
+    #[Assert\Regex(
+        pattern: '/^[1-9]\d*$/',
+        message: 'number must be an integer and greater than 0'
+    )]
+    private mixed $doctorId;
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
     #[Assert\Choice([Status::ACTIVE, Status::DISABLED])]
     private string $status;
 
-    public function getDoctorId(): int
+    public function getDoctorId(): mixed
     {
         return $this->doctorId;
     }
 
-    public function setDoctorId($doctorId): void
+    public function setDoctorId(mixed $doctorId): void
     {
         $this->doctorId = $doctorId;
     }

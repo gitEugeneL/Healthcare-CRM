@@ -20,7 +20,7 @@ class UpdateDoctorDto extends AbstractUpdateUserDto
 
     public function setDescription(?string $description): void
     {
-        $this->description = trim($description);
+        $this->description = ucfirst(strtolower(trim($description)));
     }
 
     public function getEducation(): ?string
@@ -30,6 +30,6 @@ class UpdateDoctorDto extends AbstractUpdateUserDto
 
     public function setEducation(?string $education): void
     {
-        $this->education = trim($education);
+        $this->education = ucfirst(strtolower(trim($education)));
     }
 }

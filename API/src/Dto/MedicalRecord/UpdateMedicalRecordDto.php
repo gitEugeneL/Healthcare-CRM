@@ -20,10 +20,9 @@ class UpdateMedicalRecordDto
         return $this->title ?? null;
     }
 
-    public function setTitle(?string $title): static
+    public function setTitle(?string $title): void
     {
-        $this->title = $title;
-        return $this;
+        $this->title = ucfirst(strtolower(trim($title)));
     }
 
     public function getDescription(): ?string
@@ -31,10 +30,9 @@ class UpdateMedicalRecordDto
         return $this->description ?? null;
     }
 
-    public function setDescription(?string $description): static
+    public function setDescription(?string $description): void
     {
-        $this->description = $description;
-        return $this;
+        $this->description = ucfirst(strtolower(trim($description)));
     }
 
     public function getDoctorNote(): ?string
@@ -42,9 +40,8 @@ class UpdateMedicalRecordDto
         return $this->doctorNote ?? null;
     }
 
-    public function setDoctorNote(?string $doctorNote): static
+    public function setDoctorNote(?string $doctorNote): void
     {
-        $this->doctorNote = $doctorNote;
-        return $this;
+        $this->doctorNote = ucfirst(strtolower(trim($doctorNote)));
     }
 }

@@ -43,7 +43,7 @@ class RequestDoctorConfigDto
 
     public function setStartTime(string $startTime): void
     {
-        $this->startTime = $startTime;
+        $this->startTime = trim($startTime);
     }
 
     public function getEndTime(): string
@@ -53,7 +53,7 @@ class RequestDoctorConfigDto
 
     public function setEndTime(string $endTime): void
     {
-        $this->endTime = $endTime;
+        $this->endTime = trim($endTime);
     }
 
     public function getInterval(): string
@@ -63,7 +63,7 @@ class RequestDoctorConfigDto
 
     public function setInterval(string $interval): void
     {
-        $this->interval = $interval;
+        $this->interval = trim($interval);
     }
 
     public function getWorkdays(): mixed

@@ -2,13 +2,15 @@
 
 namespace App\Dto\Specialization;
 
+use App\Validator\Constraints\PositiveNumber;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class UpdateSpecializationDoctorsDto
 {
     #[Assert\NotNull]
     #[Assert\NotBlank]
-    private int $doctorId;
+    #[PositiveNumber]
+    private mixed $doctorId;
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
@@ -24,12 +26,12 @@ class UpdateSpecializationDoctorsDto
         $this->specializationName = trim(strtolower($specializationName));
     }
 
-    public function getDoctorId(): string
+    public function getDoctorId(): mixed
     {
         return $this->doctorId;
     }
 
-    public function setDoctorId(int $doctorId): void
+    public function setDoctorId(mixed $doctorId): void
     {
         $this->doctorId = $doctorId;
     }

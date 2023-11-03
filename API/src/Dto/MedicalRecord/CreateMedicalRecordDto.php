@@ -2,6 +2,7 @@
 
 namespace App\Dto\MedicalRecord;
 
+use App\Validator\Constraints\PositiveNumber;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateMedicalRecordDto
@@ -26,18 +27,12 @@ class CreateMedicalRecordDto
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Regex(
-        pattern: '/^[1-9]\d*$/',
-        message: 'specializationID must be an integer and greater than 0'
-    )]
+    #[PositiveNumber]
     private mixed $specializationId;
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Regex(
-        pattern: '/^[1-9]\d*$/',
-        message: 'appointmentID must be an integer and greater than 0'
-    )]
+    #[PositiveNumber]
     private mixed $appointmentId;
 
     public function getTitle(): string
@@ -47,7 +42,7 @@ class CreateMedicalRecordDto
 
     public function setTitle(string $title): void
     {
-        $this->title = trim($title);
+        $this->title = ucfirst(strtolower(trim($title)));
     }
 
     public function getDescription(): string
@@ -57,7 +52,7 @@ class CreateMedicalRecordDto
 
     public function setDescription(string $description): void
     {
-        $this->description = trim($description);
+        $this->description = ucfirst(strtolower(trim($description)));
     }
 
     public function getDoctorNote(): ?string
@@ -67,7 +62,7 @@ class CreateMedicalRecordDto
 
     public function setDoctorNote(?string $doctorNote): void
     {
-        $this->doctorNote = trim($doctorNote);
+        $this->doctorNote = ucfirst(strtolower(trim($doctorNote)));
     }
 
     public function getPatientEmail(): string

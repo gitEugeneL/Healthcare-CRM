@@ -4,7 +4,7 @@ namespace App\Dto\Disease;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class CreateDiseaseDto
+class RequestDiseaseDto
 {
     #[Assert\NotBlank]
     #[Assert\NotNull]
@@ -18,6 +18,6 @@ class CreateDiseaseDto
 
     public function setName(string $name): void
     {
-        $this->name = trim(strtolower($name));
+        $this->name = ucfirst(strtolower(trim($name)));
     }
 }
