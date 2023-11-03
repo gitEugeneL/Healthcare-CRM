@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Dto\Disease\CreateDiseaseDto;
+use App\Dto\Disease\RequestDiseaseDto;
 use App\Dto\Disease\ResponseDiseaseDto;
 use App\Entity\Disease;
 use App\Exception\AlreadyExistException;
@@ -23,7 +23,7 @@ class DiseaseService
     /**
      * @throws AlreadyExistException
      */
-    public function create(CreateDiseaseDto $dto): ResponseDiseaseDto
+    public function create(RequestDiseaseDto $dto): ResponseDiseaseDto
     {
         $diseaseName = $dto->getName();
         if ($this->diseaseRepository->doesDiseaseExistByName($diseaseName))

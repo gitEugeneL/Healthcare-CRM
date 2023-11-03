@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Dto\Disease\CreateDiseaseDto;
+use App\Dto\Disease\RequestDiseaseDto;
 use App\Entity\User\Roles;
 use App\Exception\AlreadyExistException;
 use App\Exception\NotFoundException;
@@ -37,7 +37,7 @@ class DiseaseController extends AbstractController
     #[Route('/create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
-        $dto = $this->serializer->deserialize($request->getContent(), CreateDiseaseDto::class, 'json');
+        $dto = $this->serializer->deserialize($request->getContent(), RequestDiseaseDto::class, 'json');
         $this->dtoInspector->inspect($dto);
         $result = $this->diseaseService->create($dto);
         return $this->json($result, 201);
@@ -54,9 +54,8 @@ class DiseaseController extends AbstractController
         $diseaseId = (int) $request->get('diseaseId');
         $this->paramsInspector->inspect($diseaseId);
         $this->diseaseService->delete($diseaseId);
-        return $this->json('successfully deleted', 204);
+        return $this->json(null, 204);
     }
-
 
     /**
      * @throws NonUniqueResultException
@@ -74,7 +73,6 @@ class DiseaseController extends AbstractController
         $this->diseaseService->addDoctor($doctorIdentifier, $diseaseId);
         return $this->json('Doctor successfully added', 201);
     }
-
 
     /**
      * @throws NonUniqueResultException

@@ -8,7 +8,6 @@ use App\Validator\PositiveNumberValidator;
 use Attribute;
 use Symfony\Component\Validator\Constraint;
 
-
 #[Attribute]
 class PositiveNumber extends Constraint
 {

@@ -72,7 +72,7 @@ class SpecializationController extends AbstractController
     public function delete(Request $request): JsonResponse
     {
         $this->specializationService->delete($request->get('specializationName'));
-        return $this->json('successfully deleted', 204);
+        return $this->json(null, 204);
     }
 
     /**

@@ -21,7 +21,7 @@ class CreateSpecializationDto
 
     public function setName(string $name): void
     {
-        $this->name = trim(strtolower($name));
+        $this->name = ucfirst(strtolower(trim($name)));
     }
 
     public function getDescription(): ?string
@@ -31,6 +31,6 @@ class CreateSpecializationDto
 
     public function setDescription(?string $description): void
     {
-        $this->description = trim($description);
+        $this->description = ucfirst(strtolower(trim($description)));
     }
 }
