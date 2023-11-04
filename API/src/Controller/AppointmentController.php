@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('/api/appointment')]
+#[Route('/api/appointments')]
 class AppointmentController extends AbstractController
 {
     public function __construct(
@@ -75,7 +75,7 @@ class AppointmentController extends AbstractController
      * @throws NotFoundException
      */
     #[IsGranted(Roles::PATIENT)]
-    #[Route('/create', methods: ['POST'])]
+    #[Route('', methods: ['POST'])]
     public function create(TokenStorageInterface $tokenStorage, Request $request): JsonResponse
     {
         $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();

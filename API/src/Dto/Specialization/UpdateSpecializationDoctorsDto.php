@@ -23,7 +23,7 @@ class UpdateSpecializationDoctorsDto
 
     public function setSpecializationName(string $specializationName): void
     {
-        $this->specializationName = trim(strtolower($specializationName));
+        $this->specializationName = ucfirst(strtolower(trim($specializationName)));
     }
 
     public function getDoctorId(): mixed

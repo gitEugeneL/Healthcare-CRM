@@ -25,7 +25,7 @@ abstract class AbstractUpdateUserDto
 
     public function setLastName(?string $lastName): void
     {
-        $this->lastName = $lastName;
+        $this->lastName = ucfirst(strtolower(trim($lastName)));
     }
 
     public function getFirstName(): ?string
@@ -35,7 +35,7 @@ abstract class AbstractUpdateUserDto
 
     public function setFirstName(?string $firstName): void
     {
-        $this->firstName = trim(strtolower($firstName));
+        $this->firstName = ucfirst(strtolower(trim($firstName)));
     }
 
     public function getPhone(): ?string

@@ -59,7 +59,7 @@ abstract class AbstractCreateUserDto
 
     public function setFirstName(string $firstName): void
     {
-        $this->firstName = trim($firstName);
+        $this->firstName = ucfirst(strtolower(trim($firstName)));
     }
 
     public function getLastName(): string
@@ -69,6 +69,6 @@ abstract class AbstractCreateUserDto
 
     public function setLastName(string $lastName): void
     {
-        $this->lastName = trim($lastName);
+        $this->lastName = ucfirst(strtolower(trim($lastName)));
     }
 }

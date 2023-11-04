@@ -2,26 +2,26 @@
 
 namespace App\Tests\Controller;
 
-use App\Tests\TestCase;
+use App\Tests\ApiTestCase;
 
-class AddressControllerTest extends TestCase
+class AddressControllerApiTest extends ApiTestCase
 {
     public function testUpdate_withValidData_returnsUpdated(): void
     {
         $patientAccessToken = $this->accessToken('patient');
 
         $updateData = [
-            'city' => 'warszawa',
-            'street' => 'marszałkowska',
+            'city' => 'Warszawa',
+            'street' => 'Marszałkowska',
             'postalCode' => '02-013',
-            'province' => 'mazowieckie',
+            'province' => 'Mazowieckie',
             'house' => '3/5',
             'apartment' => '3B'
         ];
 
         $response = $this->request(
             method: 'PUT',
-            uri: '/api/address/update',
+            uri: '/api/addresses',
             accessToken: $patientAccessToken,
             data: $updateData
         );

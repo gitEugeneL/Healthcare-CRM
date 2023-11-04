@@ -2,11 +2,11 @@
 
 namespace App\Tests\Authentication;
 
-use App\Tests\TestCase;
+use App\Tests\ApiTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 
-class AuthTest extends TestCase
+class AuthApiTest extends ApiTestCase
 {
     private function userLogin(string $username, string $password): Response
     {

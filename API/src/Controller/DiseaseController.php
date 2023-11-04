@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('/api/disease')]
+#[Route('/api/diseases')]
 class DiseaseController extends AbstractController
 {
     public function __construct(
@@ -34,7 +34,7 @@ class DiseaseController extends AbstractController
      * @throws ValidationException
      */
     #[IsGranted(Roles::MANAGER)]
-    #[Route('/create', methods: ['POST'])]
+    #[Route('', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         $dto = $this->serializer->deserialize($request->getContent(), RequestDiseaseDto::class, 'json');
@@ -48,7 +48,7 @@ class DiseaseController extends AbstractController
      * @throws ValidationException
      */
     #[IsGranted(Roles::MANAGER)]
-    #[Route('/delete/{diseaseId}', methods: ['DELETE'])]
+    #[Route('/{diseaseId}', methods: ['DELETE'])]
     public function delete(Request $request): JsonResponse
     {
         $diseaseId = (int) $request->get('diseaseId');

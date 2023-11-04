@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('/api/patient')]
+#[Route('/api/patients')]
 class PatientController extends AbstractController
 {
     public function __construct(
@@ -32,7 +32,7 @@ class PatientController extends AbstractController
     /**
      * @throws ValidationException
      */
-    #[Route('/create', methods: ['POST'])]
+    #[Route('', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         $dto = $this->serializer->deserialize($request->getContent(), CreatePatientDto::class, 'json');
@@ -46,7 +46,7 @@ class PatientController extends AbstractController
      * @throws ValidationException
      */
     #[IsGranted(Roles::PATIENT)]
-    #[Route('/update', methods: ['PATCH'])]
+    #[Route('', methods: ['PATCH'])]
     public function update(Request $request, TokenStorageInterface $tokenStorage): JsonResponse
     {
         $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
@@ -57,7 +57,7 @@ class PatientController extends AbstractController
     }
 
     #[IsGranted(new Expression('is_granted("'.Roles::DOCTOR.'") or is_granted("'.Roles::MANAGER.'")'))]
-    #[Route('/show', methods: ['GET'])]
+    #[Route('/', methods: ['GET'])]
     public function show(Request $request): JsonResponse
     {
         $page = $request->query->getInt('page', 1);
@@ -70,7 +70,7 @@ class PatientController extends AbstractController
      * @throws ValidationException
      */
     #[IsGranted(new Expression('is_granted("'.Roles::DOCTOR.'") or is_granted("'.Roles::MANAGER.'")'))]
-    #[Route('/show/{patientId}', methods: ['GET'])]
+    #[Route('/{patientId}', methods: ['GET'])]
     public function showOne(Request $request): JsonResponse
     {
         $patientId = (int) $request->get('patientId');

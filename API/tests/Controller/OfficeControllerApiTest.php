@@ -2,10 +2,10 @@
 
 namespace App\Tests\Controller;
 
-use App\Tests\TestCase;
+use App\Tests\ApiTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class OfficeControllerTest extends TestCase
+class OfficeControllerApiTest extends ApiTestCase
 {
     private array $office = [
         'number' => 104,

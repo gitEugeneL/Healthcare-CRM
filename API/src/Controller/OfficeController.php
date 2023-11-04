@@ -91,8 +91,8 @@ class OfficeController extends AbstractController
         return $this->json(null, 204);
     }
 
-    // todo fix routes
-    // todo user info
     // todo validation tests
+    // todo user info
     // todo swagger
+    // todo add makefile config for test db
 }

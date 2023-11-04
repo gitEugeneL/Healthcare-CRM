@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('/api/specialization')]
+#[Route('/api/specializations')]
 class SpecializationController extends AbstractController
 {
     public function __construct(
@@ -33,7 +33,7 @@ class SpecializationController extends AbstractController
      * @throws ValidationException
      */
     #[IsGranted(Roles::MANAGER)]
-    #[Route('/create', methods: ['POST'])]
+    #[Route('', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         $dto = $this->serializer->deserialize($request->getContent(), CreateSpecializationDto::class, 'json');
@@ -43,7 +43,7 @@ class SpecializationController extends AbstractController
     }
 
     #[IsGranted(new Expression('is_granted("'.Roles::PATIENT.'") or is_granted("'.Roles::MANAGER.'")'))]
-    #[Route('/show', methods: ['GET'])]
+    #[Route('', methods: ['GET'])]
     public function show(): JsonResponse
     {
         $result = $this->specializationService->show();
@@ -55,7 +55,7 @@ class SpecializationController extends AbstractController
      * @throws ValidationException
      */
     #[IsGranted(Roles::MANAGER)]
-    #[Route('/update/{specializationName}', methods: ['PATCH'])]
+    #[Route('/{specializationName}', methods: ['PUT'])]
     public function update(Request $request): JsonResponse
     {
         $dto = $this->serializer->deserialize($request->getContent(), UpdateSpecializationDto::class, 'json');
@@ -68,7 +68,7 @@ class SpecializationController extends AbstractController
      * @throws NotFoundException
      */
     #[IsGranted(Roles::MANAGER)]
-    #[Route('/delete/{specializationName}', methods: ['DELETE'])]
+    #[Route('/{specializationName}', methods: ['DELETE'])]
     public function delete(Request $request): JsonResponse
     {
         $this->specializationService->delete($request->get('specializationName'));

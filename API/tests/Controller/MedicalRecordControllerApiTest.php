@@ -2,18 +2,18 @@
 
 namespace App\Tests\Controller;
 
-use App\Tests\TestCase;
+use App\Tests\ApiTestCase;
 use DateTime;
 use Symfony\Component\HttpFoundation\Response;
 
-class MedicalRecordControllerTest extends TestCase
+class MedicalRecordControllerApiTest extends ApiTestCase
 {
     private function createSpecialization(string $managerAccessToken): Response
     {
         $data = ['name' => 'specialization1'];
         return $this->request(
             method: 'POST',
-            uri: '/api/specialization/create',
+            uri: '/api/specializations',
             accessToken: $managerAccessToken,
             data: $data,
         );
@@ -23,7 +23,7 @@ class MedicalRecordControllerTest extends TestCase
     {
         $this->request(
             method: 'PATCH',
-            uri: '/api/specialization/include-doctor',
+            uri: '/api/specializations/include-doctor',
             accessToken: $managerAccessToken,
             data: [
                 'doctorId' => $doctorId,
@@ -49,7 +49,7 @@ class MedicalRecordControllerTest extends TestCase
         ];
         return $this->request(
             method: 'POST',
-            uri: '/api/appointment/create',
+            uri: '/api/appointments',
             accessToken: $patientAccessToken,
             data: $data
         );
@@ -66,7 +66,7 @@ class MedicalRecordControllerTest extends TestCase
         ];
         return $this->request(
             method: 'POST',
-            uri: '/api/medical-record',
+            uri: '/api/medical-records',
             accessToken: $doctorAccessToken,
             data: $medicalRecordData
         );
@@ -155,7 +155,7 @@ class MedicalRecordControllerTest extends TestCase
         // show medical records
         $response = $this->request(
             method: 'GET',
-            uri: '/api/medical-record/for-doctor/1?page=1',
+            uri: '/api/medical-records/for-doctor/1?page=1',
             accessToken: $doctorAccessToken
         );
         $responseData = $this->decodeResponse($response);
@@ -189,7 +189,7 @@ class MedicalRecordControllerTest extends TestCase
 
         $response = $this->request(
             method: 'GET',
-            uri: '/api/medical-record/for-patient?page=1',
+            uri: '/api/medical-records/for-patient?page=1',
             accessToken: $patientAccessToken
         );
         $responseData = $this->decodeResponse($response);
@@ -221,7 +221,7 @@ class MedicalRecordControllerTest extends TestCase
 
         $response = $this->request(
             method: 'GET',
-            uri: "/api/medical-record/{$record['id']}/for-doctor",
+            uri: "/api/medical-records/{$record['id']}/for-doctor",
             accessToken: $doctorAccessToken
         );
         $responseData = $this->decodeResponse($response);
@@ -250,7 +250,7 @@ class MedicalRecordControllerTest extends TestCase
 
         $response = $this->request(
             method: 'GET',
-            uri: "/api/medical-record/{$record['id']}/for-patient",
+            uri: "/api/medical-records/{$record['id']}/for-patient",
             accessToken: $patientAccessToken
         );
         $responseData = $this->decodeResponse($response);
@@ -278,14 +278,14 @@ class MedicalRecordControllerTest extends TestCase
             $this->createMedicalRecord($doctorAccessToken, $this->user['patient']['email'], $specialization['id']));
 
         $data = [
-            'title' => 'new title',
-            'description' => 'new description',
-            'doctorNote' => 'text'
+            'title' => 'New title',
+            'description' => 'New description',
+            'doctorNote' => 'Text'
         ];
 
         $response = $this->request(
             method: 'PATCH',
-            uri: "/api/medical-record/{$record['id']}",
+            uri: "/api/medical-records/{$record['id']}",
             accessToken: $doctorAccessToken,
             data: $data
         );
@@ -316,7 +316,7 @@ class MedicalRecordControllerTest extends TestCase
 
         $response = $this->request(
             method: 'PATCH',
-            uri: "/api/medical-record/{$record['id']}",
+            uri: "/api/medical-records/{$record['id']}",
             accessToken: $doctorAccessToken,
         );
 
@@ -346,7 +346,7 @@ class MedicalRecordControllerTest extends TestCase
 
         $response = $this->request(
             method: 'PATCH',
-            uri: "/api/medical-record/{$record['id']}",
+            uri: "/api/medical-records/{$record['id']}",
             accessToken: $doctorAccessToken1,
             data: [
                 'title' => 'new title',

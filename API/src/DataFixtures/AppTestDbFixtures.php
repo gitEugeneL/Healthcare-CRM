@@ -29,8 +29,8 @@ class AppTestDbFixtures extends Fixture
             ->setEmail('a@a.com')
             ->setPassword(password_hash('admin!1A', PASSWORD_DEFAULT))
             ->setRoles([Roles::ADMIN])
-            ->setFirstName('admin')
-            ->setLastName('admin');
+            ->setFirstName('Admin')
+            ->setLastName('Admin');
 
         // create test manger -------------------------------------------------------
         $seedManager = (new Manager())
@@ -38,8 +38,8 @@ class AppTestDbFixtures extends Fixture
                 ->setEmail('m@m.com')
                 ->setPassword(password_hash('manager!1M', PASSWORD_DEFAULT))
                 ->setRoles([Roles::MANAGER])
-                ->setFirstName('manager')
-                ->setLastName('manager')
+                ->setFirstName('Manager')
+                ->setLastName('Manager')
             );
 
         // create test doctor -------------------------------------------------------
@@ -48,8 +48,8 @@ class AppTestDbFixtures extends Fixture
                 ->setEmail('d@d.com')
                 ->setPassword(password_hash('doctor!1', PASSWORD_DEFAULT))
                 ->setRoles([Roles::DOCTOR])
-                ->setFirstName('doctor')
-                ->setLastName('doctor')
+                ->setFirstName('Doctor')
+                ->setLastName('Doctor')
             )
             ->setDoctorConfig((new DoctorConfig())
                 ->setStartTime(new DateTime('08:00'))
@@ -65,8 +65,8 @@ class AppTestDbFixtures extends Fixture
                 ->setEmail('p@p.com')
                 ->setPassword(password_hash('patient1!A', PASSWORD_DEFAULT))
                 ->setRoles([Roles::PATIENT])
-                ->setFirstName('patient')
-                ->setLastName('patient')
+                ->setFirstName('Patient')
+                ->setLastName('Patient')
             )
             ->setAddress(new Address());
 

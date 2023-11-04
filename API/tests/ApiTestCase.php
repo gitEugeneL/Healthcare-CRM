@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class TestCase extends WebTestCase
+abstract class ApiTestCase extends WebTestCase
 {
     private array $headers = [
         'HTTP_ACCEPT' => 'application/json',
@@ -16,28 +16,28 @@ abstract class TestCase extends WebTestCase
     protected KernelBrowser $client;
     protected array $user = [
         'admin' => [
-            'lastName' => 'admin',
-            'firstName' => 'admin',
             'email' => 'a@a.com',
-            'password' => 'admin!1A'
+            'password' => 'admin!1A',
+            'lastName' => 'Admin',
+            'firstName' => 'Admin',
         ],
         'manager' => [
-            'lastName' => 'manager',
-            'firstName' => 'manager',
             'email' => 'm@m.com',
             'password' => 'manager!1M',
+            'lastName' => 'Manager',
+            'firstName' => 'Manager'
         ],
         'doctor' => [
             'email' => 'd@d.com',
             'password' => 'doctor!1',
-            'lastName' => 'doctor',
-            'firstName' => 'doctor'
+            'lastName' => 'Doctor',
+            'firstName' => 'Doctor'
         ],
         'patient' => [
             'email' => 'p@p.com',
             'password' => 'patient1!A',
-            'lastName' => 'patient',
-            'firstName' => 'patient'
+            'lastName' => 'Patient',
+            'firstName' => 'Patient'
         ]
     ];
 
@@ -88,7 +88,7 @@ abstract class TestCase extends WebTestCase
         if ($userType === 'manager' || $userType === 'doctor' || $userType === 'patient') {
             return $this->request(
                 method: 'POST',
-                uri: "/api/{$userType}/create",
+                uri: "/api/{$userType}s",
                 accessToken: $accessToken,
                 data: $this->user[$userType]
             );

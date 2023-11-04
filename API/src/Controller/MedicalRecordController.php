@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('/api/medical-record')]
+#[Route('/api/medical-records')]
 class MedicalRecordController extends AbstractController
 {
     public function __construct(

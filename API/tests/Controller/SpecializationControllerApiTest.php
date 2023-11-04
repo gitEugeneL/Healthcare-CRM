@@ -2,20 +2,20 @@
 
 namespace App\Tests\Controller;
 
-use App\Tests\TestCase;
+use App\Tests\ApiTestCase;
 use phpDocumentor\Reflection\DocBlock\Tags\Method;
 use Symfony\Component\HttpFoundation\Response;
 
-class SpecializationControllerTest extends TestCase
+class SpecializationControllerApiTest extends ApiTestCase
 {
-    private array $specialization = ['name' => 'test-specialization'];
+    private array $specialization = ['name' => 'Test-specialization'];
 
     private function createSpecialization(string $managerAccessToken): Response
     {
 
         return $this->request(
             method: 'POST',
-            uri: '/api/specialization/create',
+            uri: '/api/specializations',
             accessToken: $managerAccessToken,
             data: $this->specialization
         );
@@ -48,14 +48,14 @@ class SpecializationControllerTest extends TestCase
         }
         $response = $this->request(
             method: 'GET',
-            uri: '/api/specialization/show',
+            uri: '/api/specializations',
             accessToken: $managerAccessToken
         );
         $responseData = $this->decodeResponse($response);
 
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('specialization0', $responseData[0]['name']);
-        $this->assertSame('specialization4', $responseData[4]['name']);
+        $this->assertSame('Specialization0', $responseData[0]['name']);
+        $this->assertSame('Specialization4', $responseData[4]['name']);
     }
 
     public function testUpdate_withValidData_returnsUpdated(): void
@@ -64,14 +64,14 @@ class SpecializationControllerTest extends TestCase
 
         $this->request(
             method: 'POST',
-            uri: '/api/specialization/create',
+            uri: '/api/specializations',
             accessToken: $managerAccessToken,
             data: $this->specialization,
         );
-        $this->specialization['description'] = 'some text';
+        $this->specialization['description'] = 'Some text';
         $response = $this->request(
-            method: 'PATCH',
-            uri: "/api/specialization/update/{$this->specialization['name']}",
+            method: 'PUT',
+            uri: "/api/specializations/{$this->specialization['name']}",
             accessToken: $managerAccessToken,
             data: $this->specialization
         );
@@ -89,8 +89,8 @@ class SpecializationControllerTest extends TestCase
         $this->specialization['description'] = 'new test description';
 
         $response = $this->request(
-            method: 'PATCH',
-            uri: "/api/specialization/update/{$this->specialization['name']}",
+            method: 'PUT',
+            uri: "/api/specializations/{$this->specialization['name']}",
             accessToken: $managerAccessToken,
             data: $this->specialization
         );
@@ -106,7 +106,7 @@ class SpecializationControllerTest extends TestCase
 
         $response = $this->request(
             method: 'DELETE',
-            uri: "/api/specialization/delete/{$this->specialization['name']}",
+            uri: "/api/specializations/{$this->specialization['name']}",
             accessToken: $managerAccessToken
         );
 
@@ -124,7 +124,7 @@ class SpecializationControllerTest extends TestCase
 
             $this->request(
                 method: 'PATCH',
-                uri: '/api/specialization/include-doctor',
+                uri: '/api/specializations/include-doctor',
                 accessToken: $managerAccessToken,
                 data: [
                     'doctorId' => $i,
@@ -134,7 +134,7 @@ class SpecializationControllerTest extends TestCase
         }
         $response = $this->request(
             method: 'GET',
-            uri: "/api/doctor/show-by-specialization/{$specialization['name']}",
+            uri: "/api/doctors/show-by-specialization/{$specialization['name']}",
             accessToken: $managerAccessToken
         );
         $responseData = $this->decodeResponse($response);
@@ -158,7 +158,7 @@ class SpecializationControllerTest extends TestCase
 
             $this->request(
                 method: 'PATCH',
-                uri: '/api/specialization/include-doctor',
+                uri: '/api/specializations/include-doctor',
                 accessToken: $managerAccessToken,
                 data: [
                     'doctorId' => $i,
@@ -167,7 +167,7 @@ class SpecializationControllerTest extends TestCase
             );
             $this->request(
                 method: 'PATCH',
-                uri: '/api/specialization/exclude-doctor',
+                uri: '/api/specializations/exclude-doctor',
                 accessToken: $managerAccessToken,
                 data: [
                     'doctorId' => $i,
@@ -177,7 +177,7 @@ class SpecializationControllerTest extends TestCase
         }
         $response = $this->request(
             method: 'GET',
-            uri: "/api/doctor/show-by-specialization/{$this->specialization['name']}",
+            uri: "/api/doctors/show-by-specialization/{$this->specialization['name']}",
             accessToken: $managerAccessToken
         );
         $responseData = $this->decodeResponse($response);

@@ -32,11 +32,11 @@ class RequestAddressDto
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Length(max: 10)]
+    #[Assert\Length(max: 5)]
     private string $house;
 
 
-    #[Assert\Length(max: 10)]
+    #[Assert\Length(max: 5)]
     private ?string $apartment;
 
     public function getCity(): string

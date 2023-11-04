@@ -2,13 +2,13 @@
 
 namespace App\Tests\Controller;
 
-use App\Tests\TestCase;
+use App\Tests\ApiTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class DiseaseControllerTest extends TestCase
+class DiseaseControllerApiTest extends ApiTestCase
 {
     private array $disease = [
-        'name' => 'influenza-19'
+        'name' => 'Influenza-19'
     ];
 
     private function createDisease(): Response
@@ -17,7 +17,7 @@ class DiseaseControllerTest extends TestCase
 
         return $this->request(
             method: 'POST',
-            uri: '/api/disease/create',
+            uri: '/api/diseases',
             accessToken: $managerAccessToken,
             data: $this->disease
         );
@@ -47,7 +47,7 @@ class DiseaseControllerTest extends TestCase
 
         $response = $this->request(
             method: 'DELETE',
-            uri: "/api/disease/delete/{$responseData['id']}",
+            uri: "/api/diseases/{$responseData['id']}",
             accessToken: $managerAccessToken,
         );
 
@@ -60,7 +60,7 @@ class DiseaseControllerTest extends TestCase
 
         $response = $this->request(
             method: 'DELETE',
-            uri: '/api/disease/delete/777',
+            uri: '/api/diseases/777',
             accessToken: $managerAccessToken,
         );
 
@@ -74,7 +74,7 @@ class DiseaseControllerTest extends TestCase
         $disease = $this->decodeResponse($this->createDisease());
         $response = $this->request(
             method: 'PATCH',
-            uri: "/api/disease/add-doctor/{$disease['id']}",
+            uri: "/api/diseases/add-doctor/{$disease['id']}",
             accessToken: $doctorAccessToken
         );
 
@@ -88,7 +88,7 @@ class DiseaseControllerTest extends TestCase
 
         $response = $this->request(
             method: 'PATCH',
-            uri: "/api/disease/add-doctor/{$disease['id']}",
+            uri: "/api/diseases/add-doctor/{$disease['id']}",
             accessToken: 'doctor invalid token'
         );
 
@@ -101,7 +101,7 @@ class DiseaseControllerTest extends TestCase
 
         $response = $this->request(
             method: 'PATCH',
-            uri: '/api/disease/add-doctor/777',
+            uri: '/api/diseases/add-doctor/777',
             accessToken: $doctorAccessToken
         );
 
@@ -116,12 +116,12 @@ class DiseaseControllerTest extends TestCase
 
         $this->request(
             method: 'PATCH',
-            uri: "/api/disease/add-doctor/{$disease['id']}",
+            uri: "/api/diseases/add-doctor/{$disease['id']}",
             accessToken: $doctorAccessToken
         );
         $response = $this->request(
             method: 'PATCH',
-            uri: "/api/disease/remove-doctor/{$disease['id']}",
+            uri: "/api/diseases/remove-doctor/{$disease['id']}",
             accessToken: $doctorAccessToken
         );
 
@@ -134,7 +134,7 @@ class DiseaseControllerTest extends TestCase
 
         $response = $this->request(
             method: 'PATCH',
-            uri: '/api/disease/remove-doctor/777',
+            uri: '/api/diseases/remove-doctor/777',
             accessToken: $doctorAccessToken
         );
         $this->assertSame(404, $response->getStatusCode());
@@ -146,7 +146,7 @@ class DiseaseControllerTest extends TestCase
 
         $response = $this->request(
             method: 'PATCH',
-            uri: "/api/disease/remove-doctor/{$disease['id']}",
+            uri: "/api/diseases/remove-doctor/{$disease['id']}",
             accessToken: 'doctor invalid token'
         );
         $this->assertSame(401, $response->getStatusCode());
@@ -159,7 +159,7 @@ class DiseaseControllerTest extends TestCase
         $disease = $this->decodeResponse($this->createDisease());
         $response = $this->request(
             method: 'PATCH',
-            uri: "/api/disease/remove-doctor/{$disease['id']}",
+            uri: "/api/diseases/remove-doctor/{$disease['id']}",
             accessToken: $doctorAccessToken
         );
 

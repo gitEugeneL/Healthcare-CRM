@@ -2,10 +2,10 @@
 
 namespace App\Tests\Controller;
 
-use App\Tests\TestCase;
+use App\Tests\ApiTestCase;
 use DateTime;
 
-class AppointmentControllerTest extends TestCase
+class AppointmentControllerApiTest extends ApiTestCase
 {
     private array $patients = ['p1@gmail.com', 'p2@gmail.com', 'p3@gmail.com', 'p4@gmail.com'];
     private array $doctors = ['d1@gmail.com', 'd2@gmail.com', 'd3@gmail.com', 'd4@gmail.com'];
@@ -30,7 +30,7 @@ class AppointmentControllerTest extends TestCase
             for ($j = 0; $j < 2; $j++) {
                 $this->request(
                     method: 'POST',
-                    uri: '/api/appointment/create',
+                    uri: '/api/appointments',
                     accessToken: $patientAccessToken,
                     data: [
                         'doctorId' => $i + 2, // the database already has an existing doctor !!
@@ -52,7 +52,7 @@ class AppointmentControllerTest extends TestCase
         ];
         $response = $this->request(
             method: 'POST',
-            uri: '/api/appointment/create',
+            uri: '/api/appointments',
             accessToken: $patientAccessToken,
             data: $data
         );
@@ -89,7 +89,7 @@ class AppointmentControllerTest extends TestCase
         ];
         $response = $this->request(
             method: 'POST',
-            uri: '/api/appointment/create',
+            uri: '/api/appointments',
             accessToken: $patientAccessToken,
             data: $data
         );
@@ -110,7 +110,7 @@ class AppointmentControllerTest extends TestCase
         for ($i = 0; $i < 2; $i++) {
             $response = $this->request(
                 method: 'POST',
-                uri: '/api/appointment/create',
+                uri: '/api/appointments',
                 accessToken: $patientAccessToken,
                 data: $data
             );
@@ -144,7 +144,7 @@ class AppointmentControllerTest extends TestCase
         ];
         $response = $this->request(
             method: 'POST',
-            uri: '/api/appointment/create',
+            uri: '/api/appointments',
             accessToken: $patientAccessToken,
             data: $data
         );
@@ -161,7 +161,7 @@ class AppointmentControllerTest extends TestCase
         // create existing appointments 12:00 - 13:00
         $this->request(
             method: 'POST',
-            uri: '/api/appointment/create',
+            uri: '/api/appointments',
             accessToken: $patientAccessToken,
             data: [
                 'doctorId' => 1,
@@ -172,7 +172,7 @@ class AppointmentControllerTest extends TestCase
         // find free times
         $response = $this->request(
             method: 'POST',
-            uri: '/api/appointment/find-time',
+            uri: '/api/appointments/find-time',
             accessToken: $patientAccessToken,
             data: [
                 'doctorId' => 1,
@@ -223,7 +223,7 @@ class AppointmentControllerTest extends TestCase
         // create existing appointments 12:00 - 12:30
         $this->request(
             method: 'POST',
-            uri: '/api/appointment/create',
+            uri: '/api/appointments',
             accessToken: $patientAccessToken,
             data: [
                 'doctorId' => 1,
@@ -234,7 +234,7 @@ class AppointmentControllerTest extends TestCase
         // find free times
         $response = $this->request(
             method: 'POST',
-            uri: '/api/appointment/find-time',
+            uri: '/api/appointments/find-time',
             accessToken: $patientAccessToken,
             data: [
                 'doctorId' => 1,
@@ -263,7 +263,7 @@ class AppointmentControllerTest extends TestCase
 
         $response = $this->request(
             method: 'GET',
-            uri: "/api/appointment/show-for-manager?date={$date}",
+            uri: "/api/appointments/show-for-manager?date={$date}",
             accessToken: $this->accessToken('manager')
         );
         $responseData = $this->decodeResponse($response);
@@ -288,7 +288,7 @@ class AppointmentControllerTest extends TestCase
 
         $response = $this->request(
             method: 'GET',
-            uri: "/api/appointment/show-for-doctor?date={$date}",
+            uri: "/api/appointments/show-for-doctor?date={$date}",
             accessToken: $this->accessToken('doctor')
         );
         $responseData = $this->decodeResponse($response);
@@ -306,7 +306,7 @@ class AppointmentControllerTest extends TestCase
 
         $response = $this->request(
             method: 'GET',
-            uri: "/api/appointment/show-for-patient?date={$date}",
+            uri: "/api/appointments/show-for-patient?date={$date}",
             accessToken: $this->accessToken('patient')
         );
         $responseData = $this->decodeResponse($response);
@@ -325,7 +325,7 @@ class AppointmentControllerTest extends TestCase
         // show doctor's appointments
         $appointmentsResponse = $this->request(
             method: 'GET',
-            uri: "/api/appointment/show-for-doctor?date={$date}",
+            uri: "/api/appointments/show-for-doctor?date={$date}",
             accessToken: $this->accessToken('doctor')
         );
         $appointmentsResponseData = $this->decodeResponse($appointmentsResponse);
@@ -333,7 +333,7 @@ class AppointmentControllerTest extends TestCase
         // finalize an appointment
         $response = $this->request(
             method: 'PATCH',
-            uri: "/api/appointment/{$appointmentsResponseData[0]['id']}/finalize",
+            uri: "/api/appointments/{$appointmentsResponseData[0]['id']}/finalize",
             accessToken: $this->accessToken('doctor')
         );
         $responseData = $this->decodeResponse($response);
@@ -351,7 +351,7 @@ class AppointmentControllerTest extends TestCase
         // show doctor's appointments
         $appointmentsResponse = $this->request(
             method: 'GET',
-            uri: "/api/appointment/show-for-doctor?date={$date}",
+            uri: "/api/appointments/show-for-doctor?date={$date}",
             accessToken: $this->accessToken('doctor')
         );
         $appointmentsResponseData = $this->decodeResponse($appointmentsResponse);
@@ -360,7 +360,7 @@ class AppointmentControllerTest extends TestCase
         for ($i = 0; $i < 2; $i++) {
             $response = $this->request(
                 method: 'PATCH',
-                uri: "/api/appointment/{$appointmentsResponseData[0]['id']}/finalize",
+                uri: "/api/appointments/{$appointmentsResponseData[0]['id']}/finalize",
                 accessToken: $this->accessToken('doctor')
             );
         }
@@ -376,7 +376,7 @@ class AppointmentControllerTest extends TestCase
         // finalize an appointment
         $response = $this->request(
             method: 'PATCH',
-            uri: "/api/appointment/2/finalize",
+            uri: "/api/appointments/2/finalize",
             accessToken: $this->accessToken('doctor')
         );
 
@@ -392,7 +392,7 @@ class AppointmentControllerTest extends TestCase
         // show doctor's appointments
         $appointmentsResponse = $this->request(
             method: 'GET',
-            uri: "/api/appointment/show-for-doctor?date={$date}",
+            uri: "/api/appointments/show-for-doctor?date={$date}",
             accessToken: $this->accessToken('doctor')
         );
         $appointmentsResponseData = $this->decodeResponse($appointmentsResponse);
@@ -400,7 +400,7 @@ class AppointmentControllerTest extends TestCase
         // finalize an appointment
         $response = $this->request(
             method: 'PATCH',
-            uri: "/api/appointment/{$appointmentsResponseData[0]['id']}/cancel",
+            uri: "/api/appointments/{$appointmentsResponseData[0]['id']}/cancel",
             accessToken: $this->accessToken('doctor')
         );
         $responseData = $this->decodeResponse($response);
@@ -418,7 +418,7 @@ class AppointmentControllerTest extends TestCase
         // show doctor's appointments
         $appointmentsResponse = $this->request(
             method: 'GET',
-            uri: "/api/appointment/show-for-doctor?date={$date}",
+            uri: "/api/appointments/show-for-doctor?date={$date}",
             accessToken: $this->accessToken('doctor')
         );
         $appointmentsResponseData = $this->decodeResponse($appointmentsResponse);
@@ -427,7 +427,7 @@ class AppointmentControllerTest extends TestCase
         for ($i = 0; $i < 2; $i++) {
             $response = $this->request(
                 method: 'PATCH',
-                uri: "/api/appointment/{$appointmentsResponseData[0]['id']}/cancel",
+                uri: "/api/appointments/{$appointmentsResponseData[0]['id']}/cancel",
                 accessToken: $this->accessToken('doctor')
             );
         }
@@ -443,7 +443,7 @@ class AppointmentControllerTest extends TestCase
         // finalize an appointment
         $response = $this->request(
             method: 'PATCH',
-            uri: "/api/appointment/2/cancel",
+            uri: "/api/appointments/2/cancel",
             accessToken: $this->accessToken('doctor')
         );
 

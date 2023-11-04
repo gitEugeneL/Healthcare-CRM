@@ -2,9 +2,9 @@
 
 namespace App\Tests\Controller;
 
-use App\Tests\TestCase;
+use App\Tests\ApiTestCase;
 
-class DoctorConfigControllerTest extends TestCase
+class DoctorConfigControllerApiTest extends ApiTestCase
 {
     public function testConfig_withValidData_returnsUpdated(): void
     {

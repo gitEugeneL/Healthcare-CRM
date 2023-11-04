@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('/api/address')]
+#[Route('/api/addresses')]
 class AddressController extends AbstractController
 {
     public function __construct(
@@ -32,7 +32,7 @@ class AddressController extends AbstractController
      * @throws NotFoundException
      */
     #[IsGranted(Roles::PATIENT)]
-    #[Route('/update', methods: ['PUT'])]
+    #[Route('', methods: ['PUT'])]
     public function update(Request $request, TokenStorageInterface $tokenStorage): JsonResponse
     {
         $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();

@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('/api/manager')]
+#[Route('/api/managers')]
 class ManagerController extends AbstractController
 {
     public function __construct(
@@ -33,7 +33,7 @@ class ManagerController extends AbstractController
      * @throws ValidationException
      */
     #[IsGranted(Roles::ADMIN)]
-    #[Route('/create', methods: ['POST'])]
+    #[Route('', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         $dto = $this->serializer->deserialize($request->getContent(), CreateManagerDto::class, 'json');
@@ -48,7 +48,7 @@ class ManagerController extends AbstractController
      * @throws NonUniqueResultException
      * @throws NotFoundException
      */
-    #[Route('/update', methods: ['PATCH'])]
+    #[Route('', methods: ['PATCH'])]
     #[IsGranted(Roles::MANAGER)]
     public function update(Request $request, TokenStorageInterface $tokenStorage): JsonResponse
     {

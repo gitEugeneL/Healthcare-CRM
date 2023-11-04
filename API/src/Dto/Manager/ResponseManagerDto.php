@@ -13,8 +13,9 @@ class ResponseManagerDto extends AbstractResponseUserDto
         return $this->position ?? null;
     }
 
-    public function setPosition(?string $position): void
+    public function setPosition(?string $position): static
     {
-        $this->position = ucfirst(strtolower(trim($position)));
+        $this->position = $position;
+        return $this;
     }
 }

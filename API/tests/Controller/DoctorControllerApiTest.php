@@ -2,10 +2,10 @@
 
 namespace App\Tests\Controller;
 
-use App\Tests\TestCase;
+use App\Tests\ApiTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class DoctorControllerTest extends TestCase
+class DoctorControllerApiTest extends ApiTestCase
 {
     private function createNewDoctor(string $managerAccessToken): Response
     {
@@ -38,7 +38,7 @@ class DoctorControllerTest extends TestCase
         }
         $response = $this->request(
             method: 'GET',
-            uri: '/api/doctor/show?page=1',
+            uri: '/api/doctors/?page=1',
             accessToken: $managerAccessToken
         );
         $responseData = $this->decodeResponse($response);
@@ -54,7 +54,7 @@ class DoctorControllerTest extends TestCase
 
         $response = $this->request(
             method: 'GET',
-            uri: '/api/doctor/show/1',
+            uri: '/api/doctors/1',
             accessToken: $managerAccessToken
         );
         $responseData = $this->decodeResponse($response);
@@ -70,7 +70,7 @@ class DoctorControllerTest extends TestCase
 
         $response = $this->request(
             method: 'GET',
-            uri: '/api/doctor/show/777',
+            uri: '/api/doctors/777',
             accessToken: $managerAccessToken
         );
 
@@ -84,7 +84,7 @@ class DoctorControllerTest extends TestCase
 
         $response = $this->request(
             method: 'PATCH',
-            uri: '/api/doctor/update-status',
+            uri: '/api/doctors/update-status',
             accessToken: $managerAccessToken,
             data: [
                 'doctorId' => 1,
@@ -100,7 +100,7 @@ class DoctorControllerTest extends TestCase
 
         $response = $this->request(
             method: 'PATCH',
-            uri: '/api/doctor/update-status',
+            uri: '/api/doctors/update-status',
             accessToken: $managerAccessToken,
             data: [
                 'doctorId' => 777,
@@ -118,7 +118,7 @@ class DoctorControllerTest extends TestCase
 
         $response = $this->request(
             method: 'PATCH',
-            uri: '/api/doctor/update-status',
+            uri: '/api/doctors/update-status',
             accessToken: $managerAccessToken,
             data: [
                 'doctorId' => 1,
@@ -134,15 +134,15 @@ class DoctorControllerTest extends TestCase
         $doctorAccessToken = $this->accessToken('doctor');
 
         $updateData = [
-            'firstName' => "new doctor's name",
-            'description' => 'new description',
-            'education' => 'new education',
+            'firstName' => "New doctor's name",
+            'description' => 'New description',
+            'education' => 'New education',
             'phone' => '+48999888999'
         ];
 
         $response = $this->request(
             method: 'PATCH',
-            uri: '/api/doctor/update',
+            uri: '/api/doctors',
             accessToken: $doctorAccessToken,
             data: $updateData
         );
@@ -162,7 +162,7 @@ class DoctorControllerTest extends TestCase
 
         $response = $this->request(
             method: 'PATCH',
-            uri: '/api/doctor/update',
+            uri: '/api/doctors',
             accessToken: $doctorAccessToken,
         );
 
@@ -177,17 +177,18 @@ class DoctorControllerTest extends TestCase
 
         $this->request(
             method: 'POST',
-            uri: '/api/specialization/create',
+            uri: '/api/specializations',
             accessToken: $managerAccessToken,
             data: $specialization
         );
+
         for ($i = 2; $i <= 6; $i++) {
             $this->user['doctor']['email'] = "doctor{$i}@doctor.com";
             $this->createUser('doctor');
 
             $this->request(
                 method: 'PATCH',
-                uri: '/api/specialization/include-doctor',
+                uri: '/api/specializations/include-doctor',
                 accessToken: $managerAccessToken,
                 data: [
                     'doctorId' => $i,
@@ -197,15 +198,14 @@ class DoctorControllerTest extends TestCase
         }
         $response = $this->request(
             method: 'GET',
-            uri: "/api/doctor/show-by-specialization/{$specialization['name']}",
+            uri: "/api/doctors/show-by-specialization/{$specialization['name']}",
             accessToken: $managerAccessToken
         );
-
         $responseData = $this->decodeResponse($response);
         $this->assertSame(200, $response->getStatusCode());
         $this->assertCount(5, $responseData['items']);
         foreach ($responseData['items'] as $doctor) {
-            $this->assertSame('dentist', $doctor['specializations'][0]['name']);
+            $this->assertSame(ucfirst(strtolower(trim($specialization['name']))), $doctor['specializations'][0]['name']);
         }
     }
 }

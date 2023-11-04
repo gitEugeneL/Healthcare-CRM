@@ -3,10 +3,10 @@
 namespace App\Tests\Controller;
 
 
-use App\Tests\TestCase;
+use App\Tests\ApiTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class PatientControllerTest extends TestCase
+class PatientControllerApiTest extends ApiTestCase
 {
     private function createNewPatient(): Response
     {
@@ -18,17 +18,15 @@ class PatientControllerTest extends TestCase
     {
         $response = $this->createNewPatient();
         $responseData = $this->decodeResponse($response);
-
         $this->assertSame($this->user['patient']['email'], $responseData['email']);
-        $this->assertSame($this->user['patient']['firstName'], $responseData['firstName']);
-        $this->assertSame($this->user['patient']['lastName'], $responseData['lastName']);
+        $this->assertSame(ucfirst($this->user['patient']['firstName']), $responseData['firstName']);
+        $this->assertSame(ucfirst($this->user['patient']['lastName']), $responseData['lastName']);
         $this->assertSame(201, $response->getStatusCode());
     }
 
     public function testCreate_withExistentPatient_returnsAlreadyExist(): void
     {
         $response = $this->createUser('patient');
-
         $this->assertSame(422, $response->getStatusCode());
     }
 
@@ -42,7 +40,7 @@ class PatientControllerTest extends TestCase
         }
         $response = $this->request(
             method: 'GET',
-            uri: '/api/patient/show?page=1',
+            uri: '/api/patients/?page=1',
             accessToken: $managerAccessToken
         );
 
@@ -59,7 +57,7 @@ class PatientControllerTest extends TestCase
         $managerAccessToken = $this->accessToken('manager');
         $response = $this->request(
             method: 'GET',
-            uri: '/api/patient/show/1',
+            uri: '/api/patients/1',
             accessToken: $managerAccessToken
         );
         $responseData = $this->decodeResponse($response);
@@ -74,7 +72,7 @@ class PatientControllerTest extends TestCase
         $managerAccessToken = $this->accessToken('manager');
         $response = $this->request(
             method: 'GET',
-            uri: '/api/patient/show/777',
+            uri: '/api/patients/777',
             accessToken: $managerAccessToken
         );
 
@@ -86,7 +84,7 @@ class PatientControllerTest extends TestCase
     {
         $patientAccessToken = $this->accessToken('patient');
         $updateData = [
-            'firstName' => 'updated patient',
+            'firstName' => 'Updated patient',
             'phone' => '123456789',
             'pesel' => '00000000000',
             'dateOfBirth' => '2030-12-31',
@@ -95,7 +93,7 @@ class PatientControllerTest extends TestCase
 
         $response = $this->request(
             method: 'PATCH',
-            uri: '/api/patient/update',
+            uri: '/api/patients',
             accessToken: $patientAccessToken,
             data: $updateData
         );
@@ -115,7 +113,7 @@ class PatientControllerTest extends TestCase
 
         $response = $this->request(
             method: 'PATCH',
-            uri: '/api/patient/update',
+            uri: '/api/patients',
             accessToken: $patientAccessToken,
         );
 

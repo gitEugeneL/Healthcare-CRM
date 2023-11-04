@@ -2,10 +2,10 @@
 
 namespace App\Tests\Controller;
 
-use App\Tests\TestCase;
+use App\Tests\ApiTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class ManagerControllerTest extends TestCase
+class ManagerControllerApiTest extends ApiTestCase
 {
     private function createNewManager(string $adminAccessToken): Response
     {
@@ -13,12 +13,10 @@ class ManagerControllerTest extends TestCase
         return $this->createUser('manager', $adminAccessToken);
     }
 
-
     public function testCreate_withValidData_returnsCreated(): void
     {
         $response = $this->createNewManager($this->accessToken('admin'));
         $responseData = $this->decodeResponse($response);
-
         $this->assertSame(201, $response->getStatusCode());
         $this->assertSame($this->user['manager']['email'], $responseData['email']);
     }
@@ -36,7 +34,7 @@ class ManagerControllerTest extends TestCase
 
         $response = $this->request(
             method: 'GET',
-            uri: '/api/manager/info',
+            uri: '/api/managers/info',
             accessToken: $managerAccessToken
         );
 
@@ -48,7 +46,7 @@ class ManagerControllerTest extends TestCase
     {
         $response = $this->request(
             method: 'GET',
-            uri: '/api/manager/info',
+            uri: '/api/managers/info',
             accessToken: 'invalidToken'
         );
 
@@ -60,15 +58,15 @@ class ManagerControllerTest extends TestCase
         $managerAccessToken = $this->accessToken('manager');
 
         $updateData = [
-            'firstName' => 'new first name',
-            'lastName' => 'new last name',
+            'firstName' => 'New first name',
+            'lastName' => 'New last name',
             'phone' => '+48999888999',
-            'position' => 'the best manager'
+            'position' => 'The best manager'
         ];
 
         $response = $this->request(
             method: 'PATCH',
-            uri: '/api/manager/update',
+            uri: '/api/managers',
             accessToken: $managerAccessToken,
             data: $updateData
         );
