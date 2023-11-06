@@ -2,6 +2,7 @@
 
 namespace App\Dto\User;
 
+use App\Constant\ValidationConstants;
 use App\Validator as AcmeAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,18 +19,18 @@ abstract class AbstractCreateUserDto
     #[Assert\Length(min: 8)]
     #[Assert\Regex(
         pattern: '/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/',
-        message: "The password must contain at least one number, one letter and one character"
+        message: ValidationConstants::INVALID_PASSWORD
     )]
     private string $password;
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Length(max: 50, maxMessage: "First name should not exceed {{ limit }} characters")]
+    #[Assert\Length(max: 50)]
     private string $firstName;
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Length(max: 100, maxMessage: "Last name should not exceed {{ limit }} characters")]
+    #[Assert\Length(max: 100)]
     private string $lastName;
 
     public function getEmail(): string

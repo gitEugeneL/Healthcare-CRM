@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Tests\DtoValidator\Doctor;
+namespace App\Tests\DtoValidator\Specialization;
 
 use App\Constant\ValidationConstants;
-use App\Dto\Doctor\UpdateStatusDoctorDto;
+use App\Dto\Specialization\IncludeExcludeSpecializationDto;
 use App\Tests\DtoTestCase;
 
-class UpdateStatusDoctorDtoTest extends DtoTestCase
+class IncludeExcludeSpecializationDtoTest extends DtoTestCase
 {
     public function correctData(): array
     {
         return [
-            [123, 'ACTIVE'],
-            ['123', 'DISABLED']
+            [25, 'Pediatric Ward'],
+            ['89', 'Neurologist']
         ];
     }
 
@@ -21,25 +21,23 @@ class UpdateStatusDoctorDtoTest extends DtoTestCase
         return [
             [
                 [
-                    'doctorId' => ['', ValidationConstants::BLANK_VALUE],
-                    'status' => ['active', ValidationConstants::INCORRECT_STATUS]
-                ],
-                [
-                    'doctorId' => ['-10', ValidationConstants::INCORRECT_ID],
-                    'status' => ['-', ValidationConstants::INCORRECT_STATUS]
+                    'doctorId' => ['asd', '"asd"'.' '.ValidationConstants::INCORRECT_ID],
+                    'specializationName' => ['', ValidationConstants::BLANK_VALUE]
                 ]
-            ]
+            ],
         ];
     }
 
     /**
      * @dataProvider correctData
      */
-    public function testUpdateStatusDoctorDto_withCorrectData(int|string $doctorId, string $status): void
+    public function testIncludeExcludeSpecializationDto_withCorrectData(
+        string|int $doctorId, string $specializationName
+    ): void
     {
-        $dto = new UpdateStatusDoctorDto();
+        $dto = new IncludeExcludeSpecializationDto();
         $dto->setDoctorId($doctorId);
-        $dto->setStatus($status);
+        $dto->setSpecializationName($specializationName);
 
         $violations = $this->validator->validate($dto);
         $this->assertCount(0, $violations);
@@ -48,11 +46,11 @@ class UpdateStatusDoctorDtoTest extends DtoTestCase
     /**
      * @dataProvider incorrectData
      */
-    public function testUpdateStatusDoctorDto_withIncorrectData(array $data): void
+    public function testIncludeExcludeSpecializationDto_withIncorrectData(array $data): void
     {
-        $dto = new UpdateStatusDoctorDto();
+        $dto = new IncludeExcludeSpecializationDto();
         $dto->setDoctorId($data['doctorId'][0]);
-        $dto->setStatus($data['status'][0]);
+        $dto->setSpecializationName($data['specializationName'][0]);
 
         $violations = $this->validator->validate($dto);
         $result = $this->inspect($violations);
@@ -65,4 +63,3 @@ class UpdateStatusDoctorDtoTest extends DtoTestCase
         }
     }
 }
-

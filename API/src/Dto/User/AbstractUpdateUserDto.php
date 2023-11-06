@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Dto\User;
+use App\Constant\ValidationConstants;
 use Symfony\Component\Validator\Constraints as Assert;
 
 abstract class AbstractUpdateUserDto
@@ -14,7 +15,7 @@ abstract class AbstractUpdateUserDto
     #[Assert\Length(min: 9, max: 12)]
     #[Assert\Regex(
         pattern: '/^(\+)?\d+$/',
-        message: "Phone number should start with + (optional) and contain only digits."
+        message: ValidationConstants::INVALID_PHONE_NUMBER
     )]
     private ?string $phone;
 

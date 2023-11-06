@@ -8,10 +8,10 @@ class CreateSpecializationDto
 {
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Length(min: 5, max: 100)]
+    #[Assert\Length(max: 100)]
     private string $name;
 
-    #[Assert\Length(max: 250)]
+    #[Assert\Length(min: 10, max: 250)]
     private ?string $description;
 
     public function getName(): string

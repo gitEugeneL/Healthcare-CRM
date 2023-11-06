@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Dto\Specialization\CreateSpecializationDto;
-use App\Dto\Specialization\UpdateSpecializationDoctorsDto;
+use App\Dto\Specialization\IncludeExcludeSpecializationDto;
 use App\Dto\Specialization\ResponseSpecializationDto;
 use App\Dto\Specialization\UpdateSpecializationDto;
 use App\Entity\Specialization;
@@ -65,7 +65,7 @@ class SpecializationService
      * @throws NotFoundException
      * @throws AlreadyExistException
      */
-    public function includeDoctor(UpdateSpecializationDoctorsDto $dto): void
+    public function includeDoctor(IncludeExcludeSpecializationDto $dto): void
     {
         $specialization = $this->specializationRepository->findOneByNameOrThrow($dto->getSpecializationName());
         $doctor = $this->doctorRepository->findOneByIdOrThrow($dto->getDoctorId());
@@ -80,7 +80,7 @@ class SpecializationService
     /**
      * @throws NotFoundException
      */
-    public function excludeDoctor(UpdateSpecializationDoctorsDto $dto): void
+    public function excludeDoctor(IncludeExcludeSpecializationDto $dto): void
     {
         $specialization = $this->specializationRepository->findOneByNameOrThrow($dto->getSpecializationName());
         $doctor = $this->doctorRepository->findOneByIdOrThrow($dto->getDoctorId());

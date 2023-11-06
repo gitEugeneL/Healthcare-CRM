@@ -2,6 +2,7 @@
 
 namespace App\Dto\Doctor;
 
+use App\Constant\ValidationConstants;
 use App\Entity\Doctor\Status;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -11,13 +12,13 @@ class UpdateStatusDoctorDto
     #[Assert\NotBlank]
     #[Assert\Regex(
         pattern: '/^[1-9]\d*$/',
-        message: 'number must be an integer and greater than 0'
+        message: ValidationConstants::INCORRECT_ID
     )]
     private mixed $doctorId;
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Choice([Status::ACTIVE, Status::DISABLED])]
+    #[Assert\Choice([Status::ACTIVE, Status::DISABLED], message: ValidationConstants::INCORRECT_STATUS)]
     private string $status;
 
     public function getDoctorId(): mixed

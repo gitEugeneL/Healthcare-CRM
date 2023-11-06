@@ -5,7 +5,7 @@ namespace App\Dto\Specialization;
 use App\Validator\Constraints\PositiveNumber;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class UpdateSpecializationDoctorsDto
+class IncludeExcludeSpecializationDto
 {
     #[Assert\NotNull]
     #[Assert\NotBlank]

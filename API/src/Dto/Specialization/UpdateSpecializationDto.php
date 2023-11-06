@@ -8,7 +8,7 @@ class UpdateSpecializationDto
 {
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Length(min: 5, max: 250)]
+    #[Assert\Length(min: 10, max: 250)]
     private string $description;
 
     public function getDescription(): string

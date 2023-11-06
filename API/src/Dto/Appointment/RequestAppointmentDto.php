@@ -2,6 +2,7 @@
 
 namespace App\Dto\Appointment;
 
+use App\Constant\ValidationConstants;
 use App\Validator\Constraints\PositiveNumber;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator as AcmeAssert;
@@ -16,15 +17,11 @@ class RequestAppointmentDto
     #[Assert\NotBlank]
     #[Assert\NotNull]
     #[AcmeAssert\Constraints\DateInTheFuture]
-    #[Assert\Regex(
-        pattern: '/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/',
-        message: 'date must be Y-m-d (1999-12-31)'
-    )]
     private string $date;
 
     #[Assert\Regex(
         pattern: '/^(?:0[7-9]|1[0-6]):(?:00|15|30|45)$/',
-        message: 'incorrect time format (07:00|15|30|45 to 16:00|15|30|45)'
+        message: ValidationConstants::INVALID_TIME
     )]
     private ?string $startTime;
 

@@ -6,7 +6,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class UpdateMedicalRecordDto
 {
-    #[Assert\Length(max: 50)]
+    #[Assert\Length(max: 100)]
     private ?string $title;
 
     #[Assert\Length(max: 250)]

@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Constant\ValidationConstants;
 use App\Tests\ApiTestCase;
 
 class DoctorConfigControllerApiTest extends ApiTestCase
@@ -51,9 +52,9 @@ class DoctorConfigControllerApiTest extends ApiTestCase
         $requestData = $this->decodeResponse($request);
 
         $this->assertSame(422, $request->getStatusCode());
-        $this->assertSame('incorrect time format (07:00 to 16:00)', $requestData['startTime']);
-        $this->assertSame('incorrect time format (08:00 to 17:00)', $requestData['endTime']);
-        $this->assertSame('incorrect interval available: 1H or 15M or 30M or 45M', $requestData['interval']);
-        $this->assertSame('incorrect workdays array. available: [1, 2, 3, 4, 5, 6, 7]', $requestData['workdays']);
+        $this->assertSame(ValidationConstants::INCORRECT_START_TIME, $requestData['startTime']);
+        $this->assertSame(ValidationConstants::INCORRECT_END_TIME, $requestData['endTime']);
+        $this->assertSame(ValidationConstants::INCORRECT_INTERVAL, $requestData['interval']);
+        $this->assertSame(ValidationConstants::INCORRECT_WORKDAYS, $requestData['workdays']);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Tests\DtoValidator\DoctorConfig;
 
+use App\Constant\ValidationConstants;
 use App\Dto\DoctorConfig\RequestDoctorConfigDto;
 use App\Tests\DtoTestCase;
 
@@ -19,31 +20,29 @@ class RequestDoctorConfigDtoTest extends DtoTestCase
 
     public function incorrectConfigs(): array
     {
-        $blankValue = 'This value should not be blank.';
-        $startTimeValue = 'Incorrect time format. Available: (07:00 to 16:00)';
-        $endTimeValue = 'Incorrect time format. Available: (08:00 to 17:00)';
-        $intervalValue = 'Incorrect interval. Available: 1H or 15M or 30M or 45M';
-        $workdaysValue = 'Incorrect workdays array. Available: [1, 2, 3, 4, 5, 6, 7]';
-
         return [
             [
                 [
-                    'startTime' => ['', $blankValue],
-                    'endTime' => ['', $blankValue],
-                    'interval' => ['', $blankValue],
-                    'workdays' => ['', $blankValue]
-                ],
+                    'startTime' => ['', ValidationConstants::BLANK_VALUE],
+                    'endTime' => ['', ValidationConstants::BLANK_VALUE],
+                    'interval' => ['', ValidationConstants::BLANK_VALUE],
+                    'workdays' => ['', ValidationConstants::BLANK_VALUE]
+                ]
+            ],
+            [
                 [
-                    'startTime' => ['15:15', $startTimeValue],
-                    'endTime' => ['16:30', $endTimeValue],
-                    'interval' => ['25M', $intervalValue],
-                    'workdays' => ['monday, friday', $workdaysValue]
+                    'startTime' => ['15:15', ValidationConstants::INCORRECT_START_TIME],
+                    'endTime' => ['16:30', ValidationConstants::INCORRECT_END_TIME],
+                    'interval' => ['25M', ValidationConstants::INCORRECT_INTERVAL],
+                    'workdays' => [['monday, friday'], ValidationConstants::INCORRECT_WORKDAYS]
                 ],
+            ],
+            [
                 [
-                    'startTime' => ['04:00', $startTimeValue],
-                    'endTime' => ['20:00', $endTimeValue],
-                    'interval' => ['2h', $intervalValue],
-                    'workdays' => [[-1, 'day'], $workdaysValue]
+                    'startTime' => ['04:00', ValidationConstants::INCORRECT_START_TIME],
+                    'endTime' => ['20:00', ValidationConstants::INCORRECT_END_TIME],
+                    'interval' => ['2h', ValidationConstants::INCORRECT_INTERVAL],
+                    'workdays' => [[-1, 'day'], ValidationConstants::INCORRECT_WORKDAYS]
                 ],
             ]
         ];

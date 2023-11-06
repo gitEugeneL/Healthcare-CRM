@@ -2,6 +2,7 @@
 
 namespace App\Tests\DtoValidator\Appointment;
 
+use App\Constant\ValidationConstants;
 use App\Dto\Appointment\RequestAppointmentDto;
 use App\Tests\DtoTestCase;
 use DateTime;
@@ -21,38 +22,33 @@ class RequestAppointmentDtoTest extends DtoTestCase
 
     public function incorrectAppointments(): array
     {
-        $blankValue = 'This value should not be blank.';
-        $incorrectId = 'must be an integer and greater than 0';
-        $invalidDate = 'Invalid date. Please select a future date or date should not be later than +1 month.';
-        $invalidDateFormat = 'Invalid format. Date must be Y-m-d (1999-12-31)';
-        $invalidTimeFormat = 'Incorrect time format (07:00|15|30|45 to 16:00|15|30|45)';
-
         return [
             [
                 [
-                    'doctorId' => ['', $blankValue],
-                    'date' => ['', $blankValue],
+                    'doctorId' => ['', ValidationConstants::BLANK_VALUE],
+                    'date' => ['', ValidationConstants::BLANK_VALUE],
                 ]
             ],
             [
                 [
-                    'doctorId' => ['-10', "\"-10\" {$incorrectId}"],
-                    'date' => [(new DateTime())->format('Y-m-d'), $invalidDate],
-                    'startTime' => ['time', $invalidTimeFormat]
+                    'doctorId' => ['-10', '"-10"'.' '.ValidationConstants::INCORRECT_ID],
+                    'date' => [(new DateTime())->format('Y-m-d'), ValidationConstants::INVALID_DATE],
+                    'startTime' => ['time', ValidationConstants::INVALID_TIME]
                 ],
             ],
             [
                 [
-                    'doctorId' => ['0', "\"0\" {$incorrectId}"],
-                    'date' => [(new DateTime())->modify('+32 day')->format('Y-m-d'), $invalidDate],
-                    'startTime' => ['05:00',  $invalidTimeFormat]
+                    'doctorId' => ['0', '"0"'.' '.ValidationConstants::INCORRECT_ID],
+                    'date' => [(new DateTime())->modify('+32 day')->format('Y-m-d'),
+                        ValidationConstants::INVALID_DATE],
+                    'startTime' => ['05:00',  ValidationConstants::INVALID_TIME]
                 ],
             ],
             [
                 [
-                    'doctorId' => ['ASD', "\"ASD\" {$incorrectId}"],
-                    'date' => ['12-2056-89', $invalidDateFormat],
-                    'startTime' => ['08:02', $invalidTimeFormat]
+                    'doctorId' => ['ASD', '"ASD"'.' '.ValidationConstants::INCORRECT_ID],
+                    'date' => ['12-2056-89', ValidationConstants::INVALID_DATE_FORMAT],
+                    'startTime' => ['08:02', ValidationConstants::INVALID_TIME]
                 ],
             ]
         ];

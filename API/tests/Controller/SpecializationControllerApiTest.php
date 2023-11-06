@@ -68,7 +68,7 @@ class SpecializationControllerApiTest extends ApiTestCase
             accessToken: $managerAccessToken,
             data: $this->specialization,
         );
-        $this->specialization['description'] = 'Some text';
+        $this->specialization['description'] = 'Some text some text';
         $response = $this->request(
             method: 'PUT',
             uri: "/api/specializations/{$this->specialization['name']}",

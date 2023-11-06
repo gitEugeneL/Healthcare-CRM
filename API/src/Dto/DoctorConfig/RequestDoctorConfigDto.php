@@ -2,6 +2,7 @@
 
 namespace App\Dto\DoctorConfig;
 
+use App\Constant\ValidationConstants;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator as AcmeAssert;
 
@@ -11,7 +12,7 @@ class RequestDoctorConfigDto
     #[Assert\NotNull]
     #[Assert\Regex(
         pattern: '/^(0[7-9]|1[0-6]):00$/',
-        message: 'incorrect time format (07:00 to 16:00)'
+        message: ValidationConstants::INCORRECT_START_TIME
     )]
     private string $startTime;
 
@@ -19,7 +20,7 @@ class RequestDoctorConfigDto
     #[Assert\NotNull]
     #[Assert\Regex(
         pattern: '/^(0[8-9]|1[0-7]):00$/',
-        message: 'incorrect time format (08:00 to 17:00)'
+        message: ValidationConstants::INCORRECT_END_TIME
     )]
     private string $endTime;
 
@@ -27,7 +28,7 @@ class RequestDoctorConfigDto
     #[Assert\NotNull]
     #[Assert\Regex(
         pattern: '/^(1H|15M|30M|45M)$/',
-        message: 'incorrect interval available: 1H or 15M or 30M or 45M'
+        message: ValidationConstants::INCORRECT_INTERVAL
     )]
     private string $interval;
 

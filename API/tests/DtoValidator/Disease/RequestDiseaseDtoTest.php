@@ -2,6 +2,7 @@
 
 namespace App\Tests\DtoValidator\Disease;
 
+use App\Constant\ValidationConstants;
 use App\Dto\Disease\RequestDiseaseDto;
 use App\Tests\DtoTestCase;
 
@@ -18,12 +19,10 @@ class RequestDiseaseDtoTest extends DtoTestCase
 
     public function incorrectDiseases(): array
     {
-        $blankValue = 'This value should not be blank.';
-        $longValue = 'This value is too long. It should have 50 characters or less.';
-
         return [
-            ['', $blankValue],
-            ['test text test text test text test text test text test text', $longValue]];
+            ['', ValidationConstants::BLANK_VALUE],
+            ['test text test text test text test text test text test text', ValidationConstants::LONG_VALUE_50]
+        ];
     }
 
     /**

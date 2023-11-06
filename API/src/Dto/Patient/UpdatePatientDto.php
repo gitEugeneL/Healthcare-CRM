@@ -2,6 +2,7 @@
 
 namespace App\Dto\Patient;
 
+use App\Constant\ValidationConstants;
 use App\Dto\User\AbstractUpdateUserDto;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -10,13 +11,13 @@ class UpdatePatientDto extends AbstractUpdateUserDto
     #[Assert\Length(11)]
     #[Assert\Regex(
         pattern: '/^\d+$/',
-        message: 'PESEL must be a number'
+        message: ValidationConstants::INVALID_PESEL
     )]
     private ?string $pesel;
 
     #[Assert\Regex(
         pattern: '/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/',
-        message: 'DateOfBirth must be Y-m-d (1999-12-31)'
+        message: ValidationConstants::INVALID_DATE_OF_BIRTH
     )]
     private ?string $dateOfBirth;
 

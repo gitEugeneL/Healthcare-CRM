@@ -2,6 +2,7 @@
 
 namespace App\Dto\Address;
 
+use App\Constant\ValidationConstants;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class RequestAddressDto
@@ -21,7 +22,7 @@ class RequestAddressDto
     #[Assert\Length(max: 10)]
     #[Assert\Regex(
         pattern: '/^\d{2}-\d{3}$/',
-        message: 'Valid postal code format: 00-000'
+        message: ValidationConstants::INVALID_POSTAL_CODE
     )]
     private string $postalCode;
 

@@ -2,6 +2,7 @@
 
 namespace App\Tests\DtoValidator\Manager;
 
+use App\Constant\ValidationConstants;
 use App\Dto\Manager\UpdateManagerDto;
 use App\Tests\DtoTestCase;
 
@@ -18,10 +19,8 @@ class UpdateManagerDtoTest extends DtoTestCase
 
     public function incorrectData(): array
     {
-        $positionLength = 'This value is too short. It should have 10 characters or more.';
-
         return [
-            ['qwe', $positionLength],
+            ['qwe', ValidationConstants::SHORT_VALUE_10],
         ];
     }
 

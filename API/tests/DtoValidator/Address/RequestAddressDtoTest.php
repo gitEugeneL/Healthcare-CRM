@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Tests\DtoValidators\Address;
+namespace App\Tests\DtoValidator\Address;
 
 use App\Dto\Address\RequestAddressDto;
 use App\Tests\DtoTestCase;
+use App\Constant\ValidationConstants;
 
 
 class RequestAddressDtoTest extends DtoTestCase
 {
-    public function validAddresses(): array
+    public function correctAddresses(): array
     {
         return [
             ['Warszawa', 'Marszałkowska', '05-999', 'Mazowieckie', '35/38'],
@@ -17,34 +18,34 @@ class RequestAddressDtoTest extends DtoTestCase
         ];
     }
 
-    public function invalidAddresses(): array
+    public function incorrectAddresses(): array
     {
         return
             [
                 [
                     [
-                        'city' => ['', 'This value should not be blank.'],
-                        'street' => ['', 'This value should not be blank.'],
-                        'postalCode' => ['', 'This value should not be blank.'],
-                        'province' => ['', 'This value should not be blank.'],
-                        'house' => ['', 'This value should not be blank.'],
+                        'city' => ['', ValidationConstants::BLANK_VALUE],
+                        'street' => ['', ValidationConstants::BLANK_VALUE],
+                        'postalCode' => ['', ValidationConstants::BLANK_VALUE],
+                        'province' => ['', ValidationConstants::BLANK_VALUE],
+                        'house' => ['', ValidationConstants::BLANK_VALUE],
                     ],
                 ],
                 [
                     [
                         'city' => ['Warszawa', null],
                         'street' => ['Marszałkowska', null],
-                        'postalCode' => ['1236587ASD', 'Valid postal code format: 00-000'],
+                        'postalCode' => ['1236587ASD', ValidationConstants::INVALID_POSTAL_CODE],
                         'province' => ['Mazowieckie', null],
-                        'house' => ['999999', 'This value is too long. It should have 5 characters or less.'],
-                        'apartment' => ['999999', 'This value is too long. It should have 5 characters or less.']
+                        'house' => ['999999', ValidationConstants::LONG_VALUE_5],
+                        'apartment' => ['999999', ValidationConstants::LONG_VALUE_5]
                     ],
                 ],
                 [
                     [
                         'city' => ['Kraków', null],
                         'street' => ['Marszałkowska', null],
-                        'postalCode' => ['AA-DDD', 'Valid postal code format: 00-000'],
+                        'postalCode' => ['AA-DDD', ValidationConstants::INVALID_POSTAL_CODE],
                         'province' => ['Małopolskie', null],
                         'house' => ['25/D', null],
                         'apartment' => ['5A', null]
@@ -54,9 +55,9 @@ class RequestAddressDtoTest extends DtoTestCase
     }
 
     /**
-     * @dataProvider validAddresses
+     * @dataProvider correctAddresses
      */
-    public function testValidDto(
+    public function testRequestAddressDto__withCorrectAddresses(
         string $city, string $street, string $postalCode, string $province, string $house, string$apartment = null
     ): void
     {
@@ -74,9 +75,9 @@ class RequestAddressDtoTest extends DtoTestCase
     }
 
     /**
-     * @dataProvider invalidAddresses
+     * @dataProvider incorrectAddresses
      */
-    public function testInvalidDto(array $data): void
+    public function testRequestAddressDto_withIncorrectAddresses(array $data): void
     {
         $dto = new RequestAddressDto();
         $dto->setCity($data['city'][0]);

@@ -2,6 +2,7 @@
 
 namespace App\Validator\Constraints;
 
+use App\Constant\ValidationConstants;
 use App\Validator\WorkdaysArrayValidator;
 use Attribute;
 use Symfony\Component\Validator\Constraint;
@@ -9,7 +10,7 @@ use Symfony\Component\Validator\Constraint;
 #[Attribute]
 class WorkdaysArray extends Constraint
 {
-    public string $message = 'incorrect workdays array. available: [1, 2, 3, 4, 5, 6, 7]';
+    public string $message = ValidationConstants::INCORRECT_WORKDAYS;
 
     public function validatedBy(): string
     {

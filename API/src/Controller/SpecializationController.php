@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\Specialization\CreateSpecializationDto;
-use App\Dto\Specialization\UpdateSpecializationDoctorsDto;
+use App\Dto\Specialization\IncludeExcludeSpecializationDto;
 use App\Dto\Specialization\UpdateSpecializationDto;
 use App\Entity\User\Roles;
 use App\Exception\AlreadyExistException;
@@ -85,7 +85,7 @@ class SpecializationController extends AbstractController
     public function includeDoctor(Request $request): JsonResponse
     {
         $dto = $this->serializer
-            ->deserialize($request->getContent(), UpdateSpecializationDoctorsDto::class, 'json');
+            ->deserialize($request->getContent(), IncludeExcludeSpecializationDto::class, 'json');
         $this->dtoInspector->inspect($dto);
         $this->specializationService->includeDoctor($dto);
         return $this->json('Doctor successfully included', 201);
@@ -100,7 +100,7 @@ class SpecializationController extends AbstractController
     public function excludeDoctor(Request $request): JsonResponse
     {
         $dto = $this->serializer
-            ->deserialize($request->getContent(), UpdateSpecializationDoctorsDto::class, 'json');
+            ->deserialize($request->getContent(), IncludeExcludeSpecializationDto::class, 'json');
         $this->dtoInspector->inspect($dto);
         $this->specializationService->excludeDoctor($dto);
         return $this->json('Doctor successfully excluded', 201);

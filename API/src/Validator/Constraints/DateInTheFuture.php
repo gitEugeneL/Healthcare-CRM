@@ -2,6 +2,7 @@
 
 namespace App\Validator\Constraints;
 
+use App\Constant\ValidationConstants;
 use App\Validator\DateInTheFutureValidator;
 use Attribute;
 use Symfony\Component\Validator\Constraint;
@@ -9,7 +10,8 @@ use Symfony\Component\Validator\Constraint;
 #[Attribute]
 class DateInTheFuture extends Constraint
 {
-    public string $message = 'Invalid date. Please select a future date or date should not be later than +1 month.';
+    public string $invalidDateMessage = ValidationConstants::INVALID_DATE;
+    public string $invalidFormatMessage = ValidationConstants::INVALID_DATE_FORMAT;
 
     public function validatedBy(): string
     {
