@@ -5,11 +5,12 @@ RUN apk add --no-cache curl git build-base zlib-dev oniguruma-dev autoconf bash
 RUN apk add --update linux-headers
 
 # Install Xdebug
-ARG XDEBUG=false
-RUN if [ ${XDEBUG} = true ]; \
+ARG INSTALL_XDEBUG=fasle
+RUN if [ ${INSTALL_XDEBUG} = true ]; \
     then \
       pecl install xdebug && docker-php-ext-enable xdebug; \
     fi;
+COPY php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 # Postgres driver
 RUN apk add --no-cache libpq-dev && docker-php-ext-install pdo_pgsql

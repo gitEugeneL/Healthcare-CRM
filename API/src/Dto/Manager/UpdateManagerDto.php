@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class UpdateManagerDto extends AbstractUpdateUserDto
 {
-    #[Assert\Length(max: 150)]
+    #[Assert\Length(min: 10, max: 150)]
     private ?string $position;
 
     public function getPosition(): ?string
