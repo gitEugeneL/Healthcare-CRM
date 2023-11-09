@@ -68,14 +68,4 @@ class ManagerService
         $this->managerRepository->save($manager, true);
         return $this->managerResponseDtoTransformer->transformFromObject($manager);
     }
-
-    /**
-     * @throws NotFoundException
-     */
-    public function info(string $userIdentifier): ResponseManagerDto
-    {
-        $user = $this->userRepository->findOneByEmailOrThrow($userIdentifier);
-        $manager = $this->managerRepository->findByUser($user);
-        return $this->managerResponseDtoTransformer->transformFromObject($manager);
-    }
 }

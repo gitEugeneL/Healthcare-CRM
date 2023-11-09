@@ -28,31 +28,6 @@ class ManagerControllerApiTest extends ApiTestCase
         $this->assertSame(422, $response->getStatusCode());
     }
 
-    public function testInfo_withValidManager_returnsOk(): void
-    {
-        $managerAccessToken = $this->accessToken('manager');
-
-        $response = $this->request(
-            method: 'GET',
-            uri: '/api/managers/info',
-            accessToken: $managerAccessToken
-        );
-
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame($this->user['manager']['email'], $this->decodeResponse($response)['email']);
-    }
-
-    public function testInfo_withInvalidUser_returnsUnauthorized(): void
-    {
-        $response = $this->request(
-            method: 'GET',
-            uri: '/api/managers/info',
-            accessToken: 'invalidToken'
-        );
-
-        $this->assertSame(401, $response->getStatusCode());
-    }
-
     public function testUpdate_withValidData_returnsUpdated(): void
     {
         $managerAccessToken = $this->accessToken('manager');

@@ -90,9 +90,4 @@ class OfficeController extends AbstractController
         $this->officeService->delete($number);
         return $this->json(null, 204);
     }
-
-    // todo validation tests
-    // todo user info
-    // todo swagger
-    // todo add makefile config for test db
 }

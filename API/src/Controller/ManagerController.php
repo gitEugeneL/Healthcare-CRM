@@ -58,16 +58,4 @@ class ManagerController extends AbstractController
         $result = $this->managerService->update($dto, $userIdentifier);
         return $this->json($result, 200);
     }
-
-    /**
-     * @throws NotFoundException
-     */
-    #[IsGranted(Roles::MANAGER)]
-    #[Route('/info', methods: ['GET'])]
-    public function info(TokenStorageInterface $tokenStorage): JsonResponse
-    {
-        $userIdentifier = $tokenStorage->getToken()->getUser()->getUserIdentifier();
-        $result = $this->managerService->info($userIdentifier);
-        return $this->json($result, 200);
-    }
 }
