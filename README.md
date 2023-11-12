@@ -79,4 +79,4 @@ offering seamless appointment scheduling and optimizing clinic workflows.
 
 ## Database diagram
 
-![Database diagram]((https://github.com/gitEugeneL/Healthcare-CRM/blob/main/diagram.png?raw=true)
+![Database diagram](https://github.com/gitEugeneL/Healthcare-CRM/blob/main/diagram.png?raw=true)
