@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\Patient\CreatePatientDto;
+use App\Dto\Patient\ResponsePatientDto;
 use App\Dto\Patient\UpdatePatientDto;
 use App\Entity\User\Roles;
 use App\Exception\NotFoundException;
@@ -10,6 +11,8 @@ use App\Exception\ValidationException;
 use App\Service\PatientService;
 use App\Utils\DtoInspector;
 use App\Utils\QueryParamsInspector;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,7 +21,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'patients')]
 #[Route('/api/patients')]
 class PatientController extends AbstractController
 {
@@ -32,6 +37,15 @@ class PatientController extends AbstractController
     /**
      * @throws ValidationException
      */
+    #[Security]
+    #[OA\RequestBody(
+        content: new Model(type: CreatePatientDto::class)
+    )]
+    #[OA\Response(
+        response: 201,
+        description: 'Patient has been successfully created',
+        content: new Model(type: ResponsePatientDto::class)
+    )]
     #[Route('', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
@@ -45,6 +59,15 @@ class PatientController extends AbstractController
      * @throws NotFoundException
      * @throws ValidationException
      */
+    #[Security(name: 'PATIENT')]
+    #[OA\RequestBody(
+        content: new Model(type: UpdatePatientDto::class)
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Patient has been successfully updated',
+        content: new Model(type: ResponsePatientDto::class)
+    )]
     #[IsGranted(Roles::PATIENT)]
     #[Route('', methods: ['PATCH'])]
     public function update(Request $request, TokenStorageInterface $tokenStorage): JsonResponse
@@ -56,6 +79,14 @@ class PatientController extends AbstractController
         return $this->json($result, 200);
     }
 
+    #[Security(name: 'PATIENT')]
+    #[Security(name: 'MANAGER')]
+    #[OA\QueryParameter(name: 'page')]
+    #[OA\Response(
+        response: 200,
+        description: 'Successful response with pagination',
+        content: new Model(type: ResponsePatientDto::class)
+    )]
     #[IsGranted(new Expression('is_granted("'.Roles::DOCTOR.'") or is_granted("'.Roles::MANAGER.'")'))]
     #[Route('/', methods: ['GET'])]
     public function show(Request $request): JsonResponse
@@ -69,6 +100,13 @@ class PatientController extends AbstractController
      * @throws NotFoundException
      * @throws ValidationException
      */
+    #[Security(name: 'PATIENT')]
+    #[Security(name: 'MANAGER')]
+    #[OA\Response(
+        response: 200,
+        description: 'Successful response',
+        content: new Model(type: ResponsePatientDto::class)
+    )]
     #[IsGranted(new Expression('is_granted("'.Roles::DOCTOR.'") or is_granted("'.Roles::MANAGER.'")'))]
     #[Route('/{patientId}', methods: ['GET'])]
     public function showOne(Request $request): JsonResponse

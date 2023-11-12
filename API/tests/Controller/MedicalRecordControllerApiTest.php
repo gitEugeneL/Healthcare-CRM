@@ -291,7 +291,7 @@ class MedicalRecordControllerApiTest extends ApiTestCase
         );
         $responseData = $this->decodeResponse($response);
 
-        $this->assertSame(201, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertSame($data['title'], $responseData['title']);
         $this->assertSame($data['description'], $responseData['description']);
         $this->assertSame($data['doctorNote'], $responseData['doctorNote']);

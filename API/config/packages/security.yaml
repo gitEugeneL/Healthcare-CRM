@@ -25,6 +25,13 @@ security:
                 path: /api/token/invalidate
 
     access_control:
+        - { path: ^/api/doc,          roles: PUBLIC_ACCESS }
+
+
+
+
+
+
         - { path: ^/api/user/login,        roles: PUBLIC_ACCESS }
         - { path: ^/api/patients,          roles: PUBLIC_ACCESS }
         - { path: ^/api,                   roles: IS_AUTHENTICATED_FULLY }

@@ -1,0 +1,122 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Healtcare-CRM
+            description: API for hospital management
+            version: 1.0.0
+
+        components:
+            securitySchemes:
+                ADMIN:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+                MANAGER:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+                DOCTOR:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+                PATIENT:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+        security:
+            - Bearer: []
+
+        paths:
+            /api/token/login:
+                post:
+                    security:
+                        -
+                    tags:
+                        - Auth
+                    description: Login into the api.
+                    requestBody:
+                        description: Json body
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        username:
+                                            type: string
+                                        password:
+                                            type: string
+                    responses:
+                        '200':
+                            description: Login successful
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            token:
+                                                type: string
+                            headers:
+                                Set-Cookie:
+                                    description: 'Refresh token to be stored in cookies for secure session management.'
+                                    schema:
+                                        type: string
+                                        format: string
+
+            /api/token/refresh:
+                post:
+                    security:
+                        - MANAGER: []
+                        - DOCTOR: []
+                        - PATIENT: []
+                    tags:
+                        - Auth
+                    description: 'Refresh token'
+                    parameters:
+                        - in: cookie
+                          name: refresh_token
+                          description: 'refresh_token=value; HttpOnly'
+                          required: true
+                          schema:
+                              type: string
+                    responses:
+                        '200':
+                            description: 'Refresh and asses tokens have been updated'
+                            content:
+                                application/json:
+                                    example:
+                                        token: 'JWT access token'
+                            headers:
+                                Set-Cookie:
+                                    description: 'refresh_token=value; HttpOnly'
+                                    schema:
+                                        type: string
+
+            /api/token/invalidate:
+                post:
+                    security:
+                        - MANAGER: [ ]
+                        - DOCTOR: [ ]
+                        - PATIENT: [ ]
+                    tags:
+                        - Auth
+                    description: 'Logout'
+                    parameters:
+                        - in: cookie
+                          name: refresh_token
+                          description: 'refresh_token=value; HttpOnly'
+                          required: true
+                          schema:
+                              type: string
+                    responses:
+                        '200':
+                            description: 'Refresh token has been invalidated'
+                            content:
+                                application/json:
+                                    example:
+                                        code: 200
+                                        message: 'The supplied refresh_token has been invalidated.'
+
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc

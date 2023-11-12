@@ -2,10 +2,16 @@
 
 namespace App\Dto\Disease;
 
+use App\Dto\Doctor\ResponseDoctorDto;
+
 class ResponseDiseaseDto
 {
     private int $id;
     private string $name;
+
+    /**
+     * @var array<ResponseDoctorDto>
+     */
     private ?array $doctors;
 
     public function getName(): string

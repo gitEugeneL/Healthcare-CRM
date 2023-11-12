@@ -2,12 +2,22 @@
 
 namespace App\Dto\DoctorConfig;
 
+use OpenApi\Attributes as OA;
+
 class ResponseDoctorConfigDto
 {
     private int $doctorId;
+    #[OA\Property(default: '09:00')]
     private string $startTime;
+    #[OA\Property(default: '17:00')]
     private string $endTime;
+    #[OA\Property(default: '1H or 15M or 30M or 45M')]
     private string $interval;
+
+    #[OA\Property(default: [1, 2, 3, 4, 5])]
+    /**
+     * @var array<integer>
+     */
     private array $workdays;
 
     public function getDoctorId(): int

@@ -4,6 +4,7 @@ namespace App\Dto\Address;
 
 use App\Constant\ValidationConstants;
 use Symfony\Component\Validator\Constraints as Assert;
+use OpenApi\Attributes as OA;
 
 class RequestAddressDto
 {
@@ -34,10 +35,12 @@ class RequestAddressDto
     #[Assert\NotBlank]
     #[Assert\NotNull]
     #[Assert\Length(max: 5)]
+    #[OA\Property(default: '20/25B')]
     private string $house;
 
 
     #[Assert\Length(max: 5)]
+    #[OA\Property(default: '3A')]
     private ?string $apartment;
 
     public function getCity(): string

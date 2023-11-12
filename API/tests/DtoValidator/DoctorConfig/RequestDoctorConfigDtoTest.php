@@ -26,7 +26,7 @@ class RequestDoctorConfigDtoTest extends DtoTestCase
                     'startTime' => ['', ValidationConstants::BLANK_VALUE],
                     'endTime' => ['', ValidationConstants::BLANK_VALUE],
                     'interval' => ['', ValidationConstants::BLANK_VALUE],
-                    'workdays' => ['', ValidationConstants::BLANK_VALUE]
+                    'workdays' => [[], ValidationConstants::BLANK_VALUE]
                 ]
             ],
             [
@@ -34,7 +34,7 @@ class RequestDoctorConfigDtoTest extends DtoTestCase
                     'startTime' => ['15:15', ValidationConstants::INCORRECT_START_TIME],
                     'endTime' => ['16:30', ValidationConstants::INCORRECT_END_TIME],
                     'interval' => ['25M', ValidationConstants::INCORRECT_INTERVAL],
-                    'workdays' => [['monday, friday'], ValidationConstants::INCORRECT_WORKDAYS]
+                    'workdays' => [[0, 0], ValidationConstants::INCORRECT_WORKDAYS]
                 ],
             ],
             [
@@ -42,7 +42,7 @@ class RequestDoctorConfigDtoTest extends DtoTestCase
                     'startTime' => ['04:00', ValidationConstants::INCORRECT_START_TIME],
                     'endTime' => ['20:00', ValidationConstants::INCORRECT_END_TIME],
                     'interval' => ['2h', ValidationConstants::INCORRECT_INTERVAL],
-                    'workdays' => [[-1, 'day'], ValidationConstants::INCORRECT_WORKDAYS]
+                    'workdays' => [[-1, 99], ValidationConstants::INCORRECT_WORKDAYS]
                 ],
             ]
         ];

@@ -2,13 +2,18 @@
 
 namespace App\Dto\Address;
 
+use OpenApi\Attributes as OA;
+
 class ResponseAddressDto
 {
     private ?string $city;
     private ?string $province;
+    #[OA\Property(default: '00-000')]
     private ?string $postalCode;
     private ?string $street;
+    #[OA\Property(default: '20/25B')]
     private ?string $house;
+    #[OA\Property(default: '3A')]
     private ?string $apartment;
 
     public function getCity(): ?string

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Dto\Specialization\CreateSpecializationDto;
 use App\Dto\Specialization\IncludeExcludeSpecializationDto;
+use App\Dto\Specialization\ResponseSpecializationDto;
 use App\Dto\Specialization\UpdateSpecializationDto;
 use App\Entity\User\Roles;
 use App\Exception\AlreadyExistException;
@@ -11,6 +12,8 @@ use App\Exception\NotFoundException;
 use App\Exception\ValidationException;
 use App\Service\SpecializationService;
 use App\Utils\DtoInspector;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,7 +21,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'specializations')]
 #[Route('/api/specializations')]
 class SpecializationController extends AbstractController
 {
@@ -32,6 +37,15 @@ class SpecializationController extends AbstractController
      * @throws AlreadyExistException
      * @throws ValidationException
      */
+    #[Security(name: 'MANAGER')]
+    #[OA\RequestBody(
+        content: new Model(type: CreateSpecializationDto::class)
+    )]
+    #[OA\Response(
+        response: 201,
+        description: 'Specialization has been successfully created',
+        content: new Model(type: ResponseSpecializationDto::class)
+    )]
     #[IsGranted(Roles::MANAGER)]
     #[Route('', methods: ['POST'])]
     public function create(Request $request): JsonResponse
@@ -42,6 +56,13 @@ class SpecializationController extends AbstractController
         return $this->json($result, 201);
     }
 
+    #[Security(name: 'MANAGER')]
+    #[Security(name: 'PATIENT')]
+    #[OA\Response(
+        response: 200,
+        description: 'Successful response',
+        content: new Model(type: ResponseSpecializationDto::class)
+    )]
     #[IsGranted(new Expression('is_granted("'.Roles::PATIENT.'") or is_granted("'.Roles::MANAGER.'")'))]
     #[Route('', methods: ['GET'])]
     public function show(): JsonResponse
@@ -54,6 +75,15 @@ class SpecializationController extends AbstractController
      * @throws NotFoundException
      * @throws ValidationException
      */
+    #[Security(name: 'MANAGER')]
+    #[OA\RequestBody(
+        content: new Model(type: UpdateSpecializationDto::class)
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'specialization has been successfully updated',
+        content: new Model(type: ResponseSpecializationDto::class)
+    )]
     #[IsGranted(Roles::MANAGER)]
     #[Route('/{specializationName}', methods: ['PUT'])]
     public function update(Request $request): JsonResponse
@@ -67,6 +97,11 @@ class SpecializationController extends AbstractController
     /**
      * @throws NotFoundException
      */
+    #[Security(name: 'MANAGER')]
+    #[OA\Response(
+        response: 204,
+        description: 'specialization has been successfully deleted',
+    )]
     #[IsGranted(Roles::MANAGER)]
     #[Route('/{specializationName}', methods: ['DELETE'])]
     public function delete(Request $request): JsonResponse
@@ -80,6 +115,14 @@ class SpecializationController extends AbstractController
      * @throws AlreadyExistException
      * @throws ValidationException
      */
+    #[Security(name: 'MANAGER')]
+    #[OA\RequestBody(
+        content: new Model(type: IncludeExcludeSpecializationDto::class)
+    )]
+    #[OA\Response(
+        response: 201,
+        description: 'Doctor successfully included',
+    )]
     #[IsGranted(Roles::MANAGER)]
     #[Route('/include-doctor', methods: ['PATCH'])]
     public function includeDoctor(Request $request): JsonResponse
@@ -95,6 +138,14 @@ class SpecializationController extends AbstractController
      * @throws NotFoundException
      * @throws ValidationException
      */
+    #[Security(name: 'MANAGER')]
+    #[OA\RequestBody(
+        content: new Model(type: IncludeExcludeSpecializationDto::class)
+    )]
+    #[OA\Response(
+        response: 201,
+        description: 'Doctor successfully excluded',
+    )]
     #[IsGranted(Roles::MANAGER)]
     #[Route('/exclude-doctor', methods: ['PATCH'])]
     public function excludeDoctor(Request $request): JsonResponse

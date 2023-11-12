@@ -5,6 +5,7 @@ namespace App\Dto\Doctor;
 use App\Constant\ValidationConstants;
 use App\Entity\Doctor\Status;
 use Symfony\Component\Validator\Constraints as Assert;
+use OpenApi\Attributes as OA;
 
 class UpdateStatusDoctorDto
 {
@@ -14,6 +15,7 @@ class UpdateStatusDoctorDto
         pattern: '/^[1-9]\d*$/',
         message: ValidationConstants::INCORRECT_ID
     )]
+    #[OA\Property(type: 'integer')]
     private mixed $doctorId;
 
     #[Assert\NotBlank]

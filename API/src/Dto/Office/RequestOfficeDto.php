@@ -4,6 +4,7 @@ namespace App\Dto\Office;
 
 use App\Validator\Constraints\PositiveNumber;
 use Symfony\Component\Validator\Constraints as Assert;
+use OpenApi\Attributes as OA;
 
 class RequestOfficeDto
 {
@@ -15,6 +16,7 @@ class RequestOfficeDto
     #[Assert\NotBlank]
     #[Assert\NotNull]
     #[PositiveNumber]
+    #[OA\Property(type: 'integer')]
     private mixed $number;
 
     public function getName(): string

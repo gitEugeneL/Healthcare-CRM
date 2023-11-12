@@ -2,13 +2,25 @@
 
 namespace App\Dto\Doctor;
 
+use App\Dto\Disease\ResponseDiseaseDto;
+use App\Dto\Specialization\ResponseSpecializationDto;
 use App\Dto\User\AbstractResponseUserDto;
+use OpenApi\Attributes as OA;
+
 
 class ResponseDoctorDto extends AbstractResponseUserDto
 {
     private ?string $education;
     private ?string $description;
+
+    /**
+     * @var array<ResponseSpecializationDto>
+     */
     private ?array $specializations;
+
+    /**
+     * @var array<ResponseDiseaseDto>
+     */
     private ?array $diseases;
 
     public function getEducation(): string
