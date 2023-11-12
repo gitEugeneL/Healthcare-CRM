@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Exception\NotFoundException;
 use App\Exception\UnsupportedMediaType;
 use App\Service\ImageService;
+use Nelmio\ApiDocBundle\Annotation\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,7 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'images')]
 #[Route('/api/images')]
 class ImageController extends AbstractController
 {
@@ -32,6 +35,9 @@ class ImageController extends AbstractController
      * @throws NotFoundException
      * @throws UnsupportedMediaType
      */
+    #[Security(name: 'DOCTOR')]
+    #[Security(name: 'MANAGER')]
+    #[Security(name: 'PATIENT')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[Route('/upload', methods: ['POST'])]
     public function uploadImage(TokenStorageInterface $tokenStorage, Request $request): Response
@@ -45,6 +51,9 @@ class ImageController extends AbstractController
     /**
      * @throws NotFoundException
      */
+    #[Security(name: 'DOCTOR')]
+    #[Security(name: 'MANAGER')]
+    #[Security(name: 'PATIENT')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[Route('/download', methods: ['GET'])]
     public function downloadImage(TokenStorageInterface $tokenStorage): Response
@@ -57,6 +66,13 @@ class ImageController extends AbstractController
     /**
      * @throws NotFoundException
      */
+    #[Security(name: 'DOCTOR')]
+    #[Security(name: 'MANAGER')]
+    #[Security(name: 'PATIENT')]
+    #[OA\Response(
+        response: 204,
+        description: 'Image has been successfully deleted',
+    )]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[Route('/delete', methods: ['DELETE'])]
     public function deleteImage(TokenStorageInterface $tokenStorage): JsonResponse

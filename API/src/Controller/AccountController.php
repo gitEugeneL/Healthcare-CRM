@@ -5,14 +5,16 @@ namespace App\Controller;
 use App\Exception\NotFoundException;
 use App\Service\AccountService;
 use Doctrine\ORM\NonUniqueResultException;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[OA\Tag(name: 'account')]
 #[Route('/api/account')]
-#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class AccountController extends AbstractController
 {
     public function __construct(
@@ -23,6 +25,14 @@ class AccountController extends AbstractController
      * @throws NonUniqueResultException
      * @throws NotFoundException
      */
+    #[Security(name: 'MANAGER')]
+    #[Security(name: 'PATIENT')]
+    #[Security(name: 'DOCTOR')]
+    #[OA\Response(
+        response: 200,
+        description: 'Successful response user data',
+    )]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[Route('/info', methods: ['GET'])]
     public function info(TokenStorageInterface $tokenStorage): JsonResponse
     {
@@ -31,7 +41,4 @@ class AccountController extends AbstractController
         $result = $this->accountService->info($userIdentifier, $userRole);
         return $this->json($result, 200);
     }
-
-    // todo swagger
-    // todo add makefile config for test db
 }

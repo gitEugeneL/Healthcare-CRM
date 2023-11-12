@@ -2,6 +2,8 @@
 
 namespace App\Dto\User;
 
+use OpenApi\Attributes as OA;
+
 abstract class AbstractResponseUserDto
 {
     private int $id;

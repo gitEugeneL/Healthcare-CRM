@@ -4,6 +4,7 @@ namespace App\Dto\MedicalRecord;
 
 use App\Validator\Constraints\PositiveNumber;
 use Symfony\Component\Validator\Constraints as Assert;
+use OpenApi\Attributes as OA;
 
 class CreateMedicalRecordDto
 {
@@ -28,11 +29,13 @@ class CreateMedicalRecordDto
     #[Assert\NotBlank]
     #[Assert\NotNull]
     #[PositiveNumber]
+    #[OA\Property(type: 'integer')]
     private mixed $specializationId;
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
     #[PositiveNumber]
+    #[OA\Property(type: 'integer')]
     private mixed $appointmentId;
 
     public function getTitle(): string
