@@ -2,15 +2,9 @@
 
 Final project on the subject of **MVC-web-application-development**.
 
+Сlinic management system. Supports the management of staff, offices, appointments, patients and medical records.
+
 <i>Docker, PostgreSQL, Php-8, Symfony-6, PHPUnit, RestAPI, JWT-authentication with refresh token, Vue.js client</i>
-
-Healthcare-CRM is a cutting-edge Customer Relationship Management
-system tailored for the healthcare industry. This repository houses 
-a comprehensive solution that enables effective management of clinics, 
-specialties, physicians, appointments, and medical documentation generation.
-With a user-centric design, Healthcare-CRM streamlines patient interactions,
-offering seamless appointment scheduling and optimizing clinic workflows. 
-
 
 ## How to run the server
 
