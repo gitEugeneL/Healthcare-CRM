@@ -1,5 +1,8 @@
 # Healthcare-CRM
 
+## Migration to .NET in process..!
+---
+
 Final project on the subject of **MVC-web-application-development**.
 
 Сlinic management system. Supports the management of staff, offices, appointments, patients and medical records.
