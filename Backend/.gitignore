@@ -8,3 +8,5 @@ riderModule.iml
 sqlite.db
 sqlite.db-shm
 sqlite.db-wal
+
+Migrations
