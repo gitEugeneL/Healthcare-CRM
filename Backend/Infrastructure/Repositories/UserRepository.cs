@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-public class UserRepository(DataContext dataContext) : IUserRepository
+internal class UserRepository(DataContext dataContext) : IUserRepository
 {
     public async Task<User> CreateUserAsync(User user, CancellationToken cancellationToken)
     {

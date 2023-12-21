@@ -7,14 +7,16 @@ namespace Infrastructure.Persistence;
 
 public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
 {
-    public required DbSet<User> Users { get; set; }
     public required DbSet<RefreshToken> RefreshTokens { get; set; }
-
+    public required DbSet<User> Users { get; set; }
+    public required DbSet<UserManager> UserManagers { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder builder)
-    { 
+    {
         builder
+            .ApplyConfiguration(new RefreshTokenConfiguration())
             .ApplyConfiguration(new UserConfiguration())
-            .ApplyConfiguration(new RefreshTokenConfiguration());
+            .ApplyConfiguration(new UserManagerConfiguration());
         
         base.OnModelCreating(builder);
     }

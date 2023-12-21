@@ -8,12 +8,11 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        logger.LogError("text exception");
-        
         var (statusCodes, errorMessage) = exception switch
         {
             UnauthorizedException => (401, exception.Message),
             AccessDeniedException => (403, exception.Message),
+            NotFoundException => (404, exception.Message),
             AlreadyExistException => (409, exception.Message),
             _ => (500, "Something went wrong")
         };

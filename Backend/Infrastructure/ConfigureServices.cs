@@ -15,6 +15,7 @@ public static class ConfigureServices
     {
         services
             .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IManagerRepository, ManagerRepository>()
             .AddScoped<IPasswordManager, PasswordManager>()
             .AddScoped<ITokenManager, TokenManager>();
         
