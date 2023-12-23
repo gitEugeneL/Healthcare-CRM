@@ -9,6 +9,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 {
     public required DbSet<RefreshToken> RefreshTokens { get; set; }
     public required DbSet<User> Users { get; set; }
+    public required DbSet<UserDoctor> UserDoctors { get; set; }
     public required DbSet<UserManager> UserManagers { get; set; }
     
     protected override void OnModelCreating(ModelBuilder builder)
@@ -16,6 +17,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         builder
             .ApplyConfiguration(new RefreshTokenConfiguration())
             .ApplyConfiguration(new UserConfiguration())
+            .ApplyConfiguration(new UserDoctorConfiguration())
             .ApplyConfiguration(new UserManagerConfiguration());
         
         base.OnModelCreating(builder);

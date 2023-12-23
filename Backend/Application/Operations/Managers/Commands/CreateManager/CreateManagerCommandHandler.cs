@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Operations.Managers.Commands.CreateManager;
 
-public class CreateManagerHandler(
+public class CreateManagerCommandHandler(
     IUserRepository userRepository, 
     IManagerRepository managerRepository, 
     IPasswordManager passwordManager

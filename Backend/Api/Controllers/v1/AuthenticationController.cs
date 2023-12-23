@@ -3,7 +3,6 @@ using Application.Common.Models;
 using Application.Operations.Auth.Commands.Login;
 using Application.Operations.Auth.Commands.Logout;
 using Application.Operations.Auth.Commands.Refresh;
-using Application.Operations.Auth.Commands.Register;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,14 +12,6 @@ namespace Api.Controllers.v1;
 [Route("api/auth")]
 public class AuthenticationController(IMediator mediator) : BaseController(mediator)
 {
-    [HttpPost("register")]
-    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
-    public async Task<ActionResult> Register([FromBody] RegisterCommand command)
-    {
-        var result = await Mediator.Send(command);
-        return Created(result.ToString(), result);
-    }
-
     [HttpPost("login")]
     [ProducesResponseType(typeof(JwtToken), StatusCodes.Status200OK)]
     public async Task<ActionResult<JwtToken>> Login([FromBody] LoginCommand command)

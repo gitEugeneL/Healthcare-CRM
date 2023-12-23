@@ -16,11 +16,11 @@ internal class ManagerRepository(DataContext dataContext) : IManagerRepository
         return manager;
     }
 
-    public async Task<UserManager> UpdateManagerAsync(UserManager userManager, CancellationToken cancellationToken)
+    public async Task<UserManager> UpdateManagerAsync(UserManager manager, CancellationToken cancellationToken)
     {
-        dataContext.UserManagers.Update(userManager);
+        dataContext.UserManagers.Update(manager);
         await dataContext.SaveChangesAsync(cancellationToken);
-        return userManager;
+        return manager;
     }
 
     public async Task<UserManager?> FindManagerByUserIdAsync(Guid id, CancellationToken cancellationToken)

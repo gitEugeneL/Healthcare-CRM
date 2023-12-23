@@ -15,6 +15,6 @@ public sealed class User : BaseAuditableEntity
     
     /*** Relations ***/
     public List<RefreshToken> RefreshTokens { get; set; } = [];
-
     public UserManager? UserManager { get; set; }
+    public UserDoctor? UserDoctor { get; set; }
 }
