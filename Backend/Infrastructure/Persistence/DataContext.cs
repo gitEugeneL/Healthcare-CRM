@@ -7,6 +7,7 @@ namespace Infrastructure.Persistence;
 
 public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
 {
+    public required DbSet<Specialization> Specializations { get; set; }
     public required DbSet<RefreshToken> RefreshTokens { get; set; }
     public required DbSet<User> Users { get; set; }
     public required DbSet<UserDoctor> UserDoctors { get; set; }
@@ -15,6 +16,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder
+            .ApplyConfiguration(new SpecializationConfiguration())
             .ApplyConfiguration(new RefreshTokenConfiguration())
             .ApplyConfiguration(new UserConfiguration())
             .ApplyConfiguration(new UserDoctorConfiguration())
