@@ -9,4 +9,7 @@ public interface IDoctorRepository
     Task<UserDoctor> UpdateDoctorAsync(UserDoctor doctor, CancellationToken cancellationToken);
 
     Task<UserDoctor?> FindDoctorByUserIdAsync(Guid id, CancellationToken cancellationToken);
+
+    Task<(IEnumerable<UserDoctor> List, int Count)> GetDoctorsWithPaginationAsync
+        (CancellationToken cancellationToken, int pageNumber, int pageSize, Guid? specializationId);
 }

@@ -50,7 +50,4 @@ public class DoctorController(IMediator mediator) : BaseController(mediator)
         var result = await Mediator.Send(query);
         return Ok(result);
     }
-    
-    // show
-    // show by specialization
 }

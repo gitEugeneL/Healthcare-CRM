@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Operations.Doctor.Queries.GetAllDoctors;
 
-public record GetAllDoctorsQueryPagination : IRequest<PaginatedList<DoctorResponse>>
+public sealed record GetAllDoctorsQueryPagination : IRequest<PaginatedList<DoctorResponse>>
 {
     public Guid? SpecializationId { get; init; }
    

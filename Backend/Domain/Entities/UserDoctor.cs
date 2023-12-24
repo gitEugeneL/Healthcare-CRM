@@ -13,7 +13,8 @@ public sealed class UserDoctor : BaseAuditableEntity
     public required User User { get; set; }
     public Guid UserId { get; set; }
 
-    // todo specialization
+    public List<Specialization> Specializations { get; set; } = [];
+
     // todo appointment
     // todo config
     // todo medicalRecord

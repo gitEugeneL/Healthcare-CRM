@@ -19,5 +19,9 @@ internal class UserDoctorConfiguration : IEntityTypeConfiguration<UserDoctor>
         /*** One to one ***/
         builder.HasOne(doctor => doctor.User)
             .WithOne(user => user.UserDoctor);
+        
+        /*** Many to many ***/
+        builder.HasMany(doctor => doctor.Specializations)
+            .WithMany(specialization => specialization.UserDoctors);
     }
 }

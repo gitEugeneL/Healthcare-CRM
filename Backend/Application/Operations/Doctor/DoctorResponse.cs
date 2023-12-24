@@ -8,9 +8,8 @@ public sealed record DoctorResponse : UserResponse
     public string Status { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string? Education { get; set; }
+    public List<Guid>? SpecializationIds { get; set; }
     
-    // todo specializations array
-
     public DoctorResponse ToDoctorResponse(UserDoctor doctor)
     {
         UserId = doctor.UserId;
@@ -21,9 +20,11 @@ public sealed record DoctorResponse : UserResponse
         Status = doctor.Status.ToString();
         Description = doctor.Description;
         Education = doctor.Education;
+        SpecializationIds = doctor.Specializations
+            .Select(s => s.Id)
+            .ToList();
+      
         
-        // todo specializations array
-
         return this;
     }
 }
