@@ -16,19 +16,38 @@ internal class SpecializationRepository(DataContext dataContext) : ISpecializati
         return s;
     }
 
-    public Task<Specialization> UpdateSpecializationAsync(Specialization s, CancellationToken cancellationToken)
+    public async Task<Specialization> UpdateSpecializationAsync(Specialization s, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        dataContext.Specializations.Update(s);
+        await dataContext.SaveChangesAsync(cancellationToken);
+        return s;
     }
 
+    public async Task<Specialization?> FindSpecializationByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await dataContext.Specializations
+            .Include(s => s.UserDoctors)
+            .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+    }
+    
     public async Task<Specialization?> FindSpecializationByValueAsync(string value, CancellationToken cancellationToken)
     {
         return await dataContext.Specializations
+            .Include(s => s.UserDoctors)
             .FirstOrDefaultAsync(s => s.Value.ToLower().Equals(value.ToLower()), cancellationToken);
     }
 
-    public Task<IEnumerable<Specialization>> GetSpecializationsAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<Specialization>> GetSpecializationsAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await dataContext.Specializations
+            .Include(s => s.UserDoctors)
+            .OrderBy(s => s.Value)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task DeleteSpecializationAsync(Specialization s, CancellationToken cancellationToken)
+    {
+        dataContext.Specializations.Remove(s);
+        await dataContext.SaveChangesAsync(cancellationToken);
     }
 }

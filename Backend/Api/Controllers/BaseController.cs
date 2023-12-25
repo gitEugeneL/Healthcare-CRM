@@ -5,12 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [ApiController]
-public class BaseController : ControllerBase
+public class BaseController(IMediator mediator) : ControllerBase
 {
-    protected readonly IMediator Mediator;
-
-    public BaseController(IMediator mediator) =>
-        Mediator = mediator;
+    protected readonly IMediator Mediator = mediator;
 
     protected string? CurrentUserId() => 
         User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

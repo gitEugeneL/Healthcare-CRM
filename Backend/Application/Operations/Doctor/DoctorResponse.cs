@@ -8,7 +8,7 @@ public sealed record DoctorResponse : UserResponse
     public string Status { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string? Education { get; set; }
-    public List<Guid>? SpecializationIds { get; set; }
+    public List<Guid> SpecializationIds { get; set; } = [];
     
     public DoctorResponse ToDoctorResponse(UserDoctor doctor)
     {

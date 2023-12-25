@@ -9,5 +9,6 @@ public sealed class CreateSpecializationCommand : IRequest<SpecializationRespons
     [MaxLength(100)]
     public required string Value { get; init; }
 
-    [MaxLength(200)] public string? Description { get; init; }
+    [MaxLength(200)] 
+    public string? Description { get; init; }
 }

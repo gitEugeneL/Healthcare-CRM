@@ -28,6 +28,7 @@ internal class DoctorRepository(DataContext dataContext) : IDoctorRepository
     {
         return await dataContext.UserDoctors
             .Include(doctor => doctor.User)
+            .Include(doctor => doctor.Specializations)
             .FirstOrDefaultAsync(doctor => doctor.UserId == id, cancellationToken);
     }
 
