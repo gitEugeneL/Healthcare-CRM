@@ -10,10 +10,10 @@ public sealed class UserDoctor : BaseAuditableEntity
     public string? Education { get; set; }
     
     /*** Relations ***/
-    public required User User { get; set; }
-    public Guid UserId { get; set; }
+    public required User User { get; init; }
+    public Guid UserId { get; init; }
 
-    public List<Specialization> Specializations { get; set; } = [];
+    public List<Specialization> Specializations { get; init; } = [];
 
     // todo appointment
     // todo config

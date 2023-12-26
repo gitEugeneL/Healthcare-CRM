@@ -1,4 +1,4 @@
-using Application.Operations.Common.Users;
+using Application.Operations.Users;
 using Domain.Entities;
 
 namespace Application.Operations.Managers;

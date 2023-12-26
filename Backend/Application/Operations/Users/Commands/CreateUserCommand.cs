@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Application.Operations.Common.Users.Commands;
+namespace Application.Operations.Users.Commands;
 
 public abstract record CreateUserCommand
 {

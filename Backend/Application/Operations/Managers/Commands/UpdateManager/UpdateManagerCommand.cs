@@ -1,4 +1,4 @@
-using Application.Operations.Common.Users.Commands;
+using Application.Operations.Users.Commands;
 using MediatR;
 
 namespace Application.Operations.Managers.Commands.UpdateManager;

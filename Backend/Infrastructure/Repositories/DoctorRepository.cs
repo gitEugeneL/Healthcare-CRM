@@ -32,8 +32,8 @@ internal class DoctorRepository(DataContext dataContext) : IDoctorRepository
             .FirstOrDefaultAsync(doctor => doctor.UserId == id, cancellationToken);
     }
 
-    public async Task<(IEnumerable<UserDoctor> List, int Count)> GetDoctorsWithPaginationAsync
-        (CancellationToken cancellationToken, int pageNumber, int pageSize, Guid? specializationId = null)
+    public async Task<(IEnumerable<UserDoctor> List, int Count)> GetDoctorsWithPaginationAsync(
+        CancellationToken cancellationToken, int pageNumber, int pageSize, Guid? specializationId = null)
     {
         var query = dataContext.UserDoctors
             .Include(d => d.User)

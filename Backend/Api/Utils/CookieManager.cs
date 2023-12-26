@@ -1,6 +1,6 @@
 namespace Api.Utils;
 
-public static class CookieManager
+internal static class CookieManager
 {
     public static void SetCookie(HttpResponse response, string cookieName, string value, DateTime expires)
     {

@@ -1,11 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using Application.Common.Models;
 
-namespace Application.Operations.Common.Users.Commands;
+namespace Application.Operations.Users.Commands;
 
-public abstract record UpdateUserCommand
+public abstract record UpdateUserCommand : CurrentUser
 {
-    public Guid CurrentUserId { get; private set; }
-    
     [MaxLength(50)]
     public string? FirstName { get; init; }
     
@@ -18,6 +17,4 @@ public abstract record UpdateUserCommand
         ErrorMessage = "Phone number should start with + (optional) and contain only digits."
     )]
     public string? Phone { get; init; }
-    
-    public void SetCurrentUserId(string id) => CurrentUserId = Guid.Parse(id);
 }

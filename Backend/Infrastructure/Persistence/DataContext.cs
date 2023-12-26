@@ -12,15 +12,19 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     public required DbSet<User> Users { get; set; }
     public required DbSet<UserDoctor> UserDoctors { get; set; }
     public required DbSet<UserManager> UserManagers { get; set; }
-    
+    public required DbSet<UserPatient> UserPatients { get; set; }
+    public required DbSet<Address> Addresses { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder
             .ApplyConfiguration(new SpecializationConfiguration())
             .ApplyConfiguration(new RefreshTokenConfiguration())
             .ApplyConfiguration(new UserConfiguration())
+            .ApplyConfiguration(new UserPatientConfiguration())
             .ApplyConfiguration(new UserDoctorConfiguration())
-            .ApplyConfiguration(new UserManagerConfiguration());
+            .ApplyConfiguration(new UserManagerConfiguration())
+            .ApplyConfiguration(new AddressConfiguration());
         
         base.OnModelCreating(builder);
     }

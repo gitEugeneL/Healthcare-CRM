@@ -1,4 +1,4 @@
-using Application.Operations.Common.Users;
+using Application.Operations.Users;
 using Domain.Entities;
 
 namespace Application.Operations.Doctor;
@@ -23,7 +23,6 @@ public sealed record DoctorResponse : UserResponse
         SpecializationIds = doctor.Specializations
             .Select(s => s.Id)
             .ToList();
-      
         
         return this;
     }

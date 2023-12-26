@@ -29,7 +29,7 @@ public class CreateDoctorCommandHandler(
                     Email = request.Email,
                     PasswordHash = hash,
                     PasswordSalt = salt,
-                    Role = Role.Manager
+                    Role = Role.Doctor
                 }
             },
             cancellationToken

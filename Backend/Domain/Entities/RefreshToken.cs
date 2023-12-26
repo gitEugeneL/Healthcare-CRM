@@ -4,10 +4,10 @@ namespace Domain.Entities;
 
 public sealed class RefreshToken : BaseEntity
 {
-    public required string Token { get; set; }
-    public required DateTime Expires { get; set; }
+    public required string Token { get; init; }
+    public required DateTime Expires { get; init; }
     
     /**** Relations ****/
-    public required User User { get; set; }
-    public Guid UserId { get; set; }
+    public required User User { get; init; }
+    public Guid UserId { get; init; }
 }
