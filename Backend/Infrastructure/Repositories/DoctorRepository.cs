@@ -29,6 +29,7 @@ internal class DoctorRepository(DataContext dataContext) : IDoctorRepository
         return await dataContext.UserDoctors
             .Include(doctor => doctor.User)
             .Include(doctor => doctor.Specializations)
+            .Include(doctor => doctor.AppointmentSettings)
             .FirstOrDefaultAsync(doctor => doctor.UserId == id, cancellationToken);
     }
 

@@ -15,6 +15,7 @@ public static class ConfigureServices
     {
         services
             .AddScoped<ISpecializationRepository, SpecializationRepository>()
+            .AddScoped<IAppointmentSettingsRepository, AppointmentSettingsRepository>()
             .AddScoped<IAddressRepository, AddressRepository>()
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IDoctorRepository, DoctorRepository>()

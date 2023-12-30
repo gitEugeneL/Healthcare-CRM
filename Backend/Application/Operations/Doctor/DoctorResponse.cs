@@ -8,6 +8,7 @@ public sealed record DoctorResponse : UserResponse
     public string Status { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string? Education { get; set; }
+    public Guid AppointmentSettingsId { get; set; }
     public List<Guid> SpecializationIds { get; set; } = [];
     
     public DoctorResponse ToDoctorResponse(UserDoctor doctor)
@@ -20,6 +21,7 @@ public sealed record DoctorResponse : UserResponse
         Status = doctor.Status.ToString();
         Description = doctor.Description;
         Education = doctor.Education;
+        AppointmentSettingsId = doctor.AppointmentSettingsId;
         SpecializationIds = doctor.Specializations
             .Select(s => s.Id)
             .ToList();
