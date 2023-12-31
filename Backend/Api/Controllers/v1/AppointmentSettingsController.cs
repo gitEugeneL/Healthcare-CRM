@@ -1,4 +1,3 @@
-using Application.Operations.Addresses.Queries.GetAddress;
 using Application.Operations.AppointSettings;
 using Application.Operations.AppointSettings.Commands.Config;
 using Application.Operations.AppointSettings.Queries.GetAppointmentSettings;

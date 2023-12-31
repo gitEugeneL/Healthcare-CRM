@@ -28,6 +28,14 @@ public class ConfigAppointmentCommandHandler(
 
         config.StartTime = startTime;
         config.EndTime = endTime;
+
+        if (request.Workdays is not null)
+        {
+            var workdays = Enum.GetValues(typeof(Workday)).Cast<Workday>()
+                .Where(day => request.Workdays.Contains((int) day))
+                .ToList();
+            config.Workdays = workdays;
+        }
         
         config.Interval = request.Interval switch
         {
@@ -37,25 +45,6 @@ public class ConfigAppointmentCommandHandler(
             _ => config.Interval
         };
         
-        var workdays = new List<Workday>();
-        
-        if (request.Monday) 
-            workdays.Add(Workday.Monday);
-        if (request.Tuesday) 
-            workdays.Add(Workday.Tuesday);
-        if (request.Wednesday) 
-            workdays.Add(Workday.Wednesday);
-        if (request.Thursday) 
-            workdays.Add(Workday.Thursday);
-        if (request.Friday) 
-            workdays.Add(Workday.Friday);
-        if (request.Saturday) 
-            workdays.Add(Workday.Saturday);
-        if (request.Sunday) 
-            workdays.Add(Workday.Sunday);
-        
-        config.Workdays = workdays;
-
         var updatedConfig = await settingsRepository.UpdateConfigAsync(config, cancellationToken);
         return new AppointmentSettingsResponse()
             .ToAppointmentSettings(updatedConfig);

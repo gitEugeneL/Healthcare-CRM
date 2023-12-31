@@ -24,11 +24,9 @@ public sealed record ConfigAppointmentCommand : CurrentUser, IRequest<Appointmen
     )]
     public string? Interval { get; init; }
 
-    public bool Monday { get; init; } = false;
-    public bool Tuesday { get; init; } = false;
-    public bool Wednesday { get; init; } = false;
-    public bool Thursday { get; init; } = false;
-    public bool Friday { get; init; } = false;
-    public bool Saturday { get; init; } = false;
-    public bool Sunday { get; init; } = false;
+    [ArrayValidation(
+        ErrorMessage = "Workdays must contain values between 1 and 7"
+    )]
+    public int[]? Workdays { get; init; }
 }
+
