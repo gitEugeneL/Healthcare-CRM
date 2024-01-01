@@ -15,6 +15,7 @@ public class UserPatient : BaseAuditableEntity
     public required Address Address { get; init; }
     public Guid AddressId { get; init; }
 
-    // appointments
+    public List<Appointment> Appointments { get; init; } = [];
+    
     // medical records
 }

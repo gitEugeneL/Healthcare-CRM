@@ -7,6 +7,7 @@ namespace Infrastructure.Persistence;
 
 public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
 {
+    public required DbSet<Appointment> Appointments { get; init; }
     public required DbSet<AppointmentSettings> AppointmentSettings { get; init; }
     public required DbSet<Specialization> Specializations { get; init; }
     public required DbSet<RefreshToken> RefreshTokens { get; init; }
@@ -19,6 +20,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder
+            .ApplyConfiguration(new AppointmentConfig())
             .ApplyConfiguration(new AppointmentSettingsConfiguration())
             .ApplyConfiguration(new SpecializationConfiguration())
             .ApplyConfiguration(new RefreshTokenConfiguration())
