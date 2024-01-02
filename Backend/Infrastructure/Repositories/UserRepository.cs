@@ -16,13 +16,19 @@ internal class UserRepository(DataContext dataContext) : IUserRepository
         return user;
     }
 
+    public async Task<User?> FindUserByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await dataContext.Users
+            .FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
+    }
+    
     public async Task<User?> FindUserByEmailAsync(string email, CancellationToken cancellationToken)
     {
         return await dataContext.Users
             .Include(user => user.RefreshTokens)
             .FirstOrDefaultAsync(user => user.Email == email, cancellationToken);
     }
-
+    
     public async Task<User?> FindUserByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken)
     {
         return await dataContext.Users

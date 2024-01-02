@@ -18,8 +18,8 @@ public class FindFreeHoursQueryHandler(
                      ?? throw new NotFoundException(nameof(Users), request.UserDoctorId);
 
         var date = DateOnly.Parse(request.Date);
-
-        if (doctor.AppointmentSettings.Workdays.Contains((Workday) date.DayOfWeek))
+        
+        if (!doctor.AppointmentSettings.Workdays.Contains((Workday) date.DayOfWeek))
             throw new NotFoundException(nameof(User), request.UserDoctorId + " doesn't work on this day");
         
         var result = await appointmentRepository.FindFreeHoursAsync(doctor, date, cancellationToken);
