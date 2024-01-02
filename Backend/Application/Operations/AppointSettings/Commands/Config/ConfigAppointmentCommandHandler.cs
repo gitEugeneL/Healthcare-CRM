@@ -39,9 +39,9 @@ public class ConfigAppointmentCommandHandler(
         
         config.Interval = request.Interval switch
         {
-            "H1" => Interval.H1,
-            "M15" => Interval.M15,
-            "M30" => Interval.M30,
+            "60min" => Interval.Min60,
+            "15min" => Interval.Min15,
+            "30min" => Interval.Min30,
             _ => config.Interval
         };
         

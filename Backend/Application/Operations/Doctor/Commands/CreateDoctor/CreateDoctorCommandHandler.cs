@@ -28,7 +28,7 @@ public class CreateDoctorCommandHandler(
                 {
                     StartTime = new TimeOnly(8, 0),
                     EndTime = new TimeOnly(18, 0),
-                    Interval = Interval.H1,
+                    Interval = Interval.Min60,
                     Workdays = 
                     [
                         Workday.Monday,
@@ -36,8 +36,6 @@ public class CreateDoctorCommandHandler(
                         Workday.Wednesday,
                         Workday.Thursday,
                         Workday.Friday,
-                        Workday.Saturday,
-                        Workday.Sunday
                     ]
                 },
                 User = new User

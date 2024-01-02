@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Application.Common.Models;
+using Application.Operations.AppointSettings.Validations;
 using MediatR;
 
 namespace Application.Operations.AppointSettings.Commands.Config;
@@ -19,12 +20,12 @@ public sealed record ConfigAppointmentCommand : CurrentUser, IRequest<Appointmen
     public string? EndTime { get; init; }
     
     [RegularExpression(
-        "^(H1|M15|M30)$",
-        ErrorMessage = "Incorrect interval. Available: H1 or M15 or M30"
+        "^(60min|15min|30min)$",
+        ErrorMessage = "Incorrect interval. Available: '60min' or '15min' or '30min'"
     )]
     public string? Interval { get; init; }
 
-    [ArrayValidation(
+    [WorkdaysValidation(
         ErrorMessage = "Workdays must contain values between 1 and 7"
     )]
     public int[]? Workdays { get; init; }
