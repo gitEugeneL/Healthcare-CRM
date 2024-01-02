@@ -4,7 +4,7 @@ using Domain.Entities;
 using Domain.Enums;
 using MediatR;
 
-namespace Application.Operations.Appointment.Queries.FindFreeHours;
+namespace Application.Operations.Appointments.Queries.FindFreeHours;
 
 public class FindFreeHoursQueryHandler(
     IAppointmentRepository appointmentRepository,
@@ -18,19 +18,12 @@ public class FindFreeHoursQueryHandler(
                      ?? throw new NotFoundException(nameof(Users), request.UserDoctorId);
 
         var date = DateOnly.Parse(request.Date);
-        
-        if (!CheckDoctorWorkdays(date, doctor.AppointmentSettings.Workdays)) 
-            throw new NotFoundException(nameof(User), request.UserDoctorId + " doesn't work on this day");
 
-        var result = await appointmentRepository.FindFreeHours(doctor, date, cancellationToken);
+        if (doctor.AppointmentSettings.Workdays.Contains((Workday) date.DayOfWeek))
+            throw new NotFoundException(nameof(User), request.UserDoctorId + " doesn't work on this day");
+        
+        var result = await appointmentRepository.FindFreeHoursAsync(doctor, date, cancellationToken);
         return new FreeHoursResponse()
             .ToFreeHoursResponse(doctor, result);
-    }
-    
-    // todo create service
-    private bool CheckDoctorWorkdays(DateOnly date, List<Workday> workdays)
-    {
-        var day = date.DayOfWeek;
-        return workdays.Contains((Workday) day);
     }
 }

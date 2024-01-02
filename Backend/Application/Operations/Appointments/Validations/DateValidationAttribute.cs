@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace Application.Operations.Appointment.Validations;
+namespace Application.Operations.Appointments.Validations;
 
 internal class DateValidationAttribute : ValidationAttribute
 {

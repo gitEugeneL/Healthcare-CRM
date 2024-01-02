@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using Application.Operations.Appointment.Validations;
+using Application.Operations.Appointments.Validations;
 using MediatR;
 
-namespace Application.Operations.Appointment.Queries.FindFreeHours;
+namespace Application.Operations.Appointments.Queries.FindFreeHours;
 
 public sealed record FindFreeHoursQuery : IRequest<FreeHoursResponse>
 {

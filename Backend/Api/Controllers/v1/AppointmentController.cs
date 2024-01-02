@@ -1,6 +1,6 @@
-using Application.Operations.Appointment;
-using Application.Operations.Appointment.Commands.CreateAppointment;
-using Application.Operations.Appointment.Queries.FindFreeHours;
+using Application.Operations.Appointments;
+using Application.Operations.Appointments.Commands.CreateAppointment;
+using Application.Operations.Appointments.Queries.FindFreeHours;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,15 +20,19 @@ public class AppointmentController(IMediator mediator) : BaseController(mediator
         return Ok(result);
     }
 
-    // [HttpPost]
-    // [Authorize(Roles = $"{nameof(Role.Patient)}")]
-    // [ProducesResponseType(typeof(AppointmentResponse), StatusCodes.Status201Created)]
-    // public async Task<ActionResult<AppointmentResponse>> Create([FromBody] CreateAppointmentCommand command)
-    // {
-    //     var result = await Mediator.Send(command);
-    //     return Created("------------------", result);
-    // }
-    
+    [HttpPost]
+    [Authorize(Roles = $"{nameof(Role.Patient)}")]
+    [ProducesResponseType(typeof(AppointmentResponse), StatusCodes.Status201Created)]
+    public async Task<ActionResult<AppointmentResponse>> Create([FromBody] CreateAppointmentCommand command)
+    {
+        var id = CurrentUserId();
+        if (id is null)
+            return BadRequest();
+        
+        command.SetCurrentUserId(id);
+        var result = await Mediator.Send(command);
+        return Created(result.AppointmentId.ToString(), result);
+    }
     
     // todo showForManager
     // todo showForDoctor

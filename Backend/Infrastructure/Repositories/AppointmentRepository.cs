@@ -8,7 +8,7 @@ namespace Infrastructure.Repositories;
 
 public class AppointmentRepository(DataContext dataContext) : IAppointmentRepository
 {
-    public async Task<List<DoctorHours>> FindFreeHours(
+    public async Task<List<DoctorHours>> FindFreeHoursAsync(
         UserDoctor doctor, DateOnly date, CancellationToken cancellationToken)
     {
         var busyTime = await dataContext.Appointments
@@ -33,5 +33,14 @@ public class AppointmentRepository(DataContext dataContext) : IAppointmentReposi
             startTime = startTime.AddMinutes(interval);
         }
         return freeTime;
+    }
+
+    public async Task<Appointment> CreateAppointmentAsync(Appointment appointment, CancellationToken cancellationToken)
+    {
+        await dataContext.Appointments
+            .AddAsync(appointment, cancellationToken);
+
+        await dataContext.SaveChangesAsync(cancellationToken);
+        return appointment;
     }
 }

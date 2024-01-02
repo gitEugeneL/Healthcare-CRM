@@ -1,7 +1,7 @@
 using Application.Common.Models;
 using Domain.Entities;
 
-namespace Application.Operations.Appointment;
+namespace Application.Operations.Appointments;
 
 public sealed record FreeHoursResponse
 {
