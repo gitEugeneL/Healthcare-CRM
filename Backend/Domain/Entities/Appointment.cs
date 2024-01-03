@@ -7,8 +7,8 @@ public class Appointment : BaseAuditableEntity
     public DateOnly Date { get; init; }
     public TimeOnly StartTime { get; init; }
     public TimeOnly EndTime { get; init; }
-    public bool IsCompleted { get; init; }
-    public bool IsCanceled { get; init; }
+    public bool IsCompleted { get; set; }
+    public bool IsCanceled { get; set; }
     
     /*** Relations ***/
     public required UserPatient UserPatient { get; init; }

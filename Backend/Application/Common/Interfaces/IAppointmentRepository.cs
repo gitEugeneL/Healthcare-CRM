@@ -9,6 +9,10 @@ public interface IAppointmentRepository
 
     Task<Appointment> CreateAppointmentAsync(Appointment appointment, CancellationToken cancellationToken);
 
+    Task<Appointment> UpdateAppointmentAsync(Appointment appointment, CancellationToken cancellationToken);
+    
+    Task<Appointment?> FindAppointmentByIdAsync(Guid id, CancellationToken cancellationToken);
+    
     Task<List<Appointment>> FindAllAppointmentsByDateForManager(DateOnly date, CancellationToken cancellationToken);
 
     Task<List<Appointment>> FindAllAppointmentsByDateForPatient(Guid userPatientId, DateOnly date,

@@ -43,7 +43,21 @@ public class AppointmentRepository(DataContext dataContext) : IAppointmentReposi
         await dataContext.SaveChangesAsync(cancellationToken);
         return appointment;
     }
-    
+
+    public async Task<Appointment> UpdateAppointmentAsync(Appointment appointment, CancellationToken cancellationToken)
+    {
+        dataContext.Appointments.Update(appointment);
+        await dataContext.SaveChangesAsync(cancellationToken);
+        return appointment;
+    }
+
+    public async Task<Appointment?> FindAppointmentByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await dataContext.Appointments
+            .Include(a => a.UserDoctor)
+            .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
+    }
+
     public async Task<List<Appointment>> FindAllAppointmentsByDateForManager(DateOnly date, 
         CancellationToken cancellationToken)
     {
