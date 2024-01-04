@@ -13,8 +13,8 @@ public class UpdateAddressCommandHandler(
 {
     public async Task<AddressResponse> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
     {
-        var patient = await patientRepository.FindPatientByUserIdAsync(request.CurrentUserId, cancellationToken)
-                      ?? throw new NotFoundException(nameof(User), request.CurrentUserId);
+        var patient = await patientRepository.FindPatientByUserIdAsync(request.GetCurrentUserId(), cancellationToken)
+                      ?? throw new NotFoundException(nameof(User), request.GetCurrentUserId());
         
         var address = patient.Address;
         address.Province = request.Province ?? address.Province;

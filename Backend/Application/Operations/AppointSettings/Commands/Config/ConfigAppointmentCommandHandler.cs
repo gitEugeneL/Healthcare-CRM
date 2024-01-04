@@ -15,8 +15,8 @@ public class ConfigAppointmentCommandHandler(
     public async Task<AppointmentSettingsResponse> 
         Handle(ConfigAppointmentCommand request, CancellationToken cancellationToken)
     {
-        var doctor = await doctorRepository.FindDoctorByUserIdAsync(request.CurrentUserId, cancellationToken)
-                     ?? throw new NotFoundException(nameof(User), request.CurrentUserId);
+        var doctor = await doctorRepository.FindDoctorByUserIdAsync(request.GetCurrentUserId(), cancellationToken)
+                     ?? throw new NotFoundException(nameof(User), request.GetCurrentUserId());
 
         var config = doctor.AppointmentSettings;
 

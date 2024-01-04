@@ -16,8 +16,8 @@ public sealed record AppointmentResponse
     public AppointmentResponse ToAppointmentResponse(Appointment appointment)
     {
         AppointmentId = appointment.Id;
-        UserPatientId = appointment.UserPatientId;
-        UserDoctorId = appointment.UserDoctorId;
+        UserPatientId = appointment.UserPatient.UserId;
+        UserDoctorId = appointment.UserDoctor.UserId;
         Date = appointment.Date.ToString("yyyy-MM-dd");
         StartTime = appointment.StartTime;
         EndTime = appointment.EndTime;

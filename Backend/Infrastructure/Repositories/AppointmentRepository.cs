@@ -55,6 +55,7 @@ public class AppointmentRepository(DataContext dataContext) : IAppointmentReposi
     {
         return await dataContext.Appointments
             .Include(a => a.UserDoctor)
+            .Include(a => a.MedicalRecord)
             .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
     }
 

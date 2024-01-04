@@ -15,8 +15,8 @@ public class CreateAppointmentCommandHandler(
 {
     public async Task<AppointmentResponse> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)
     {
-        var patient = await patientRepository.FindPatientByUserIdAsync(request.CurrentUserId, cancellationToken)
-                      ?? throw new NotFoundException(nameof(User), request.CurrentUserId);
+        var patient = await patientRepository.FindPatientByUserIdAsync(request.GetCurrentUserId(), cancellationToken)
+                      ?? throw new NotFoundException(nameof(User), request.GetCurrentUserId());
         
         var doctor = await doctorRepository.FindDoctorByUserIdAsync(request.UserDoctorId, cancellationToken)
                      ?? throw new NotFoundException(nameof(User), request.UserDoctorId);

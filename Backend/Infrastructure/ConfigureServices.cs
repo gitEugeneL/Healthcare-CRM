@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Domain.Entities;
 using Infrastructure.Persistence;
 using Infrastructure.Repositories;
 using Infrastructure.Security;
@@ -14,6 +15,7 @@ public static class ConfigureServices
         IConfiguration configuration)
     {
         services
+            .AddScoped<IMedicalRecordRepository, MedicalRecordRepository>()
             .AddScoped<ISpecializationRepository, SpecializationRepository>()
             .AddScoped<IAppointmentRepository, AppointmentRepository>()
             .AddScoped<IAppointmentSettingsRepository, AppointmentSettingsRepository>()

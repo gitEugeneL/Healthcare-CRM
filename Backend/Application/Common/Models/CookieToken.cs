@@ -1,3 +1,3 @@
 namespace Application.Common.Models;
 
-public record CookieToken(string Token, DateTime Expires);
+public sealed record CookieToken(string Token, DateTime Expires);

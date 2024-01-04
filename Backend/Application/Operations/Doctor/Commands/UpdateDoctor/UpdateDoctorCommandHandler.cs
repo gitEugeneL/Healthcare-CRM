@@ -12,8 +12,8 @@ public class UpdateDoctorCommandHandler(IDoctorRepository doctorRepository)
 {
     public async Task<DoctorResponse> Handle(UpdateDoctorCommand request, CancellationToken cancellationToken)
     {
-        var doctor = await doctorRepository.FindDoctorByUserIdAsync(request.CurrentUserId, cancellationToken)
-                     ?? throw new NotFoundException(nameof(User), request.CurrentUserId);
+        var doctor = await doctorRepository.FindDoctorByUserIdAsync(request.GetCurrentUserId(), cancellationToken)
+                     ?? throw new NotFoundException(nameof(User), request.GetCurrentUserId());
 
         doctor.Status = TryParse<Status>(request.Status, out var result) ? result : doctor.Status;
         doctor.User.FirstName = request.FirstName ?? doctor.User.FirstName;

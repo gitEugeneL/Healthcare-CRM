@@ -7,7 +7,6 @@ using Application.Operations.Appointments.Queries.GetAllByDate;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.v1;

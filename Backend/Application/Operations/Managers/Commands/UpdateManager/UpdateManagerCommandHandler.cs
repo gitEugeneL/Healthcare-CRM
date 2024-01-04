@@ -10,8 +10,8 @@ public class UpdateManagerCommandHandler(IManagerRepository managerRepository)
 {
     public async Task<ManagerResponse> Handle(UpdateManagerCommand request, CancellationToken cancellationToken)
     {
-        var manager = await managerRepository.FindManagerByUserIdAsync(request.CurrentUserId, cancellationToken)
-                      ?? throw new NotFoundException(nameof(User), request.CurrentUserId);
+        var manager = await managerRepository.FindManagerByUserIdAsync(request.GetCurrentUserId(), cancellationToken)
+                      ?? throw new NotFoundException(nameof(User), request.GetCurrentUserId());
         
         manager.User.FirstName = request.FirstName ?? manager.User.FirstName;
         manager.User.LastName = request.LastName ?? manager.User.LastName;

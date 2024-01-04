@@ -14,26 +14,26 @@ public class GetAllByDateQueryHandler(
 {
     public async Task<List<AppointmentResponse>> Handle(GetAllByDateQuery request, CancellationToken cancellationToken)
     {
-        var user = await userRepository.FindUserByIdAsync(request.CurrentUserId, cancellationToken)
-                   ?? throw new NotFoundException(nameof(User), request.CurrentUserId);
+        var user = await userRepository.FindUserByIdAsync(request.GetCurrentUserId(), cancellationToken)
+                   ?? throw new NotFoundException(nameof(User), request.GetCurrentUserId());
         
         var date = DateOnly.Parse(request.Date);
         
-        var result = request.CurrentUserRole switch
+        var result = request.GetCurrentUserRole() switch
         {
             nameof(Role.Doctor) when user.Role == Role.Doctor =>
                 await appointmentRepository
-                    .FindAllAppointmentsByDateForDoctor(request.CurrentUserId, date, cancellationToken),
+                    .FindAllAppointmentsByDateForDoctor(request.GetCurrentUserId(), date, cancellationToken),
           
             nameof(Role.Patient) when user.Role == Role.Patient =>
                 await appointmentRepository
-                    .FindAllAppointmentsByDateForPatient(request.CurrentUserId, date, cancellationToken),
+                    .FindAllAppointmentsByDateForPatient(request.GetCurrentUserId(), date, cancellationToken),
           
             nameof(Role.Manager) when user.Role == Role.Manager =>
                 await appointmentRepository
                     .FindAllAppointmentsByDateForManager(date, cancellationToken),
             
-            _ => throw new NotFoundException(nameof(User), request.CurrentUserId)
+            _ => throw new NotFoundException(nameof(User), request.GetCurrentUserId())
         };
         
         return result

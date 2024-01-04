@@ -16,6 +16,6 @@ public class UserPatient : BaseAuditableEntity
     public Guid AddressId { get; init; }
 
     public List<Appointment> Appointments { get; init; } = [];
-    
-    // medical records
+
+    public List<MedicalRecord> MedicalRecords { get; init; } = [];
 }

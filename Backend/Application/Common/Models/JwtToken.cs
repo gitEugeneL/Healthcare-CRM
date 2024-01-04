@@ -1,3 +1,3 @@
 namespace Application.Common.Models;
 
-public record JwtToken(string AccessToken, string Type = "Bearer");
+public sealed record JwtToken(string AccessToken, string Type = "Bearer");

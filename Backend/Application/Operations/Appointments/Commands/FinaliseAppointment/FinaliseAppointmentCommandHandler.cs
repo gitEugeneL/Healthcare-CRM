@@ -13,8 +13,8 @@ public class FinaliseAppointmentCommandHandler(IAppointmentRepository appointmen
         var appointment = await appointmentRepository.FindAppointmentByIdAsync(request.AppointmentId, cancellationToken)
                           ?? throw new NotFoundException(nameof(Appointment), request.AppointmentId);
         
-        if (appointment.UserDoctor.UserId != request.CurrentUserId)
-            throw new AccessDeniedException(nameof(User), request.CurrentUserId);
+        if (appointment.UserDoctor.UserId != request.GetCurrentUserId())
+            throw new AccessDeniedException(nameof(User), request.GetCurrentUserId());
 
         if (appointment.Date != DateOnly.FromDateTime(DateTime.Now))
             throw new TimeMismatchException(

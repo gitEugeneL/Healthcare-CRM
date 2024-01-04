@@ -16,4 +16,6 @@ public class Appointment : BaseAuditableEntity
 
     public required UserDoctor UserDoctor { get; init; }
     public Guid UserDoctorId { get; init; }
+
+    public MedicalRecord? MedicalRecord { get; init; }
 }

@@ -1,12 +1,12 @@
-using Microsoft.Data.SqlClient;
-
 namespace Application.Common.Models;
 
 public abstract record CurrentUser
 {
-    public Guid CurrentUserId { get; private set; }
-    public string? CurrentUserRole { get; private set; }
-
-    public void SetCurrentUserId(string id) => CurrentUserId = Guid.Parse(id);
-    public void SerCurrentUserRole(string role) => CurrentUserRole = role;
+     private Guid _currentUserId;
+     private string? _currentUserRole;
+     
+     public void SetCurrentUserId(string id) => _currentUserId = Guid.Parse(id);
+     public void SerCurrentUserRole(string role) => _currentUserRole = role;
+     public Guid GetCurrentUserId() => _currentUserId;
+     public string? GetCurrentUserRole() => _currentUserRole;
 }

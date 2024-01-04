@@ -19,6 +19,6 @@ public sealed class UserDoctor : BaseAuditableEntity
     public List<Specialization> Specializations { get; init; } = [];
 
     public List<Appointment> Appointments { get; init; } = [];
-    
-    // todo medicalRecord
+
+    public List<MedicalRecord> MedicalRecords { get; init; } = [];
 }
