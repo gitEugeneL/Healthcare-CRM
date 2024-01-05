@@ -4,6 +4,7 @@ using Application.Operations.Appointments.Commands.CreateAppointment;
 using Application.Operations.Appointments.Commands.FinaliseAppointment;
 using Application.Operations.Appointments.Queries.FindFreeHours;
 using Application.Operations.Appointments.Queries.GetAllByDate;
+using Asp.Versioning;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.v1;
 
-[Route("api/appointment")]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/appointment")]
 public class AppointmentController(IMediator mediator) : BaseController(mediator)
 {
     [HttpPost]

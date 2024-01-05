@@ -1,6 +1,7 @@
 using Application.Operations.Addresses;
 using Application.Operations.Addresses.Commands.UpdateAddress;
 using Application.Operations.Addresses.Queries.GetAddress;
+using Asp.Versioning;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.v1;
 
-[Route("api/address")]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/address")]
 public class AddressController(IMediator mediator) : BaseController(mediator)
 {
     [HttpPut]

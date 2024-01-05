@@ -4,6 +4,7 @@ using Application.Operations.Doctor.Commands.CreateDoctor;
 using Application.Operations.Doctor.Commands.UpdateDoctor;
 using Application.Operations.Doctor.Queries.GetAllDoctors;
 using Application.Operations.Doctor.Queries.GetDoctor;
+using Asp.Versioning;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.v1;
 
-[Route("api/doctor")]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/doctor")]
 public class DoctorController(IMediator mediator) : BaseController(mediator)
 {
     [HttpPost]

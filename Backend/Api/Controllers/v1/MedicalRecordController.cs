@@ -5,6 +5,7 @@ using Application.Operations.MedicalRecords.Commands.UpdateMedicalRecord;
 using Application.Operations.MedicalRecords.Queries.GetAllMedicalRecordsForDoctor;
 using Application.Operations.MedicalRecords.Queries.GetAllMedicalRecordsForPatient;
 using Application.Operations.MedicalRecords.Queries.GetMedicalRecord;
+using Asp.Versioning;
 using Domain.Entities;
 using Domain.Enums;
 using MediatR;
@@ -13,7 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.v1;
 
-[Route("api/medical-record")]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/medical-record")]
 public class MedicalRecordController(IMediator mediator) : BaseController(mediator)
 {
     [HttpPost]

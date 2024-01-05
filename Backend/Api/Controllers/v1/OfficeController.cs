@@ -3,6 +3,7 @@ using Application.Operations.Offices.Commands.ChangeStatusOffice;
 using Application.Operations.Offices.Commands.CreateOffice;
 using Application.Operations.Offices.Commands.UpdateOffice;
 using Application.Operations.Offices.Queries.GetAllOffices;
+using Asp.Versioning;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.v1;
 
-[Route("api/office")]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/office")]
 public class OfficeController(IMediator mediator) : BaseController(mediator)
 {
     [HttpPost]

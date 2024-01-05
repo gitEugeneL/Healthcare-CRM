@@ -6,6 +6,7 @@ using Application.Operations.Patients.Commands.DeletePatient;
 using Application.Operations.Patients.Commands.UpdatePatient;
 using Application.Operations.Patients.Queries.GetAllPatients;
 using Application.Operations.Patients.Queries.GetPatient;
+using Asp.Versioning;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.v1;
 
-[Route("api/patient")]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/patient")]
 public class PatientController(IMediator mediator) : BaseController(mediator)
 {
      [HttpPost]

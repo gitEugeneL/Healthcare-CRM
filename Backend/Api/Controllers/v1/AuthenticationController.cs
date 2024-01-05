@@ -3,13 +3,15 @@ using Application.Common.Models;
 using Application.Operations.Auth.Commands.Login;
 using Application.Operations.Auth.Commands.Logout;
 using Application.Operations.Auth.Commands.Refresh;
+using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.v1;
 
-[Route("api/auth")]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/auth")]
 public class AuthenticationController(IMediator mediator) : BaseController(mediator)
 {
     [HttpPost("login")]

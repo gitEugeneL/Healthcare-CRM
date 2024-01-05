@@ -1,6 +1,7 @@
 using Application.Operations.AppointSettings;
 using Application.Operations.AppointSettings.Commands.Config;
 using Application.Operations.AppointSettings.Queries.GetAppointmentSettings;
+using Asp.Versioning;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.v1;
 
-[Route("api/appointment-settings")]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/appointment-settings")]
 public class AppointmentSettingsController(IMediator mediator) : BaseController(mediator)
 {
     [HttpPut]

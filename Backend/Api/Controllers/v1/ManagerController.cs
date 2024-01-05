@@ -1,6 +1,7 @@
 using Application.Operations.Managers;
 using Application.Operations.Managers.Commands.CreateManager;
 using Application.Operations.Managers.Commands.UpdateManager;
+using Asp.Versioning;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.v1;
 
-[Route("api/manager")]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/manager")]
 public class ManagerController(IMediator mediator) : BaseController(mediator)
 {
     [HttpPost]

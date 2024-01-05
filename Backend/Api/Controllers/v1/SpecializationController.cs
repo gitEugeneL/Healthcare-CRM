@@ -5,6 +5,7 @@ using Application.Operations.Specializations.Commands.ExcludeDoctor;
 using Application.Operations.Specializations.Commands.IncludeDoctor;
 using Application.Operations.Specializations.Commands.UpdateSpecialization;
 using Application.Operations.Specializations.Queries.GetAllSpecializations;
+using Asp.Versioning;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.v1;
 
-[Route("api/specialization")]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/specialization")]
 public class SpecializationController(IMediator mediator) : BaseController(mediator)
 {
     [HttpPost]
