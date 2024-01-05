@@ -1,0 +1,41 @@
+version: "3.8"
+
+services: 
+  
+  database:
+    container_name: database
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: Dev_password@1 # SA - default user
+    ports:
+      - "1433:1433"
+    networks:
+      - Healthcare-CRM
+    volumes:
+      - database-volume:/var/opt/mssql:rw
+    
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    networks:
+      - Healthcare-CRM
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+   
+networks:
+  Healthcare-CRM:
+    driver: bridge 
+   
+volumes:
+  database-volume:
