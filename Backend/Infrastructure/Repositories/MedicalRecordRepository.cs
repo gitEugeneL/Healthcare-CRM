@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-public class MedicalRecordRepository(DataContext dataContext) : IMedicalRecordRepository
+internal class MedicalRecordRepository(DataContext dataContext) : IMedicalRecordRepository
 {
     public async Task<MedicalRecord> CreateMedicalRecordAsync(MedicalRecord medicalRecord, 
         CancellationToken cancellationToken)

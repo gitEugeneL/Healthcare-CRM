@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-internal class MedicalRecordConfig : IEntityTypeConfiguration<MedicalRecord>
+internal class MedicalRecordConfiguration : IEntityTypeConfiguration<MedicalRecord>
 {
     public void Configure(EntityTypeBuilder<MedicalRecord> builder)
     {

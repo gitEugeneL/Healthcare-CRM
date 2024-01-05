@@ -90,8 +90,4 @@ public class AppointmentController(IMediator mediator) : BaseController(mediator
         var result = await Mediator.Send(command);
         return Ok(result);
     }
-    
-    
-    
-    // todo cancel
 }

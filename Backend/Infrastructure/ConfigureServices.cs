@@ -1,5 +1,4 @@
 using Application.Common.Interfaces;
-using Domain.Entities;
 using Infrastructure.Persistence;
 using Infrastructure.Repositories;
 using Infrastructure.Security;
@@ -31,6 +30,11 @@ public static class ConfigureServices
         var connection = configuration.GetConnectionString("SQLServer")!;
         services.AddDbContext<DataContext>(option => 
             option.UseSqlServer(connection));
+        
+        /*** Init develop db data ***/
+        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            ApplicationDbContextInitializer
+                .Init(services.BuildServiceProvider().GetRequiredService<DataContext>());
         
         return services;
     }
