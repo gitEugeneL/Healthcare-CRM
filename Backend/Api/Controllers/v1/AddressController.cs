@@ -26,8 +26,8 @@ public class AddressController(IMediator mediator) : BaseController(mediator)
     }
 
     [HttpGet("{addressId:guid}")]
-    // [Authorize(Roles = $"{nameof(Role.Doctor)}, {nameof(Role.Manager)}")]
-    // [ProducesResponseType(typeof(AddressResponse), StatusCodes.Status200OK)]
+    [Authorize]
+    [ProducesResponseType(typeof(AddressResponse), StatusCodes.Status200OK)]
     public async Task<ActionResult<AddressResponse>> GetOne(Guid addressId)
     {
         var result = await Mediator.Send(new GetAddressQuery(addressId));

@@ -5,7 +5,9 @@ using Application.Operations.Specializations.Commands.ExcludeDoctor;
 using Application.Operations.Specializations.Commands.IncludeDoctor;
 using Application.Operations.Specializations.Commands.UpdateSpecialization;
 using Application.Operations.Specializations.Queries.GetAllSpecializations;
+using Domain.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.v1;
@@ -13,8 +15,8 @@ namespace Api.Controllers.v1;
 [Route("api/specialization")]
 public class SpecializationController(IMediator mediator) : BaseController(mediator)
 {
-    // add authorize role (manager)
     [HttpPost]
+    [Authorize(Roles = nameof(Role.Manager))]
     [ProducesResponseType(typeof(SpecializationResponse), StatusCodes.Status201Created)]
     public async Task<ActionResult<SpecializationResponse>> Create([FromBody] CreateSpecializationCommand command)
     {
@@ -30,8 +32,8 @@ public class SpecializationController(IMediator mediator) : BaseController(media
         return Ok(result);
     }
 
-    // add authorize role (manager)
     [HttpPut]
+    [Authorize(Roles = nameof(Role.Manager))]
     [ProducesResponseType(typeof(SpecializationResponse), StatusCodes.Status200OK)]
     public async Task<ActionResult<SpecializationResponse>> Update([FromBody] UpdateSpecializationCommand command)
     {
@@ -39,8 +41,8 @@ public class SpecializationController(IMediator mediator) : BaseController(media
         return Ok(result);
     }
 
-    // add authorize role (manager)
     [HttpDelete("{specializationId:guid}")]
+    [Authorize(Roles = nameof(Role.Manager))]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> Delete(Guid specializationId)
     {
@@ -48,8 +50,8 @@ public class SpecializationController(IMediator mediator) : BaseController(media
         return NoContent();
     }
 
-    // add authorize role (manager)
     [HttpPut("include-doctor")]
+    [Authorize(Roles = nameof(Role.Manager))]
     [ProducesResponseType(typeof(SpecializationResponse), StatusCodes.Status200OK)]
     public async Task<ActionResult<SpecializationResponse>> IncludeDoctor([FromBody] IncludeDoctorCommand command)
     {
@@ -57,8 +59,8 @@ public class SpecializationController(IMediator mediator) : BaseController(media
         return Ok(result);
     }
     
-    // add authorize role (manager)
     [HttpPut("exclude-doctor")]
+    [Authorize(Roles = nameof(Role.Manager))]
     [ProducesResponseType(typeof(SpecializationResponse), StatusCodes.Status200OK)]
     public async Task<ActionResult<SpecializationResponse>> ExcludeDoctor([FromBody] ExcludeDoctorCommand command)
     {
