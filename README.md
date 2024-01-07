@@ -1,79 +1,48 @@
 # Healthcare-CRM
 
-## [Migration to .NET in process..!](https://github.com/gitEugeneL/Healthcare-CRM/tree/ASP.NET-migration)
-### [Symfony 6](https://github.com/gitEugeneL/Healthcare-CRM/tree/PHP-Symfony-6)
+## [PHP Symfony 6 version](https://github.com/gitEugeneL/Healthcare-CRM/tree/PHP-Symfony-6)
 
 ---
 
-Final project on the subject of **MVC-web-application-development**.
+Clinic management system. Supports the management of staff, offices, appointments, patients and medical records.
 
-Сlinic management system. Supports the management of staff, offices, appointments, patients and medical records.
+The project implements a clean architecture, CQRS pattern, Repository pattern, custom authorization.
 
-<i>Docker, PostgreSQL, Php-8, Symfony-6, PHPUnit, RestAPI, JWT-authentication with refresh token, Vue.js client</i>
+## Main technologies
+
+* [ASP.NET Core 8](https://learn.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core?view=aspnetcore-8.0)
+* [Entity Framework Core 8](https://learn.microsoft.com/en-us/ef/core)
+* [MediatR](https://github.com/jbogard/MediatR)
+* [SQL-Server 2022](https://www.microsoft.com/pl-pl/sql-server/sql-server-2022)
+* [XUnit](https://xunit.net)
+* [Docker](https://www.docker.com)
+
+
+## List of containers
+
+* **database** - MsSQL database container.
+
+* **app** - container for all application layers.
+
 
 ## How to run the server
 
-1. Build Docker images based on the configuration defined in the docker-compose.yml.
+The first time the containers are launched, random data generation will be performed to check the functionality (Bogus package).
 
-         make build
+1. Build and start Docker images based on the configuration defined in the docker-compose.yml.
 
-2. Start containers and run composition for all services defined in the docker-compose.yml.
+        make up     // docker-compose up --build
 
-        make up
+2. Stop and remove containers.
 
-3. Stop and remove containers.
+        make down   // docker-compose down
 
-        make down
-
-## How to configure the database
-
-1.  Execute a migration in database.
-
-        make migrate_db
-
-2. Upload data into the database.
-
-        make upload_data_db
-
-
-## How to configure the server
-
-1. Executes an interactive Bash shell within a PHP container.
-
-        make app_bush
-
-2. Generate a key pair for JWT validation.
-
-        make generate_auth_keys
-
-3. Revoke all invalid (datetime expired) refresh tokens.
-
-        make clear_refresh_tokens
-
-## How to run tests
-
-1. Create a database for tests.
-
-        make create_test_db
-
-2. Test database migration.
-
-       make migrate_test_db
-
-3. Upload testing data into the test database.
-
-        make upload_data_test_db
-
-4. Run tests.
-
-        make start_tests
 
 ## API documentation
 
-### Swagger documentation 
+1. Swagger documentation
 
-    1. /api/doc
-    2. /api/doc.json
+        http://localhost:8080/swagger/index.html
 
 
 ## Database diagram
