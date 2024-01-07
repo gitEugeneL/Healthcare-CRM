@@ -29,6 +29,19 @@ public static class ConfigureServices
             options.SubstituteApiVersionInUrl = true;
         });
         
+        /*** CORS config ***/
+        services.AddCors(options =>
+        {
+            options.AddPolicy("devCors", policy =>
+            {
+                policy.WithOrigins(configuration
+                        .GetSection("AllowedOrigins")
+                        .Get<string[]>()!)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
+        
         /*** Auth config ***/
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
