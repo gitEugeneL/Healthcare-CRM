@@ -1,6 +1,6 @@
+using System.Reflection;
 using Domain.Common;
 using Domain.Entities;
-using Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
@@ -21,19 +21,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder
-            .ApplyConfiguration(new OfficeConfiguration())
-            .ApplyConfiguration(new MedicalRecordConfiguration())
-            .ApplyConfiguration(new AppointmentConfiguration())
-            .ApplyConfiguration(new AppointmentSettingsConfiguration())
-            .ApplyConfiguration(new SpecializationConfiguration())
-            .ApplyConfiguration(new RefreshTokenConfiguration())
-            .ApplyConfiguration(new UserConfiguration())
-            .ApplyConfiguration(new UserPatientConfiguration())
-            .ApplyConfiguration(new UserDoctorConfiguration())
-            .ApplyConfiguration(new UserManagerConfiguration())
-            .ApplyConfiguration(new AddressConfiguration());
-
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(builder);
     }
 
