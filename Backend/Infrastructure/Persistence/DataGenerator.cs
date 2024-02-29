@@ -110,7 +110,7 @@ public static class DataGenerator
 
         var offices = new Faker<Office>()
             .RuleFor(o => o.Name, f => f.Random.ListItem(officeNames))
-            .RuleFor(o => o.Number, f => (ushort) f.Random.Number(1, 50))
+            .RuleFor(o => o.Number, f => (ushort) f.Random.Number(1, 5000))
             .RuleFor(o => o.IsAvailable, true)
             .Generate(5);
         

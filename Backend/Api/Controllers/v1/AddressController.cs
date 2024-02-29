@@ -1,7 +1,6 @@
 using Application.Operations.Addresses;
 using Application.Operations.Addresses.Commands.UpdateAddress;
 using Application.Operations.Addresses.Queries.GetAddress;
-using Asp.Versioning;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.v1;
 
-[ApiVersion(1)]
 [Route("api/v{v:apiVersion}/address")]
 public class AddressController(IMediator mediator) : BaseController(mediator)
 {
@@ -22,7 +20,7 @@ public class AddressController(IMediator mediator) : BaseController(mediator)
         if (id is null)
             return BadRequest();
         
-        command.SetCurrentUserId(id);
+        command.SetCurrentUserId(Guid.Parse(id));
         var result = await Mediator.Send(command);
         return Ok(result);
     }
