@@ -11,4 +11,11 @@ public static class BaseService
                 .User
                 .FindFirstValue(ClaimTypes.NameIdentifier)!);
     }
+    
+    public static string ReadUserRoleFromToken(HttpContext httpContext)
+    {
+        return httpContext
+            .User
+            .FindFirstValue(ClaimTypes.Role)!;
+    }
 }
