@@ -26,10 +26,6 @@ internal class AddressConfiguration : IEntityTypeConfiguration<Address>
         builder.Property(address => address.PostalCode)
             .HasMaxLength(10);
         
-        builder.Property(doctor => doctor.Created)
-            .IsRequired()
-            .HasDefaultValueSql("CURRENT_TIMESTAMP"); 
-        
         /*** One to one ***/
         builder.HasOne(address => address.UserPatient)
             .WithOne(patient => patient.Address);

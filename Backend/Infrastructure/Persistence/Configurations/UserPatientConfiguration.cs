@@ -14,11 +14,7 @@ internal class UserPatientConfiguration : IEntityTypeConfiguration<UserPatient>
 
         builder.Property(patient => patient.Insurance)
             .HasMaxLength(200);
-        
-        builder.Property(doctor => doctor.Created)
-            .IsRequired()
-            .HasDefaultValueSql("CURRENT_TIMESTAMP"); 
-        
+
         /*** One to one ***/
         builder.HasOne(patient => patient.User)
             .WithOne(user => user.UserPatient);

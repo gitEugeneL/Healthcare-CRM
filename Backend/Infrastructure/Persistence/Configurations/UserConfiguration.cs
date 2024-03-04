@@ -19,10 +19,6 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasConversion<string>();
         
-        builder.Property(user => user.Created)
-            .IsRequired()
-            .HasDefaultValueSql("CURRENT_TIMESTAMP");
-        
         /*** Many to one relation ***/
         builder.HasMany(user => user.RefreshTokens)
             .WithOne(refreshToken => refreshToken.User)

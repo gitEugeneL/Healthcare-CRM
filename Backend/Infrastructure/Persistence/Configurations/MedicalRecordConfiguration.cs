@@ -15,10 +15,6 @@ internal class MedicalRecordConfiguration : IEntityTypeConfiguration<MedicalReco
         builder.Property(mr => mr.DoctorNote)
             .IsRequired();
         
-        builder.Property(doctor => doctor.Created)
-            .IsRequired()
-            .HasDefaultValueSql("CURRENT_TIMESTAMP"); 
-        
         /*** One to one ***/
         builder.HasOne(mr => mr.Appointment)
             .WithOne(a => a.MedicalRecord);
