@@ -1,4 +1,5 @@
 using Api.Utils;
+using API.Utils;
 using Application.Common.Exceptions;
 using Application.Common.Models;
 using Application.Operations.MedicalRecords;
@@ -23,6 +24,7 @@ public class MedicalRecordEndpoint : ICarterModule
         
         group.MapPost("", Create)
             .RequireAuthorization(AuthPolicy.DoctorPolicy)
+            .WithValidator<CreateMedicalRecordCommand>()
             .Produces<MedicalRecordResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status409Conflict)
@@ -30,6 +32,7 @@ public class MedicalRecordEndpoint : ICarterModule
 
         group.MapPut("", Update)
             .RequireAuthorization(AuthPolicy.DoctorPolicy)
+            .WithValidator<UpdateMedicalRecordCommand>()
             .Produces<MedicalRecordResponse>()
             .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status404NotFound);

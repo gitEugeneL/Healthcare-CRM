@@ -10,7 +10,7 @@ public interface IOfficeRepository
 
     Task<Office?> FindOfficeByIdAsync(Guid id, CancellationToken cancellationToken);
 
-    Task<Office?> FindOfficeByNumberAsync(ushort number, CancellationToken cancellationToken);
+    Task<Office?> FindOfficeByNumberAsync(int number, CancellationToken cancellationToken);
 
     Task<List<Office>> FindOfficesAsync(CancellationToken cancellationToken);
 }

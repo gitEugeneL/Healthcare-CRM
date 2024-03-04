@@ -1,4 +1,5 @@
 using Api.Utils;
+using API.Utils;
 using Application.Common.Exceptions;
 using Application.Common.Models;
 using Application.Operations.Doctor;
@@ -22,11 +23,13 @@ public class DoctorEndpoints : ICarterModule
         
         group.MapPost("", Create)
             .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .WithValidator<CreateDoctorCommand>()
             .Produces<DoctorResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status409Conflict);
 
         group.MapPut("", Update)
             .RequireAuthorization(AuthPolicy.DoctorPolicy)
+            .WithValidator<UpdateDoctorCommand>()
             .Produces<DoctorResponse>()
             .Produces(StatusCodes.Status404NotFound);
 

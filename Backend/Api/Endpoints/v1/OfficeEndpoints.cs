@@ -1,4 +1,5 @@
 using Api.Utils;
+using API.Utils;
 using Application.Common.Exceptions;
 using Application.Operations.Offices;
 using Application.Operations.Offices.Commands.ChangeStatusOffice;
@@ -21,11 +22,13 @@ public class OfficeEndpoints : ICarterModule
 
         group.MapPost("", Create)
             .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .WithValidator<CreateOfficeCommand>()
             .Produces<OfficeResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status409Conflict);
 
         group.MapPut("", Update)
             .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .WithValidator<UpdateOfficeCommand>()
             .Produces<OfficeResponse>()
             .Produces(StatusCodes.Status404NotFound);
 

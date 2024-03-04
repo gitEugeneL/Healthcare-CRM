@@ -17,7 +17,7 @@ public class UpdateMedicalRecordCommandHandler(IMedicalRecordRepository medicalR
         if(medicalRecord.UserDoctor.UserId != request.GetCurrentUserId())
             throw new UnauthorizedException($"Doctor doesn't have access to {medicalRecord.Id} medical record");
 
-        medicalRecord.Title = request.Tittle ?? medicalRecord.Title;
+        medicalRecord.Title = request.Title ?? medicalRecord.Title;
         medicalRecord.DoctorNote = request.DoctorNote ?? medicalRecord.DoctorNote;
 
         var updatedMedicalRecord = await medicalRecordRepository

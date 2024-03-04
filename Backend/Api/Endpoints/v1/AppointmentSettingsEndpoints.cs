@@ -1,4 +1,5 @@
 using Api.Utils;
+using API.Utils;
 using Application.Common.Exceptions;
 using Application.Operations.AppointSettings;
 using Application.Operations.AppointSettings.Commands.Config;
@@ -19,6 +20,7 @@ public class AppointmentSettingsEndpoints : ICarterModule
         
         group.MapPut("", Config)
             .RequireAuthorization(AuthPolicy.DoctorPolicy)
+            .WithValidator<ConfigAppointmentCommand>()
             .Produces<AppointmentSettingsResponse>()
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status422UnprocessableEntity);

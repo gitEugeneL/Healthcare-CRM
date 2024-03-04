@@ -1,4 +1,5 @@
 using Api.Utils;
+using API.Utils;
 using Application.Common.Exceptions;
 using Application.Common.Models;
 using Application.Operations.Auth.Commands.Login;
@@ -19,6 +20,7 @@ public class AuthenticationEndpoints : ICarterModule
             .WithTags("Authentication");
         
         group.MapPost("login", Login)
+            .WithValidator<LoginCommand>()
             .Produces<JwtToken>()
             .Produces(StatusCodes.Status400BadRequest);
 

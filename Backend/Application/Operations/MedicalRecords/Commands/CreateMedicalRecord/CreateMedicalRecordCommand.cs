@@ -1,21 +1,32 @@
-using System.ComponentModel.DataAnnotations;
 using Application.Common.Models;
+using FluentValidation;
 using MediatR;
 
 namespace Application.Operations.MedicalRecords.Commands.CreateMedicalRecord;
 
-public sealed record CreateMedicalRecordCommand : CurrentUser, IRequest<MedicalRecordResponse>
+public sealed record CreateMedicalRecordCommand(
+    Guid UserPatientId,
+    Guid AppointmentId,
+    string Title,
+    string DoctorNote
+) : CurrentUser, IRequest<MedicalRecordResponse>;
+
+public sealed class CreateMedicalRecordValidator : AbstractValidator<CreateMedicalRecordCommand>
 {
-    [Required] 
-    public Guid UserPatientId { get; init; }
-
-    [Required]
-    public Guid AppointmentId { get; init; }
-
-    [Required]
-    [MaxLength(50)]
-    public required string Title { get; init; }
-
-    [Required]
-    public required string DoctorNote { get; init; }
+    public CreateMedicalRecordValidator()
+    {
+        RuleFor(mr => mr.UserPatientId)
+            .NotEmpty();
+        
+        RuleFor(mr => mr.AppointmentId)
+            .NotEmpty();
+        
+        RuleFor(mr => mr.Title)
+            .NotEmpty()
+            .MaximumLength(50);
+        
+        RuleFor(mr => mr.DoctorNote)
+            .NotEmpty();
+    }
 }
+

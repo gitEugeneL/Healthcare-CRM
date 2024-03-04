@@ -1,4 +1,5 @@
 using Api.Utils;
+using API.Utils;
 using Application.Common.Exceptions;
 using Application.Operations.Specializations;
 using Application.Operations.Specializations.Commands.CreateSpecialization;
@@ -23,11 +24,13 @@ public class SpecializationEndpoints : ICarterModule
 
         group.MapPost("", Create)
             .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .WithValidator<CreateSpecializationCommand>()
             .Produces<SpecializationResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status409Conflict);
 
         group.MapPut("", Update)
             .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .WithValidator<UpdateSpecializationCommand>()
             .Produces<SpecializationResponse>()
             .Produces(StatusCodes.Status404NotFound);
 
@@ -41,12 +44,14 @@ public class SpecializationEndpoints : ICarterModule
 
         group.MapPut("include-doctor", IncludeDoctor)
             .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .WithValidator<IncludeDoctorCommand>()
             .Produces<SpecializationEndpoints>()
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status409Conflict);
 
         group.MapPut("exclude-doctor", ExcludeDoctor)
             .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .WithValidator<ExcludeDoctorCommand>()
             .Produces<SpecializationResponse>()
             .Produces(StatusCodes.Status404NotFound);
     }

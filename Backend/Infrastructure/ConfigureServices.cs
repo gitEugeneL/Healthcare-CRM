@@ -28,8 +28,8 @@ public static class ConfigureServices
             .AddScoped<ITokenManager, TokenManager>();
         
         services.AddDbContext<DataContext>(option => 
-            option.UseSqlite(configuration.GetConnectionString("SQLite")!));
-            // option.UseSqlServer(configuration.GetConnectionString("SQLServer")!));
+            // option.UseSqlite(configuration.GetConnectionString("SQLite")!));
+            option.UseSqlServer(configuration.GetConnectionString("SQLServer")!));
             
         /*** Init develop db data ***/
         if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")

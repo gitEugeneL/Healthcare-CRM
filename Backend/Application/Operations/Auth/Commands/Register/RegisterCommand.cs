@@ -1,20 +1,23 @@
-using System.ComponentModel.DataAnnotations;
+using FluentValidation;
 using MediatR;
 
 namespace Application.Operations.Auth.Commands.Register;
 
-public record RegisterCommand : IRequest<Guid>
+public sealed record RegisterCommand(
+    string Email,
+    string Password
+) : IRequest<Guid>;
+
+public sealed class RegisterCommandValidator : AbstractValidator<RegisterCommand>
 {
-    [Required]
-    [EmailAddress]
-    public required string Email { get; init; }
-    
-    [Required]
-    [MinLength(8)]
-    [MaxLength(20)]
-    [RegularExpression(
-        @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!$%@#£€*?&]+$", 
-        ErrorMessage = "The password must contain at least one letter, one special character, and one digit."
-    )]
-    public required string Password { get; init; }
+    public RegisterCommandValidator()
+    {
+        RuleFor(r => r.Email)
+            .NotEmpty()
+            .EmailAddress();
+
+        RuleFor(r => r.Password)
+            .NotEmpty()
+            .MinimumLength(8);
+    }
 }

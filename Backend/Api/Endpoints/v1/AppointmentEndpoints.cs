@@ -1,4 +1,5 @@
 using Api.Utils;
+using API.Utils;
 using Application.Common.Exceptions;
 using Application.Operations.Appointments;
 using Application.Operations.Appointments.Commands.CancelAppointment;
@@ -22,17 +23,20 @@ public class AppointmentEndpoints : ICarterModule
         
         group.MapPost("", Create)
             .RequireAuthorization(AuthPolicy.PatientPolicy)
+            .WithValidator<CreateAppointmentCommand>()
             .Produces<AppointmentResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapGet("find-time/{userDoctorId:guid}/{date}", FindFreeHours)
             .RequireAuthorization(AuthPolicy.PatientPolicy)
             .Produces<FreeHoursResponse>()
+            .Produces(StatusCodes.Status422UnprocessableEntity)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapGet("{date}", GetAllByDate)
             .RequireAuthorization()
             .Produces<List<AppointmentResponse>>()
+            .Produces(StatusCodes.Status422UnprocessableEntity)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapPut("finalise/{appointmentId:guid}", Finalise)
@@ -66,7 +70,7 @@ public class AppointmentEndpoints : ICarterModule
         }
     }
 
-    private async Task<Results<Ok<FreeHoursResponse>, NotFound<string>>> FindFreeHours(
+    private async Task<Results<Ok<FreeHoursResponse>, NotFound<string>, UnprocessableEntity<string>>> FindFreeHours(
         Guid userDoctorId,
         string date,
         ISender sender)
@@ -79,9 +83,13 @@ public class AppointmentEndpoints : ICarterModule
         {
             return TypedResults.NotFound(exception.Message);
         }
+        catch (UnprocessableException exception)
+        {
+            return TypedResults.UnprocessableEntity(exception.Message);
+        }
     }
 
-    private async Task<Results<Ok<List<AppointmentResponse>>, NotFound<string>>> GetAllByDate(
+    private async Task<Results<Ok<List<AppointmentResponse>>, NotFound<string>, UnprocessableEntity<string>>> GetAllByDate(
         string date,
         HttpContext httpContext,
         ISender sender)
@@ -96,6 +104,10 @@ public class AppointmentEndpoints : ICarterModule
         catch (NotFoundException exception)
         {
             return TypedResults.NotFound(exception.Message);
+        }
+        catch (UnprocessableException exception)
+        {
+            return TypedResults.UnprocessableEntity(exception.Message);
         }
     }
 

@@ -1,4 +1,5 @@
 using Api.Utils;
+using API.Utils;
 using Application.Common.Exceptions;
 using Application.Common.Models;
 using Application.Operations.Patients;
@@ -7,6 +8,7 @@ using Application.Operations.Patients.Commands.DeletePatient;
 using Application.Operations.Patients.Commands.UpdatePatient;
 using Application.Operations.Patients.Queries.GetAllPatients;
 using Application.Operations.Patients.Queries.GetPatient;
+using Application.Operations.Users.Commands;
 using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -22,11 +24,14 @@ public class PatientEndpoints : ICarterModule
             .WithTags("Patient");
 
         group.MapPost("", Create)
+            .WithValidator<CreatePatientCommand>()
+            .WithValidator<CreatePatientCommand>()
             .Produces<PatientResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status409Conflict);
 
         group.MapPut("", Update)
             .RequireAuthorization(AuthPolicy.PatientPolicy)
+            .WithValidator<UpdatePatientCommand>()
             .Produces<PatientResponse>()
             .Produces(StatusCodes.Status404NotFound);
 
@@ -45,7 +50,7 @@ public class PatientEndpoints : ICarterModule
             .Produces<PaginatedList<PatientResponse>>();
     }
 
-    private async Task<Results<Created<PatientResponse>, Conflict<string>>> Create(
+    private async Task<Results<Created<PatientResponse>, Conflict<string>, ValidationProblem>> Create(
         [FromBody] CreatePatientCommand command,
         ISender sender)
     {

@@ -1,4 +1,5 @@
 using Api.Utils;
+using API.Utils;
 using Application.Common.Exceptions;
 using Application.Operations.Addresses;
 using Application.Operations.Addresses.Commands.UpdateAddress;
@@ -18,6 +19,7 @@ public class AddressEndpoints : ICarterModule
             .WithTags("Address");
 
         group.MapPut("", Update)
+            .WithValidator<UpdateAddressCommand>()
             .RequireAuthorization(AuthPolicy.PatientPolicy)
             .Produces<AddressResponse>()
             .Produces(StatusCodes.Status404NotFound);

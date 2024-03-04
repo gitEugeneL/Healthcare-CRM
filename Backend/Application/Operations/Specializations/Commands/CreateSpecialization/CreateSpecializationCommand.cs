@@ -1,14 +1,23 @@
-using System.ComponentModel.DataAnnotations;
+using FluentValidation;
 using MediatR;
 
 namespace Application.Operations.Specializations.Commands.CreateSpecialization;
 
-public sealed class CreateSpecializationCommand : IRequest<SpecializationResponse>
-{
-    [Required]
-    [MaxLength(100)]
-    public required string Value { get; init; }
+public sealed record CreateSpecializationCommand(
+    string Value,
+    string? Description
+) : IRequest<SpecializationResponse>;
 
-    [MaxLength(200)] 
-    public string? Description { get; init; }
+public sealed class CreateSpecializationValidator : AbstractValidator<CreateSpecializationCommand>
+{
+    public CreateSpecializationValidator()
+    {
+        RuleFor(s => s.Value)
+            .NotEmpty()
+            .MaximumLength(100);
+
+        RuleFor(s => s.Description)
+            .NotEmpty()
+            .MaximumLength(200);
+    }
 }

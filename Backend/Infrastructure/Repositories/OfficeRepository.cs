@@ -22,7 +22,7 @@ internal class OfficeRepository(DataContext dataContext) : IOfficeRepository
         return office;
     }
     
-    public async Task<Office?> FindOfficeByNumberAsync(ushort number, CancellationToken cancellationToken)
+    public async Task<Office?> FindOfficeByNumberAsync(int number, CancellationToken cancellationToken)
     {
         return await dataContext.Offices
             .FirstOrDefaultAsync(o => o.Number == number, cancellationToken);

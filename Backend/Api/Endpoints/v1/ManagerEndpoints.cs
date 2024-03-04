@@ -1,4 +1,5 @@
 using Api.Utils;
+using API.Utils;
 using Application.Common.Exceptions;
 using Application.Operations.Managers;
 using Application.Operations.Managers.Commands.CreateManager;
@@ -19,11 +20,13 @@ public class ManagerEndpoints : ICarterModule
         
         group.MapPost("", Create)
             .RequireAuthorization(AuthPolicy.AdminPolicy)
+            .WithValidator<CreateMangerCommand>()
             .Produces<ManagerResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status409Conflict);
 
         group.MapPut("", Update)
             .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .WithValidator<UpdateManagerCommand>()
             .Produces<ManagerResponse>()
             .Produces(StatusCodes.Status404NotFound);
     }

@@ -1,14 +1,23 @@
-using System.ComponentModel.DataAnnotations;
+using FluentValidation;
 using MediatR;
 
 namespace Application.Operations.Auth.Commands.Login;
 
-public record LoginCommand : IRequest<AuthenticationResponse>
-{
-    [Required] 
-    [EmailAddress] 
-    public required string Email { get; init; }
+public sealed record LoginCommand(
+    string Email,
+    string Password
+) : IRequest<AuthenticationResponse>;
 
-    [Required] 
-    public required string Password { get; init; }
+public sealed class LoginCommandValidator : AbstractValidator<LoginCommand>
+{
+    public LoginCommandValidator()
+    {
+        RuleFor(l => l.Email)
+            .NotEmpty()
+            .EmailAddress();
+
+        RuleFor(l => l.Password)
+            .NotEmpty()
+            .MinimumLength(8);
+    }
 }
