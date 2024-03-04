@@ -9,8 +9,7 @@ namespace Application.Operations.Appointments.Commands.CreateAppointment;
 public class CreateAppointmentCommandHandler(
     IDoctorRepository doctorRepository,
     IPatientRepository patientRepository,
-    IAppointmentRepository appointmentRepository
-    ) 
+    IAppointmentRepository appointmentRepository) 
     : IRequestHandler<CreateAppointmentCommand, AppointmentResponse>
 {
     public async Task<AppointmentResponse> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)

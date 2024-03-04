@@ -1,20 +1,17 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Application.Operations.AppointSettings.Validations;
 
-internal class WorkdaysValidationAttribute : ValidationAttribute
+internal static class WorkdaysValidationAttribute
 {
-    private const string Message = "Workdays must contain values between 1 and 7";
-    
-    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+    public static bool BeValidWorkdays(object? value)
     {
-        if (value is not int[] workdays) 
-            return new ValidationResult(Message);
-     
-        foreach (var day in workdays)
-            if (day is < 1 or > 7)
-                return new ValidationResult(Message);
+        if (value is not int[] workdays)
+            return false;
 
-        return ValidationResult.Success;
+        foreach (var day in workdays)
+        {
+            if (day is < 1 or > 7)
+                return false;
+        }
+        return true;
     }
 }

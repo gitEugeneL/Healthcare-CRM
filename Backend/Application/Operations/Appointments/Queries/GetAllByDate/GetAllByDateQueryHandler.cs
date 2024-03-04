@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Operations.Appointments.Validations;
 using Domain.Entities;
 using Domain.Enums;
 using MediatR;
@@ -17,6 +18,9 @@ public class GetAllByDateQueryHandler(
         var user = await userRepository.FindUserByIdAsync(request.GetCurrentUserId(), cancellationToken)
                    ?? throw new NotFoundException(nameof(User), request.GetCurrentUserId());
         
+        var isValidDate = DateValidatorAttribute.BeValidDate(request.Date);
+        if (!isValidDate)
+            throw new UnprocessableException("invalid date");
         var date = DateOnly.Parse(request.Date);
         
         var result = request.GetCurrentUserRole() switch

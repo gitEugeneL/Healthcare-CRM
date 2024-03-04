@@ -1,9 +1,21 @@
+using FluentValidation;
 using MediatR;
 
 namespace Application.Operations.Specializations.Commands.IncludeDoctor;
 
-public sealed record IncludeDoctorCommand : IRequest<SpecializationResponse>
+public sealed record IncludeDoctorCommand(
+    Guid UserDoctorId,
+    Guid SpecializationId
+) : IRequest<SpecializationResponse>;
+
+public sealed class IncludeDoctorValidator : AbstractValidator<IncludeDoctorCommand>
 {
-    public Guid UserDoctorId { get; init; }
-    public Guid SpecializationId { get; init; }
+    public IncludeDoctorValidator()
+    {
+        RuleFor(e => e.UserDoctorId)
+            .NotEmpty();
+
+        RuleFor(e => e.SpecializationId)
+            .NotEmpty();
+    }
 }

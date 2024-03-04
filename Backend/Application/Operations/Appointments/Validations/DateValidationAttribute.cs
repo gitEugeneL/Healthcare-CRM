@@ -1,33 +1,20 @@
-using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace Application.Operations.Appointments.Validations;
 
-internal class DateValidationAttribute : ValidationAttribute
+internal static class DateValidatorAttribute
 {
     private const int Month = 1;
     private const string Pattern = @"^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$";
-    private const string Message = "Date must be Y-m-d (1999-12-31). " +
-                                   "Please select a future date and date should not be later than +1 month."; 
-    
-    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+
+    public static bool BeValidDate(string value)
     {
-        if (value is null)
-            return new ValidationResult(Message);
-
-        if (value is not string date)
-            return new ValidationResult(Message);
+        if (!Regex.IsMatch(value, Pattern))
+            return false;
         
-        if (!Regex.IsMatch(date, Pattern))
-            return new ValidationResult(Message);
+        var currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
+        var valueDate = DateOnly.Parse(value);
 
-        var currentDate = DateOnly.FromDateTime(DateTime.Now);
-        
-        var valueDate = DateOnly.Parse(date);
-
-        if (valueDate <= currentDate || valueDate >= currentDate.AddMonths(Month))
-            return new ValidationResult(Message);
-
-        return ValidationResult.Success;
+        return valueDate > currentDate && valueDate < currentDate.AddMonths(Month);
     }
 }

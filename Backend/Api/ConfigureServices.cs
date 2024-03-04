@@ -1,5 +1,6 @@
 using System.Text;
-using Asp.Versioning;
+using Api.Utils;
+using Carter;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -12,37 +13,9 @@ public static class ConfigureServices
     public static IServiceCollection AddPresentationServices(this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddControllers();
-
-        /*** Api versioning config ***/
-        services.AddApiVersioning(options =>
-        {
-            options.DefaultApiVersion = new ApiVersion(1);
-            options.ReportApiVersions = true;
-            options.AssumeDefaultVersionWhenUnspecified = true;
-            options.ApiVersionReader = ApiVersionReader.Combine(
-                new UrlSegmentApiVersionReader(),
-                new HeaderApiVersionReader("X-Api-Version"));
-        }).AddApiExplorer(options =>
-        {
-            options.GroupNameFormat = "'v'V";
-            options.SubstituteApiVersionInUrl = true;
-        });
-        
-        /*** CORS config ***/
-        services.AddCors(options =>
-        {
-            options.AddPolicy("devCors", policy =>
-            {
-                policy.WithOrigins(configuration
-                        .GetSection("AllowedOrigins")
-                        .Get<string[]>()!)
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
-            });
-        });
-        
-        /*** Auth config ***/
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
+    
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -57,6 +30,9 @@ public static class ConfigureServices
                     ClockSkew = TimeSpan.FromMinutes(1) // allowed time deviation, 5min - default
                 };
             });
+        
+        /*** Auth policies configure ***/
+        AuthPolicy.ConfigureAuthPolicy(services);
 
         /*** Swagger config ***/
         services.AddSwaggerGen(c =>
@@ -72,10 +48,9 @@ public static class ConfigureServices
             c.OperationFilter<SecurityRequirementsOperationFilter>();
         });
         
-        services.AddCors();
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
-
+        /*** Auto include minimal api endpoints ***/ 
+        services.AddCarter();
+        
         return services;
     }
 }

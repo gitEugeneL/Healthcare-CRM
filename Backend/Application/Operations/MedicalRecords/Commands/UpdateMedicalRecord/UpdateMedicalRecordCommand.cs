@@ -1,16 +1,23 @@
-using System.ComponentModel.DataAnnotations;
 using Application.Common.Models;
+using FluentValidation;
 using MediatR;
 
 namespace Application.Operations.MedicalRecords.Commands.UpdateMedicalRecord;
 
-public sealed record UpdateMedicalRecordCommand : CurrentUser, IRequest<MedicalRecordResponse> 
+public sealed record UpdateMedicalRecordCommand(
+    Guid MedicalRecordId,
+    string? Title,
+    string? DoctorNote
+) : CurrentUser, IRequest<MedicalRecordResponse>; 
+
+public sealed class UpdateMedicalRecordValidator : AbstractValidator<UpdateMedicalRecordCommand>
 {
-    [Required]
-    public Guid MedicalRecordId { get; init; }
+    public UpdateMedicalRecordValidator()
+    {
+        RuleFor(mr => mr.MedicalRecordId)
+            .NotEmpty();
 
-    [MaxLength(50)] 
-    public string? Tittle { get; init; }
-
-    public string? DoctorNote { get; init; }
+        RuleFor(mr => mr.Title)
+            .MaximumLength(50);
+    }
 }

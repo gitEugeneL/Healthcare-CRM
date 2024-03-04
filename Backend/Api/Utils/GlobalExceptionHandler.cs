@@ -1,7 +1,6 @@
-using Application.Common.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace Api;
+namespace Api.Utils;
 
 public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
@@ -10,11 +9,11 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
     {
         var (statusCodes, errorMessage) = exception switch
         {
-            UnauthorizedException => (401, exception.Message),
-            AccessDeniedException => (403, exception.Message),
-            NotFoundException => (404, exception.Message),
-            AlreadyExistException => (409, exception.Message),
-            TimeMismatchException => (422, exception.Message),
+            // UnauthorizedException => (401, exception.Message),
+            // AccessDeniedException => (403, exception.Message),
+            // NotFoundException => (404, exception.Message),
+            // AlreadyExistException => (409, exception.Message),
+            // TimeMismatchException => (422, exception.Message),
             _ => (500, "Something went wrong")
         };
 

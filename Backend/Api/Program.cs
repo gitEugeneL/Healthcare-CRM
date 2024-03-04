@@ -1,5 +1,7 @@
 using Api;
+using Api.Utils;
 using Application;
+using Carter;
 using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,16 +18,8 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseCors("devCors");
-
 app.UseHttpsRedirection();
-
-app.UseAuthentication();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
+app.MapCarter();
 app.UseExceptionHandler();
 
 app.Run();

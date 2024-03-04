@@ -17,7 +17,7 @@ public class FinaliseAppointmentCommandHandler(IAppointmentRepository appointmen
             throw new AccessDeniedException(nameof(User), request.GetCurrentUserId());
 
         if (appointment.Date != DateOnly.FromDateTime(DateTime.Now))
-            throw new TimeMismatchException(
+            throw new UnprocessableException(
                 $"Appointment can be finalise {appointment.Date.ToString("yyyy-M-d")}");
         
         appointment.IsCompleted = true;

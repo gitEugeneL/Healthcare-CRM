@@ -7,8 +7,7 @@ namespace Application.Operations.Addresses.Commands.UpdateAddress;
 
 public class UpdateAddressCommandHandler(
     IPatientRepository patientRepository,
-    IAddressRepository addressRepository
-    ) 
+    IAddressRepository addressRepository) 
     : IRequestHandler<UpdateAddressCommand, AddressResponse>
 {
     public async Task<AddressResponse> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)

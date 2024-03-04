@@ -8,8 +8,7 @@ namespace Application.Operations.AppointSettings.Commands.Config;
 
 public class ConfigAppointmentCommandHandler(
     IAppointmentSettingsRepository settingsRepository,
-    IDoctorRepository doctorRepository
-    )
+    IDoctorRepository doctorRepository)
     : IRequestHandler<ConfigAppointmentCommand, AppointmentSettingsResponse>
 {
     public async Task<AppointmentSettingsResponse> 
@@ -24,7 +23,7 @@ public class ConfigAppointmentCommandHandler(
         var endTime = request.EndTime is not null ? TimeOnly.Parse(request.EndTime) : config.EndTime;
 
         if (startTime >= endTime)
-            throw new TimeMismatchException("EndTime must be greater than StartTime");
+            throw new UnprocessableException("EndTime must be greater than StartTime");
 
         config.StartTime = startTime;
         config.EndTime = endTime;

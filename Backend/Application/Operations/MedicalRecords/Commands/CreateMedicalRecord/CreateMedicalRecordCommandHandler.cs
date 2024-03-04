@@ -10,8 +10,7 @@ public class CreateMedicalRecordCommandHandler(
     IPatientRepository patientRepository,
     IAppointmentRepository appointmentRepository,
     IMedicalRecordRepository medicalRecordRepository
-    )
-    : IRequestHandler<CreateMedicalRecordCommand, MedicalRecordResponse>
+    ) : IRequestHandler<CreateMedicalRecordCommand, MedicalRecordResponse>
 {
     public async Task<MedicalRecordResponse> Handle(CreateMedicalRecordCommand request, CancellationToken cancellationToken)
     {
