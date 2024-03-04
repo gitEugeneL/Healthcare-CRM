@@ -19,9 +19,5 @@ internal class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
             .WithMany(doctor => doctor.Appointments)
             .HasForeignKey(appointment => appointment.UserDoctorId)
             .OnDelete(DeleteBehavior.Restrict);
-        
-        builder.Property(doctor => doctor.Created)
-            .IsRequired()
-            .HasDefaultValueSql("CURRENT_TIMESTAMP"); 
     }
 }

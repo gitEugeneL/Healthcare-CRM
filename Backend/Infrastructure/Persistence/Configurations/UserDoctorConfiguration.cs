@@ -12,10 +12,6 @@ internal class UserDoctorConfiguration : IEntityTypeConfiguration<UserDoctor>
             .IsRequired()
             .HasConversion<string>();
         
-        builder.Property(doctor => doctor.Created)
-            .IsRequired()
-            .HasDefaultValueSql("CURRENT_TIMESTAMP");
-        
         /*** One to one ***/
         builder.HasOne(doctor => doctor.User)
             .WithOne(user => user.UserDoctor);
