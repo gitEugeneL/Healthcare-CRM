@@ -1,3 +1,4 @@
+using Api.Helpers;
 using Api.Utils;
 using API.Utils;
 using Application.Common.Exceptions;
@@ -9,6 +10,7 @@ using Application.Operations.MedicalRecords.Queries.GetAllMedicalRecordsForDocto
 using Application.Operations.MedicalRecords.Queries.GetAllMedicalRecordsForPatient;
 using Application.Operations.MedicalRecords.Queries.GetMedicalRecord;
 using Carter;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -19,11 +21,13 @@ public class MedicalRecordEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/v1/medical-record")
-            .WithTags("MedicalRecord");
+        var group = app.MapGroup("api/v{version:apiVersion}/medical-record")
+            .WithApiVersionSet(ApiVersioning.VersionSet(app))
+            .MapToApiVersion(1)
+            .WithTags(nameof(MedicalRecord));
         
         group.MapPost("", Create)
-            .RequireAuthorization(AuthPolicy.DoctorPolicy)
+            .RequireAuthorization(AppConstants.DoctorPolicy)
             .WithValidator<CreateMedicalRecordCommand>()
             .Produces<MedicalRecordResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status401Unauthorized)
@@ -31,25 +35,25 @@ public class MedicalRecordEndpoint : ICarterModule
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapPut("", Update)
-            .RequireAuthorization(AuthPolicy.DoctorPolicy)
+            .RequireAuthorization(AppConstants.DoctorPolicy)
             .WithValidator<UpdateMedicalRecordCommand>()
             .Produces<MedicalRecordResponse>()
             .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapGet("{medicalRecordId:guid}", GetOne)
-            .RequireAuthorization(AuthPolicy.DoctorOrPatientPolicy)
+            .RequireAuthorization(AppConstants.DoctorOrPatientPolicy)
             .Produces<MedicalRecordResponse>()
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status403Forbidden);
 
         group.MapGet("for-patient", GetAllForPatient)
-            .RequireAuthorization(AuthPolicy.PatientPolicy)
+            .RequireAuthorization(AppConstants.PatientPolicy)
             .Produces<PaginatedList<MedicalRecordResponse>>()
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapGet("for-doctor", GetAllForDoctor)
-            .RequireAuthorization(AuthPolicy.DoctorPolicy)
+            .RequireAuthorization(AppConstants.DoctorPolicy)
             .Produces<PaginatedList<MedicalRecordResponse>>()
             .Produces(StatusCodes.Status404NotFound);
     }

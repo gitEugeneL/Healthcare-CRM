@@ -16,7 +16,9 @@ public class AuthenticationEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/v1/auth")
+        var group = app.MapGroup("api/v{version:apiVersion}/auth")
+            .WithApiVersionSet(ApiVersioning.VersionSet(app))
+            .MapToApiVersion(1)
             .WithTags("Authentication");
         
         group.MapPost("login", Login)

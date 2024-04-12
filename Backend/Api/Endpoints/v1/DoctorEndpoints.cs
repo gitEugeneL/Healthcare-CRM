@@ -1,3 +1,4 @@
+using Api.Helpers;
 using Api.Utils;
 using API.Utils;
 using Application.Common.Exceptions;
@@ -8,6 +9,7 @@ using Application.Operations.Doctor.Commands.UpdateDoctor;
 using Application.Operations.Doctor.Queries.GetAllDoctors;
 using Application.Operations.Doctor.Queries.GetDoctor;
 using Carter;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -18,17 +20,19 @@ public class DoctorEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/v1/doctor")
-            .WithTags("Doctor");
+        var group = app.MapGroup("api/v{version:apiVersion}/doctor")
+            .WithApiVersionSet(ApiVersioning.VersionSet(app))
+            .MapToApiVersion(1)
+            .WithTags(nameof(UserDoctor));
         
         group.MapPost("", Create)
-            .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .RequireAuthorization(AppConstants.ManagerPolicy)
             .WithValidator<CreateDoctorCommand>()
             .Produces<DoctorResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status409Conflict);
 
         group.MapPut("", Update)
-            .RequireAuthorization(AuthPolicy.DoctorPolicy)
+            .RequireAuthorization(AppConstants.DoctorPolicy)
             .WithValidator<UpdateDoctorCommand>()
             .Produces<DoctorResponse>()
             .Produces(StatusCodes.Status404NotFound);

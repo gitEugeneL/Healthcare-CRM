@@ -1,49 +1,50 @@
 using System.Security.Claims;
+using Api.Helpers;
 using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Utils;
 
 public static class AuthPolicy
 {
-    public const string PatientPolicy = "patient-policy";
-    public const string DoctorPolicy = "doctor-policy";
-    public const string ManagerPolicy = "manager-policy";
-    public const string AdminPolicy = "admin-policy";
-    public const string DoctorOrPatientPolicy = "doctor-or-patient-policy";
-    public const string DoctorOrManagerPolicy = "doctor-or-manager-policy";
-    
     public static void ConfigureAuthPolicy(IServiceCollection service)
     {
+        var commonPolicy = new AuthorizationPolicyBuilder()
+            .RequireClaim(ClaimTypes.Email)
+            .RequireClaim(ClaimTypes.NameIdentifier)
+            .Build();
+
         service.AddAuthorizationBuilder()
-            .AddPolicy(PatientPolicy, policy =>
+            .AddPolicy(AppConstants.BasePolicy, commonPolicy)
+
+            .AddPolicy(AppConstants.PatientPolicy, policy =>
                 policy
                     .RequireRole(Role.Patient.ToString())
-                    .RequireClaim(ClaimTypes.Email)
-                    .RequireClaim(ClaimTypes.NameIdentifier))
-            .AddPolicy(DoctorPolicy, policy =>
+                    .AddRequirements(commonPolicy.Requirements.ToArray()))
+
+            .AddPolicy(AppConstants.DoctorPolicy, policy =>
                 policy
                     .RequireRole(Role.Doctor.ToString())
-                    .RequireClaim(ClaimTypes.Email)
-                    .RequireClaim(ClaimTypes.NameIdentifier))
-            .AddPolicy(ManagerPolicy, policy =>
+                    .AddRequirements(commonPolicy.Requirements.ToArray()))
+
+            .AddPolicy(AppConstants.ManagerPolicy, policy =>
                 policy
                     .RequireRole(Role.Manager.ToString())
-                    .RequireClaim(ClaimTypes.Email)
-                    .RequireClaim(ClaimTypes.NameIdentifier))
-            .AddPolicy(AdminPolicy, policy =>
+                    .AddRequirements(commonPolicy.Requirements.ToArray()))
+
+            .AddPolicy(AppConstants.AdminPolicy, policy =>
                 policy
                     .RequireRole(Role.Admin.ToString())
-                    .RequireClaim(ClaimTypes.Email)
-                    .RequireClaim(ClaimTypes.NameIdentifier))
-            .AddPolicy(DoctorOrPatientPolicy, policy =>
+                    .AddRequirements(commonPolicy.Requirements.ToArray()))
+
+            .AddPolicy(AppConstants.DoctorOrPatientPolicy, policy =>
                 policy
                     .RequireRole(Role.Doctor.ToString(), Role.Patient.ToString())
-                    .RequireClaim(ClaimTypes.Email)
-                    .RequireClaim(ClaimTypes.NameIdentifier))
-            .AddPolicy(DoctorOrManagerPolicy, policy =>
+                    .AddRequirements(commonPolicy.Requirements.ToArray()))
+
+            .AddPolicy(AppConstants.DoctorOrManagerPolicy, policy =>
                 policy
                     .RequireRole(Role.Doctor.ToString(), Role.Manager.ToString())
-                    .RequireClaim(ClaimTypes.Email)
-                    .RequireClaim(ClaimTypes.NameIdentifier));
+                    .AddRequirements(commonPolicy.Requirements.ToArray()));
     }
 }

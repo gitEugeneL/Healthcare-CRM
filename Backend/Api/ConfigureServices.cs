@@ -1,5 +1,6 @@
 using System.Text;
 using Api.Utils;
+using Asp.Versioning;
 using Carter;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -33,6 +34,21 @@ public static class ConfigureServices
         
         /*** Auth policies configure ***/
         AuthPolicy.ConfigureAuthPolicy(services);
+        
+        /*** Api Versioning Config ***/
+        services.AddApiVersioning(options =>
+        {
+            options.DefaultApiVersion = new ApiVersion(1);
+            options.ReportApiVersions = true;
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.ApiVersionReader = ApiVersionReader.Combine(
+                new UrlSegmentApiVersionReader(),
+                new HeaderApiVersionReader("X-Api-Version"));
+        }).AddApiExplorer(options =>
+        {
+            options.GroupNameFormat = "'v'V";
+            options.SubstituteApiVersionInUrl = true;
+        });
 
         /*** Swagger config ***/
         services.AddSwaggerGen(c =>

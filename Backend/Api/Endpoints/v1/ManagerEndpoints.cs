@@ -1,3 +1,4 @@
+using Api.Helpers;
 using Api.Utils;
 using API.Utils;
 using Application.Common.Exceptions;
@@ -5,6 +6,7 @@ using Application.Operations.Managers;
 using Application.Operations.Managers.Commands.CreateManager;
 using Application.Operations.Managers.Commands.UpdateManager;
 using Carter;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -15,17 +17,19 @@ public class ManagerEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/v1/manager")
-            .WithTags("Manager");
+        var group = app.MapGroup("api/v{version:apiVersion}/manager")
+            .WithApiVersionSet(ApiVersioning.VersionSet(app))
+            .MapToApiVersion(1)
+            .WithTags(nameof(UserManager));
         
         group.MapPost("", Create)
-            .RequireAuthorization(AuthPolicy.AdminPolicy)
+            .RequireAuthorization(AppConstants.AdminPolicy)
             .WithValidator<CreateMangerCommand>()
             .Produces<ManagerResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status409Conflict);
 
         group.MapPut("", Update)
-            .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .RequireAuthorization(AppConstants.ManagerPolicy)
             .WithValidator<UpdateManagerCommand>()
             .Produces<ManagerResponse>()
             .Produces(StatusCodes.Status404NotFound);

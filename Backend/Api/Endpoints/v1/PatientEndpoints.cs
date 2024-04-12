@@ -1,3 +1,4 @@
+using Api.Helpers;
 using Api.Utils;
 using API.Utils;
 using Application.Common.Exceptions;
@@ -8,8 +9,8 @@ using Application.Operations.Patients.Commands.DeletePatient;
 using Application.Operations.Patients.Commands.UpdatePatient;
 using Application.Operations.Patients.Queries.GetAllPatients;
 using Application.Operations.Patients.Queries.GetPatient;
-using Application.Operations.Users.Commands;
 using Carter;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -20,8 +21,10 @@ public class PatientEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/v1/patient")
-            .WithTags("Patient");
+        var group = app.MapGroup("api/v{version:apiVersion}/patient")
+            .WithApiVersionSet(ApiVersioning.VersionSet(app))
+            .MapToApiVersion(1)
+            .WithTags(nameof(UserPatient));
 
         group.MapPost("", Create)
             .WithValidator<CreatePatientCommand>()
@@ -30,23 +33,23 @@ public class PatientEndpoints : ICarterModule
             .Produces(StatusCodes.Status409Conflict);
 
         group.MapPut("", Update)
-            .RequireAuthorization(AuthPolicy.PatientPolicy)
+            .RequireAuthorization(AppConstants.PatientPolicy)
             .WithValidator<UpdatePatientCommand>()
             .Produces<PatientResponse>()
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapDelete("", Delete)
-            .RequireAuthorization(AuthPolicy.PatientPolicy)
+            .RequireAuthorization(AppConstants.PatientPolicy)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapGet("{userId:guid}", GetOne)
-            .RequireAuthorization(AuthPolicy.DoctorOrManagerPolicy)
+            .RequireAuthorization(AppConstants.DoctorOrManagerPolicy)
             .Produces<PatientResponse>()
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapGet("", GetAll)
-            .RequireAuthorization(AuthPolicy.DoctorOrManagerPolicy)
+            .RequireAuthorization(AppConstants.DoctorOrManagerPolicy)
             .Produces<PaginatedList<PatientResponse>>();
     }
 
