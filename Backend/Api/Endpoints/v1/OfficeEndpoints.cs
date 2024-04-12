@@ -1,3 +1,4 @@
+using Api.Helpers;
 using Api.Utils;
 using API.Utils;
 using Application.Common.Exceptions;
@@ -7,6 +8,7 @@ using Application.Operations.Offices.Commands.CreateOffice;
 using Application.Operations.Offices.Commands.UpdateOffice;
 using Application.Operations.Offices.Queries.GetAllOffices;
 using Carter;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -17,28 +19,30 @@ public class OfficeEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/v1/office")
-            .WithTags("Office");
+        var group = app.MapGroup("api/v{version:apiVersion}/office")
+            .WithApiVersionSet(ApiVersioning.VersionSet(app))
+            .MapToApiVersion(1)
+            .WithTags(nameof(Office));
 
         group.MapPost("", Create)
-            .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .RequireAuthorization(AppConstants.ManagerPolicy)
             .WithValidator<CreateOfficeCommand>()
             .Produces<OfficeResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status409Conflict);
 
         group.MapPut("", Update)
-            .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .RequireAuthorization(AppConstants.ManagerPolicy)
             .WithValidator<UpdateOfficeCommand>()
             .Produces<OfficeResponse>()
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapPatch("", ChangeStatus)
-            .RequireAuthorization(AuthPolicy.DoctorOrManagerPolicy)
+            .RequireAuthorization(AppConstants.DoctorOrManagerPolicy)
             .Produces<OfficeResponse>()
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapGet("", GetAll)
-            .RequireAuthorization(AuthPolicy.DoctorOrManagerPolicy)
+            .RequireAuthorization(AppConstants.DoctorOrManagerPolicy)
             .Produces<List<OfficeResponse>>();
     }
 

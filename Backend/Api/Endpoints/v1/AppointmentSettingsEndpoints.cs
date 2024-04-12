@@ -1,3 +1,4 @@
+using Api.Helpers;
 using Api.Utils;
 using API.Utils;
 using Application.Common.Exceptions;
@@ -5,6 +6,7 @@ using Application.Operations.AppointSettings;
 using Application.Operations.AppointSettings.Commands.Config;
 using Application.Operations.AppointSettings.Queries.GetAppointmentSettings;
 using Carter;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +17,13 @@ public class AppointmentSettingsEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/v1/appointment-settings")
-            .WithTags("Appointment settings");
+        var group = app.MapGroup("api/v{version:apiVersion}/appointment-settings")
+            .WithApiVersionSet(ApiVersioning.VersionSet(app))
+            .MapToApiVersion(1)
+            .WithTags(nameof(AppointmentSettings));
         
         group.MapPut("", Config)
-            .RequireAuthorization(AuthPolicy.DoctorPolicy)
+            .RequireAuthorization(AppConstants.DoctorPolicy)
             .WithValidator<ConfigAppointmentCommand>()
             .Produces<AppointmentSettingsResponse>()
             .Produces(StatusCodes.Status404NotFound)

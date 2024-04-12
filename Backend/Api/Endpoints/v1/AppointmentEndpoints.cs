@@ -1,3 +1,4 @@
+using Api.Helpers;
 using Api.Utils;
 using API.Utils;
 using Application.Common.Exceptions;
@@ -8,6 +9,7 @@ using Application.Operations.Appointments.Commands.FinaliseAppointment;
 using Application.Operations.Appointments.Queries.FindFreeHours;
 using Application.Operations.Appointments.Queries.GetAllByDate;
 using Carter;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -18,17 +20,19 @@ public class AppointmentEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/v1/appointment")
-            .WithTags("Appointment");
+        var group = app.MapGroup("api/v{version:apiVersion}/appointment")
+            .WithApiVersionSet(ApiVersioning.VersionSet(app))
+            .MapToApiVersion(1)
+            .WithTags(nameof(Appointment));
         
         group.MapPost("", Create)
-            .RequireAuthorization(AuthPolicy.PatientPolicy)
+            .RequireAuthorization(AppConstants.PatientPolicy)
             .WithValidator<CreateAppointmentCommand>()
             .Produces<AppointmentResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapGet("find-time/{userDoctorId:guid}/{date}", FindFreeHours)
-            .RequireAuthorization(AuthPolicy.PatientPolicy)
+            .RequireAuthorization(AppConstants.PatientPolicy)
             .Produces<FreeHoursResponse>()
             .Produces(StatusCodes.Status422UnprocessableEntity)
             .Produces(StatusCodes.Status404NotFound);
@@ -40,14 +44,14 @@ public class AppointmentEndpoints : ICarterModule
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapPut("finalise/{appointmentId:guid}", Finalise)
-            .RequireAuthorization(AuthPolicy.DoctorPolicy)
+            .RequireAuthorization(AppConstants.DoctorPolicy)
             .Produces<AppointmentResponse>()
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status422UnprocessableEntity);
 
         group.MapPut("cancel/{appointmentId:guid}", Cancel)
-            .RequireAuthorization(AuthPolicy.DoctorPolicy)
+            .RequireAuthorization(AppConstants.DoctorPolicy)
             .Produces<AppointmentResponse>()
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest);

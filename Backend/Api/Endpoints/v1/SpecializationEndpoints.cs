@@ -1,3 +1,4 @@
+using Api.Helpers;
 using Api.Utils;
 using API.Utils;
 using Application.Common.Exceptions;
@@ -9,6 +10,7 @@ using Application.Operations.Specializations.Commands.IncludeDoctor;
 using Application.Operations.Specializations.Commands.UpdateSpecialization;
 using Application.Operations.Specializations.Queries.GetAllSpecializations;
 using Carter;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -19,17 +21,19 @@ public class SpecializationEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/v1/specialization")
-            .WithTags("Specialization");
+        var group = app.MapGroup("api/v{version:apiVersion}/specialization")
+            .WithApiVersionSet(ApiVersioning.VersionSet(app))
+            .MapToApiVersion(1)
+            .WithTags(nameof(Specialization));
 
         group.MapPost("", Create)
-            .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .RequireAuthorization(AppConstants.ManagerPolicy)
             .WithValidator<CreateSpecializationCommand>()
             .Produces<SpecializationResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status409Conflict);
 
         group.MapPut("", Update)
-            .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .RequireAuthorization(AppConstants.ManagerPolicy)
             .WithValidator<UpdateSpecializationCommand>()
             .Produces<SpecializationResponse>()
             .Produces(StatusCodes.Status404NotFound);
@@ -38,19 +42,19 @@ public class SpecializationEndpoints : ICarterModule
             .Produces<List<SpecializationResponse>>();
 
         group.MapDelete("{specializationId:guid}", Delete)
-            .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .RequireAuthorization(AppConstants.ManagerPolicy)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapPut("include-doctor", IncludeDoctor)
-            .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .RequireAuthorization(AppConstants.ManagerPolicy)
             .WithValidator<IncludeDoctorCommand>()
             .Produces<SpecializationEndpoints>()
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status409Conflict);
 
         group.MapPut("exclude-doctor", ExcludeDoctor)
-            .RequireAuthorization(AuthPolicy.ManagerPolicy)
+            .RequireAuthorization(AppConstants.ManagerPolicy)
             .WithValidator<ExcludeDoctorCommand>()
             .Produces<SpecializationResponse>()
             .Produces(StatusCodes.Status404NotFound);

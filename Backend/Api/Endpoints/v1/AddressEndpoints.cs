@@ -1,3 +1,4 @@
+using Api.Helpers;
 using Api.Utils;
 using API.Utils;
 using Application.Common.Exceptions;
@@ -5,6 +6,7 @@ using Application.Operations.Addresses;
 using Application.Operations.Addresses.Commands.UpdateAddress;
 using Application.Operations.Addresses.Queries.GetAddress;
 using Carter;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -15,17 +17,19 @@ public class AddressEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/v1/address")
-            .WithTags("Address");
-
+        var group = app.MapGroup("api/v{version:apiVersion}/address")
+            .WithApiVersionSet(ApiVersioning.VersionSet(app))
+            .MapToApiVersion(1)
+            .WithTags(nameof(Address));
+        
         group.MapPut("", Update)
             .WithValidator<UpdateAddressCommand>()
-            .RequireAuthorization(AuthPolicy.PatientPolicy)
+            .RequireAuthorization(AppConstants.PatientPolicy)
             .Produces<AddressResponse>()
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapGet("{addressId:guid}", GetOne)
-            .RequireAuthorization()
+            .RequireAuthorization(AppConstants.BasePolicy)
             .Produces<AddressResponse>()
             .Produces(StatusCodes.Status404NotFound);
     }
