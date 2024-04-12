@@ -21,7 +21,8 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - "ASPNETCORE_ENVIRONMENT=Development"
+      - "ConnectionStrings__SQLServer=Server=database,1433;Database=app;User=SA;Password=Dev_password@1;trustServerCertificate=true;"
     ports:
       - "8080:8080"
     depends_on:
