@@ -1,8 +1,6 @@
 using Api;
 using Api.Utils;
 using Application;
-using Asp.Versioning;
-using Asp.Versioning.Builder;
 using Carter;
 using Infrastructure;
 

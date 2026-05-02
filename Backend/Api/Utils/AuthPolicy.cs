@@ -19,32 +19,32 @@ public static class AuthPolicy
 
             .AddPolicy(AppConstants.PatientPolicy, policy =>
                 policy
-                    .RequireRole(Role.Patient.ToString())
+                    .RequireRole(nameof(Role.Patient))
                     .AddRequirements(commonPolicy.Requirements.ToArray()))
 
             .AddPolicy(AppConstants.DoctorPolicy, policy =>
                 policy
-                    .RequireRole(Role.Doctor.ToString())
+                    .RequireRole(nameof(Role.Doctor))
                     .AddRequirements(commonPolicy.Requirements.ToArray()))
 
             .AddPolicy(AppConstants.ManagerPolicy, policy =>
                 policy
-                    .RequireRole(Role.Manager.ToString())
+                    .RequireRole(nameof(Role.Manager))
                     .AddRequirements(commonPolicy.Requirements.ToArray()))
 
             .AddPolicy(AppConstants.AdminPolicy, policy =>
                 policy
-                    .RequireRole(Role.Admin.ToString())
+                    .RequireRole(nameof(Role.Admin))
                     .AddRequirements(commonPolicy.Requirements.ToArray()))
 
             .AddPolicy(AppConstants.DoctorOrPatientPolicy, policy =>
                 policy
-                    .RequireRole(Role.Doctor.ToString(), Role.Patient.ToString())
+                    .RequireRole(nameof(Role.Doctor), nameof(Role.Patient))
                     .AddRequirements(commonPolicy.Requirements.ToArray()))
 
             .AddPolicy(AppConstants.DoctorOrManagerPolicy, policy =>
                 policy
-                    .RequireRole(Role.Doctor.ToString(), Role.Manager.ToString())
+                    .RequireRole(nameof(Role.Doctor), nameof(Role.Manager))
                     .AddRequirements(commonPolicy.Requirements.ToArray()));
     }
 }
