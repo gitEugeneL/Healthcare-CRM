@@ -1,41 +1,48 @@
 using System.Reflection;
+using Domain.Abstractions;
 using Domain.Common;
-using Domain.Entities;
+using Domain.Offices;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
 
-public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
+internal sealed class DataContext(DbContextOptions<DataContext> options) : DbContext(options), IUnitOfWork
 {
-    public required DbSet<Office> Offices { get; init; }
-    public required DbSet<MedicalRecord> MedicalRecords { get; init; }
-    public required DbSet<Appointment> Appointments { get; init; }
-    public required DbSet<AppointmentSettings> AppointmentSettings { get; init; }
-    public required DbSet<Specialization> Specializations { get; init; }
-    public required DbSet<RefreshToken> RefreshTokens { get; init; }
-    public required DbSet<User> Users { get; init; }
-    public required DbSet<UserDoctor> UserDoctors { get; init; }
-    public required DbSet<UserManager> UserManagers { get; init; }
-    public required DbSet<UserPatient> UserPatients { get; init; }
-    public required DbSet<Address> Addresses { get; init; }
+    internal DbSet<Office> Offices { get; set; }
+    
+    // internal DbSet<MedicalRecord> MedicalRecords { get; set; }
+    
+    // internal DbSet<Appointment> Appointments { get; set; }
+    
+    // internal DbSet<AppointmentSettings> AppointmentSettings { get; set; }
+    
+    // internal DbSet<Specialization> Specializations { get; set; }
+    
+    // internal DbSet<RefreshToken> RefreshTokens { get; set; }
+    
+    // internal DbSet<User> Users { get; set; }
+    
+    // internal DbSet<UserDoctor> UserDoctors { get; set; }
+    
+    // internal DbSet<UserManager> UserManagers { get; set; }
+    
+    // internal DbSet<UserPatient> UserPatients { get; set; }
+    
+    // internal DbSet<Address> Addresses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(builder);
     }
-
-    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken token = default)
+    
+    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken ct = default)
     {
-        foreach (var entity in ChangeTracker
-                     .Entries()
-                     .Where(x => x is { Entity: BaseAuditableEntity, State: EntityState.Modified })
-                     .Select(x => x.Entity)
-                     .Cast<BaseAuditableEntity>())
+        foreach (var entry in ChangeTracker.Entries<BaseAuditableEntity>())
         {
-            entity.Updated = DateTime.UtcNow;
+            if (entry.State == EntityState.Modified)
+                entry.Entity.Update();
         }
-
-        return base.SaveChangesAsync(acceptAllChangesOnSuccess, token);
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, ct);
     }
 }

@@ -1,7 +1,4 @@
-using System.Reflection;
-using Application.Common.Interfaces;
-using Application.Common.Services;
-using Application.Operations.Users.Commands;
+using Application.Behaviors;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,15 +8,20 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+        // services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
-        /*** FluentValidation files register ***/
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        /*** FluentValidation ***/
+        services.AddValidatorsFromAssembly(AssemblyReference.Assembly, includeInternalTypes: true);
         
-        
-        /*** Mediatr config ***/
-        services.AddMediatR(cnf => 
-            cnf.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+        /*** Mediatr  ***/
+        services.AddMediatR(config =>
+        {
+            config.RegisterServicesFromAssembly(AssemblyReference.Assembly);
+            
+            config.AddOpenBehavior(typeof(ExceptionHandlingPipelineBehavior<,>));
+            config.AddOpenBehavior(typeof(RequestLoggingPipelineBehavior<,>));
+            config.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
+        });
         
         return services;
     }

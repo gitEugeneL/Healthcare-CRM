@@ -1,25 +1,25 @@
 using Api;
-using Api.Utils;
 using Application;
-using Carter;
 using Infrastructure;
+using Scalar.AspNetCore;
+using ConfigureServices = Api.ConfigureServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddPresentationServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddProblemDetails();
+builder.Services.AddApiServices(builder.Configuration);
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+if (app.Environment.IsDevelopment())
+{
+    DevInitializer.Initialize(app.Services);
 
-app.UseHttpsRedirection();
-app.MapCarter();
-app.UseExceptionHandler();
+    app.MapOpenApi();
+    app.MapScalarApiReference("/scalar");
+}
+
+ConfigureServices.MapEndpoints(app);
 
 app.Run();

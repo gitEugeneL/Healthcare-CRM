@@ -1,7 +1,7 @@
-namespace Domain.Enums;
-
-public enum Status
-{
-    Active,
-    Disable
-}
+// namespace Domain.Enums;
+//
+// public enum Status
+// {
+//     Active,
+//     Disable
+// }

@@ -2,7 +2,7 @@ namespace Api.Utils;
 
 internal static class CookieManager
 {
-    public static void SetCookie(HttpResponse response, string cookieName, string value, DateTime expires)
+    internal static void SetCookie(HttpResponse response, string cookieName, string value, DateTime expires)
     {
         var cookieOptions = new CookieOptions
         {
@@ -13,7 +13,7 @@ internal static class CookieManager
         response.Cookies.Append(cookieName, value, cookieOptions);
     }
 
-    public static void RemoveCookie(HttpResponse response, string cookieName)
+    internal static void RemoveCookie(HttpResponse response, string cookieName)
     {
         response.Cookies.Delete(cookieName);
     }
