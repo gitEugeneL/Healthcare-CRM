@@ -1,9 +1,3 @@
-using System.Text;
-using Api.Endpoints;
-using Api.Utils;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-
 namespace Api;
 
 public static class ConfigureServices

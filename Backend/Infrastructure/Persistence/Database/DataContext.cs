@@ -1,13 +1,15 @@
 using System.Reflection;
 using Domain.Abstractions;
 using Domain.Common;
+using Domain.Doctors;
 using Domain.Managers;
 using Domain.Offices;
 using Domain.RefreshTokens;
+using Domain.Specializations;
 using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
-namespace Persistence.Persistence;
+namespace Persistence.Database;
 
 internal sealed class DataContext(DbContextOptions<DataContext> options) : DbContext(options), IUnitOfWork
 {
@@ -19,13 +21,13 @@ internal sealed class DataContext(DbContextOptions<DataContext> options) : DbCon
     
     // internal DbSet<AppointmentSettings> AppointmentSettings { get; set; }
     
-    // internal DbSet<Specialization> Specializations { get; set; }
+    internal DbSet<Specialization> Specializations { get; set; }
     
     internal DbSet<RefreshToken> RefreshTokens { get; set; }
     
     internal DbSet<User> Users { get; set; }
     
-    // internal DbSet<UserDoctor> UserDoctors { get; set; }
+    internal DbSet<Doctor> Doctors { get; set; }
     
     internal DbSet<Manager> Managers { get; set; }
     

@@ -23,8 +23,8 @@ internal class UserDoctorConfiguration : IEntityTypeConfiguration<Doctor>
             .WithOne()
             .HasForeignKey<Doctor>(d => d.UserId);
         
-        // /*** Many to many ***/
-        // builder.HasMany(doctor => doctor.Specializations)
-            // .WithMany(specialization => specialization.UserDoctors);
+        /*** Many-to-many ***/
+        builder.HasMany(d => d.Specializations)
+            .WithMany(s => s.Doctors);
     }
 }

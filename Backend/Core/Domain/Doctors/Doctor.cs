@@ -1,4 +1,5 @@
 using Domain.Common;
+using Domain.Specializations;
 using Domain.Users;
 
 namespace Domain.Doctors;
@@ -18,7 +19,7 @@ public sealed class Doctor : BaseAuditableEntity
     // public required AppointmentSettings AppointmentSettings { get; init; }
     // public Guid AppointmentSettingsId { get; init; }
     
-    // public List<Specialization> Specializations { get; init; } = [];
+    public List<Specialization> Specializations { get; private init; } = [];
 
     // public List<Appointment> Appointments { get; init; } = [];
 

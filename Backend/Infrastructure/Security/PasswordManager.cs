@@ -1,6 +1,6 @@
 using Application.Common.Interfaces;
 
-namespace Persistence.Security;
+namespace Security;
 
 public sealed class PasswordManager : IPasswordManager
 {

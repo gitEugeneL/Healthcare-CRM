@@ -10,7 +10,7 @@ down-and-clean:
 
 db-migrate:
 	# make migrate name=migration_name
-	dotnet ef migrations add $(name) --project Infrastructure --startup-project Api --output-dir Persistence/Migrations
+	dotnet ef migrations add $(name) --project Infrastructure/Persistence --startup-project Presentation/Api --output-dir Migrations
 	
 db-update:
-	dotnet ef database update --project Infrastructure --startup-project Api
+	dotnet ef database update --project Infrastructure/Persistence --startup-project Presentation/Api

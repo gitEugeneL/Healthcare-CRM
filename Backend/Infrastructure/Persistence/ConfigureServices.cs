@@ -1,16 +1,18 @@
-using Application.Common.Interfaces;
 using Domain.Abstractions;
 using Domain.Doctors;
 using Domain.Managers;
 using Domain.Offices;
+using Domain.Specializations;
 using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Persistence.Database;
+using Persistence.Database.Managers;
+using Persistence.Doctors;
 using Persistence.Managers;
 using Persistence.Offices;
-using Persistence.Persistence;
-using Persistence.Security;
+using Persistence.Specializations;
 using Persistence.Users;
 
 namespace Persistence;
@@ -40,11 +42,6 @@ public static class ConfigureServices
             .AddScoped<IDoctorRepository, DoctorRepository>()
             .AddScoped<IManagerRepository, ManagerRepository>();
             // .AddScoped<IPatientRepository, PatientRepository>();
-            
-        /*** Security ***/
-        services
-            .AddSingleton<IPasswordManager, PasswordManager>()
-            .AddSingleton<ITokenManager, TokenManager>();
             
         return services;
     }
