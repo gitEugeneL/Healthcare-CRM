@@ -8,15 +8,10 @@ internal sealed class OfficeRepository(DataContext dataContext) : IOfficeReposit
 {
     public async Task InsertOfficeAsync(Office office, CancellationToken ct)
     {
-        await dataContext.Offices.AddAsync(office, ct);
+        await dataContext
+            .Offices
+            .AddAsync(office, ct);
     }
-
-    // public async Task<Office?> FindOfficeByNumberAsync(int number, CancellationToken ct)
-    // {
-    //     return await dataContext
-    //         .Offices
-    //         .FirstOrDefaultAsync(o => o.Number == number, ct);
-    // }
 
     public async Task<bool> OfficeExistsByNumberAsync(int officeNumber, CancellationToken ct)
     {

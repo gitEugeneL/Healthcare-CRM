@@ -1,3 +1,4 @@
+using Api.ApiConfiguration;
 using Api.ApiResults;
 using Application.UseCases.Offices;
 using Application.UseCases.Offices.ChangeOfficeStatus;
@@ -6,9 +7,9 @@ using MediatR;
 
 namespace Api.Endpoints.Offices;
 
-internal static class ChangeOfficeStatus
+internal class ChangeOfficeStatus : IEndpoint
 {
-    public static void MapEndpoint(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPatch("offices/{officeId:guid}/status", async (Guid officeId, ISender sender) =>
         {

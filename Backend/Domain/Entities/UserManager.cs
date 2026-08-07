@@ -4,9 +4,11 @@
 //
 // public sealed class UserManager : BaseAuditableEntity
 // {
-//     public string? Position { get; set; }
+//     public string? Position { get; private set; }
 //     
 //     /*** Relations ***/
-//     public required User User { get; init; }
-//     public Guid UserId { get; init; }
+//     public required User User { get; private init; }
+//     public Guid UserId { get; private init; }
 // }
+
+

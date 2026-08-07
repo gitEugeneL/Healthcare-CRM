@@ -1,7 +1,10 @@
 using System.Reflection;
 using Domain.Abstractions;
 using Domain.Common;
+using Domain.Managers;
 using Domain.Offices;
+using Domain.RefreshTokens;
+using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
@@ -18,13 +21,13 @@ internal sealed class DataContext(DbContextOptions<DataContext> options) : DbCon
     
     // internal DbSet<Specialization> Specializations { get; set; }
     
-    // internal DbSet<RefreshToken> RefreshTokens { get; set; }
+    internal DbSet<RefreshToken> RefreshTokens { get; set; }
     
-    // internal DbSet<User> Users { get; set; }
+    internal DbSet<User> Users { get; set; }
     
     // internal DbSet<UserDoctor> UserDoctors { get; set; }
     
-    // internal DbSet<UserManager> UserManagers { get; set; }
+    internal DbSet<Manager> Managers { get; set; }
     
     // internal DbSet<UserPatient> UserPatients { get; set; }
     

@@ -9,7 +9,7 @@ public static class ConfigureServices
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         // services.AddScoped<IRefreshTokenService, RefreshTokenService>();
-
+        
         /*** FluentValidation ***/
         services.AddValidatorsFromAssembly(AssemblyReference.Assembly, includeInternalTypes: true);
         

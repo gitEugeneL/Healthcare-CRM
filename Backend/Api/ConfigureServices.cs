@@ -8,11 +8,6 @@ namespace Api;
 
 public static class ConfigureServices
 {
-    public static void MapEndpoints(IEndpointRouteBuilder app)
-    {
-        OfficeEndpoints.MapEndpoints(app);
-    }
-    
     
     public static IServiceCollection AddApiServices(this IServiceCollection services,
         IConfiguration configuration)

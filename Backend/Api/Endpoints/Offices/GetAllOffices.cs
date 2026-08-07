@@ -1,3 +1,4 @@
+using Api.ApiConfiguration;
 using Api.ApiResults;
 using Application.UseCases.Offices;
 using Application.UseCases.Offices.GetAllOffices;
@@ -6,9 +7,9 @@ using MediatR;
 
 namespace Api.Endpoints.Offices;
 
-internal static class GetAllOffices
+internal class GetAllOffices : IEndpoint
 {
-    public static void MapEndpoint(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("offices", async (ISender sender) =>
             {

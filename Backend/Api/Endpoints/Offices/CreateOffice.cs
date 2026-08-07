@@ -1,3 +1,4 @@
+using Api.ApiConfiguration;
 using Api.ApiResults;
 using Application.UseCases.Offices.CreateOffice;
 using Domain.Abstractions.Errors;
@@ -10,9 +11,9 @@ internal sealed record CreateOfficeRequest(
     int Number
 );
 
-internal static class CreateOffice
+internal class CreateOffice : IEndpoint
 {
-    public static void MapEndpoint(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("offices", async (CreateOfficeRequest request, ISender sender) =>
             {
