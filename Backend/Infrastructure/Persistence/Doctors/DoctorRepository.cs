@@ -5,15 +5,6 @@ namespace Persistence.Doctors;
 
 internal sealed class DoctorRepository(DataContext dataContext) : IDoctorRepository
 {
-    // public async Task<UserDoctor> CreateDoctorAsync(UserDoctor doctor, CancellationToken cancellationToken)
-    // {
-    //     await dataContext.UserDoctors
-    //         .AddAsync(doctor, cancellationToken);
-    //
-    //     await dataContext.SaveChangesAsync(cancellationToken);
-    //     return doctor;
-    // }
-    //
     // public async Task<UserDoctor> UpdateDoctorAsync(UserDoctor doctor, CancellationToken cancellationToken)
     // {
     //     dataContext.UserDoctors.Update(doctor);
@@ -53,9 +44,11 @@ internal sealed class DoctorRepository(DataContext dataContext) : IDoctorReposit
     //
     //     return (doctors, count);
     // }
-    public Task InsertDoctorAsync(Doctor doctor, CancellationToken ct)
+    public async Task InsertDoctorAsync(Doctor doctor, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        await dataContext
+            .Doctors
+            .AddAsync(doctor, ct);
     }
 
     public Task<Doctor?> FindDoctorByUserIdAsync(Guid userId, CancellationToken ct)
@@ -67,6 +60,7 @@ internal sealed class DoctorRepository(DataContext dataContext) : IDoctorReposit
         int pageNumber, 
         int pageSize, 
         Guid? specializationId, 
+        DoctorStatus? status,
         CancellationToken ct)
     {
         throw new NotImplementedException();

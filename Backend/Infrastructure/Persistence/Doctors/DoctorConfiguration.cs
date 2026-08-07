@@ -1,4 +1,5 @@
 using Domain.Doctors;
+using Domain.Specializations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,6 +9,9 @@ internal class UserDoctorConfiguration : IEntityTypeConfiguration<Doctor>
 {
     public void Configure(EntityTypeBuilder<Doctor> builder)
     {
+        builder.HasIndex(d => d.UserId)
+            .IsUnique();
+        
         builder.Property(d => d.Status)
             .IsRequired()
             .HasConversion<string>();
@@ -18,13 +22,19 @@ internal class UserDoctorConfiguration : IEntityTypeConfiguration<Doctor>
         builder.Property(d => d.Education)
             .HasMaxLength(250);
         
-        /*** One-to-one ***/
+        /*** One-to-one: User ***/
         builder.HasOne(d => d.User)
             .WithOne()
-            .HasForeignKey<Doctor>(d => d.UserId);
+            .IsRequired()
+            .HasForeignKey<Doctor>(d => d.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         /*** Many-to-many ***/
         builder.HasMany(d => d.Specializations)
             .WithMany(s => s.Doctors);
+        
+        builder.Metadata
+            .FindSkipNavigation(nameof(Doctor.Specializations))!
+            .SetPropertyAccessMode(PropertyAccessMode.Field);
     }
 }

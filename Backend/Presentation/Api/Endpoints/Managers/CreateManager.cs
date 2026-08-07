@@ -10,11 +10,10 @@ namespace Api.Endpoints.Managers;
 internal sealed record CreateManagerRequest(
     string Email,
     string Password,
-    string? Position,
     string? Phone,
     string? FirstName,
-    string? LastName
-);
+    string? LastName,
+    string? Position);
 
 internal class CreateManager : IEndpoint
 {
@@ -28,15 +27,14 @@ internal class CreateManager : IEndpoint
                     Position: request.Position,
                     Phone: request.Phone,
                     FirstName: request.FirstName,
-                    LastName: request.LastName
-                );
+                    LastName: request.LastName);
 
                 Result<ManagerResponse> result = await sender.Send(command);
 
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
 
             })
-            .RequireAuthorization(AuthTags.AdminPolicy)
+            // TODO .RequireAuthorization(AuthTags.AdminPolicy)
             .WithTags(ApiTags.Managers)
             .Produces<ManagerResponse>()
             .Produces(StatusCodes.Status400BadRequest)

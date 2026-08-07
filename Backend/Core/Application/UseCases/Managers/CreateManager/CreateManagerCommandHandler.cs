@@ -11,9 +11,7 @@ internal sealed class CreateManagerCommandHandler(
     IUserRepository userRepository, 
     IManagerRepository managerRepository,
     IUnitOfWork unitOfWork,
-    IPasswordManager passwordManager
-    ) 
-    : IRequestHandler<CreateMangerCommand, Result<ManagerResponse>>
+    IPasswordManager passwordManager) : IRequestHandler<CreateMangerCommand, Result<ManagerResponse>>
 {
     public async Task<Result<ManagerResponse>> Handle(CreateMangerCommand command, CancellationToken ct)
     {
@@ -33,8 +31,7 @@ internal sealed class CreateManagerCommandHandler(
                 role: UserAuthRole.Manager,
                 phone: command.Phone,
                 firstName: command.FirstName,
-                lastName: command.LastName
-            ));
+                lastName: command.LastName));
 
         if (result.IsFailure)
         {

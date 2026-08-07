@@ -32,7 +32,7 @@ public sealed class Doctor : BaseAuditableEntity
     {
         var doctor = new Doctor
         {
-            Status = DoctorStatus.Active,
+            Status = DoctorStatus.Disable,
             Description = description,
             Education = education,
             User = user,
@@ -65,5 +65,10 @@ public sealed class Doctor : BaseAuditableEntity
         _specializations.Remove(specialization);
         
         return Result.Success();
+    }
+    
+    public void ChangeStatus(DoctorStatus status)
+    {
+        Status = status;
     }
 }

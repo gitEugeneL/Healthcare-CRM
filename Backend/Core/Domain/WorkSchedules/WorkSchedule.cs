@@ -35,6 +35,7 @@ public sealed class WorkSchedule : BaseEntity
         
         var workSchedule = new WorkSchedule
         {
+            DoctorId = doctorId,
             StartTime = startTime,
             EndTime = endTime,
             AppointmentDuration = appointmentDuration

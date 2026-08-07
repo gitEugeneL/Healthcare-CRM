@@ -9,6 +9,7 @@ public interface IDoctorRepository
     Task<(IReadOnlyList<Doctor> List, int Count)> GetDoctorsWithPaginationAsync(
         int pageNumber, 
         int pageSize, 
-        Guid? specializationId, 
+        Guid? specializationId,
+        DoctorStatus? status,
         CancellationToken ct);
 }
