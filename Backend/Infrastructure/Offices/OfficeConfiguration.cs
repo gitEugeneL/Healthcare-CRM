@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Offices;
 
-public class OfficeConfiguration :  IEntityTypeConfiguration<Office>
+internal sealed class OfficeConfiguration :  IEntityTypeConfiguration<Office>
 {
     public void Configure(EntityTypeBuilder<Office> builder)
     {
         builder.HasIndex(o => o.Number)
             .IsUnique();
-
+        
         builder.Property(o => o.Number)
             .IsRequired();
 

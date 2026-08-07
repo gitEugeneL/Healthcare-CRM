@@ -1,5 +1,8 @@
 using Bogus;
+using Domain.Managers;
 using Domain.Offices;
+using Domain.Users;
+using Infrastructure.Security;
 
 namespace Infrastructure.Persistence;
 
@@ -7,12 +10,14 @@ internal static class DataGenerator
 {
     public static void Seed(DataContext context)
     {
-        if (context.Offices.Any())
+        if (context.Managers.Any())
             return;
         
-        // var passwordManager = new PasswordManager();
-        // passwordManager.CreatePasswordHash("defaultPassword1@", out var hash, out var salt);
-
+        var faker = new Faker();
+        
+        var passwordManager = new PasswordManager();
+        passwordManager.CreatePasswordHash("devDev123!", out var hash, out var salt);
+       
         string[] officeNames =
         [
             "Orthodontics Suite", 
@@ -40,18 +45,33 @@ internal static class DataGenerator
             // .RuleFor(u => u.LastName, "Admin")
             // .Generate();
         
-        // var manager = new Faker<User>()
-            // .RuleFor(u => u.Email, "manager@mail.dev")
-            // .RuleFor(u => u.Role, Role.Manager)
-            // .RuleFor(u => u.PasswordHash, hash)
-            // .RuleFor(u => u.PasswordSalt, salt)
-            // .RuleFor(u => u.FirstName, f => f.Person.FirstName)
-            // .RuleFor(u => u.LastName, f => f.Person.LastName)
-            // .RuleFor(u => u.Phone, f => f.Person.Phone)
-            // .RuleFor(u => u.UserManager, _ => 
-                // new Faker<UserManager>()
-                    // .RuleFor(m => m.Position, "Main manager"))
-            // .Generate();
+            
+            var manager = Manager.Create(
+                position: "Main manager",  
+                User.Create(
+                    email: "manager@mail.dev", 
+                    passwordHash: hash, 
+                    passwordSalt: salt, 
+                    role: UserAuthRole.Manager, 
+                    firstName: faker.Person.FirstName, 
+                    lastName: faker.Person.LastName, 
+                    phone: faker.Person.Phone));
+            
+            
+            
+        //     
+        // var manager = new Faker<Manager>()
+        //     .RuleFor(m => m.Position, "Main manager")
+        //     .RuleFor(m => m.User.Email, "manager@mail.dev")
+        //     .RuleFor(m => m.User.Role, UserAuthRole.Manager)
+        //     .RuleFor(m => m.User.PasswordHash, hash)
+        //     .RuleFor(m => m.User.PasswordSalt, salt)
+        //     .RuleFor(m => m.User.FirstName, f => f.Person.FirstName)
+        //     .RuleFor(m => m.User.LastName, f => f.Person.LastName)
+        //     .RuleFor(m => m.User.Phone, f => f.Person.Phone)
+        //     .Generate();
+        //
+        
         
         // var doctor = new Faker<User>()
             // .RuleFor(u => u.Email, f => 
@@ -109,13 +129,13 @@ internal static class DataGenerator
             // )
             // .Generate(20);
 
-            
-        var offices = officeNames
-            .Select((name, index) => Office.Create(name, index + 1))
-            .ToList();
+
+
+            var offices = officeNames
+                .Select(name => Office.Create(name, faker.Random.Number(100, 999)));
             
         // context.AddRange(admin);
-        // context.AddRange(manager);
+        context.AddRange(manager.Value);
         // context.AddRange(doctor);
         // context.AddRange(patient);
         context.AddRange(offices);

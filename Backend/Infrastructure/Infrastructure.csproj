@@ -7,16 +7,12 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.10"/>
+        
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Application\Application.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="System.IdentityModel.Tokens.Jwt">
-        <HintPath>..\..\..\..\..\..\home\lihon\.nuget\packages\system.identitymodel.tokens.jwt\8.19.2\lib\net10.0\System.IdentityModel.Tokens.Jwt.dll</HintPath>
-      </Reference>
     </ItemGroup>
 
     <ItemGroup>

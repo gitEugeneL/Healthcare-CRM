@@ -1,4 +1,5 @@
 using Api;
+using Api.ApiConfiguration;
 using Application;
 using Infrastructure;
 using Scalar.AspNetCore;
@@ -12,14 +13,22 @@ builder.Services.AddApiServices(builder.Configuration);
 
 var app = builder.Build();
 
+app.MapEndpoints();
+
 if (app.Environment.IsDevelopment())
 {
     DevInitializer.Initialize(app.Services);
 
     app.MapOpenApi();
-    app.MapScalarApiReference("/scalar");
+    
+    app.MapScalarApiReference("/scalar", options =>
+        options
+            .AddPreferredSecuritySchemes("BearerAuth")
+            .AddHttpAuthentication("BearerAuth", auth =>
+            {
+                auth.Token = ""; 
+            })
+        );
 }
-
-ConfigureServices.MapEndpoints(app);
 
 app.Run();

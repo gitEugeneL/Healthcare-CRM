@@ -1,7 +1,13 @@
+using Application.Common.Interfaces;
 using Domain.Abstractions;
+using Domain.Managers;
 using Domain.Offices;
+using Domain.Users;
+using Infrastructure.Managers;
 using Infrastructure.Offices;
 using Infrastructure.Persistence;
+using Infrastructure.Security;
+using Infrastructure.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,21 +29,21 @@ public static class ConfigureServices
         
         /*** Repositories ***/
         services
-            .AddScoped<IOfficeRepository, OfficeRepository>();
+            .AddScoped<IOfficeRepository, OfficeRepository>()
             // .AddScoped<IMedicalRecordRepository, MedicalRecordRepository>()
             // .AddScoped<ISpecializationRepository, SpecializationRepository>()
             // .AddScoped<IAppointmentRepository, AppointmentRepository>()
             // .AddScoped<IAppointmentSettingsRepository, AppointmentSettingsRepository>()
             // .AddScoped<IAddressRepository, AddressRepository>()
-            // .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IUserRepository, UserRepository>()
             // .AddScoped<IDoctorRepository, DoctorRepository>()
-            // .AddScoped<IManagerRepository, ManagerRepository>()
+            .AddScoped<IManagerRepository, ManagerRepository>();
             // .AddScoped<IPatientRepository, PatientRepository>();
             
         /*** Security ***/
-        // services
-            // .AddSingleton<IPasswordManager, PasswordManager>();
-            // .AddSingleton<ITokenManager, TokenManager>();
+        services
+            .AddSingleton<IPasswordManager, PasswordManager>()
+            .AddSingleton<ITokenManager, TokenManager>();
             
         return services;
     }

@@ -1,3 +1,4 @@
+using Api.ApiConfiguration;
 using Api.ApiResults;
 using Application.UseCases.Offices;
 using Application.UseCases.Offices.UpdateOfficeName;
@@ -8,9 +9,9 @@ namespace Api.Endpoints.Offices;
 
 internal sealed record UpdateOfficeNameRequest(string Name);
 
-internal static class UpdateOfficeName
+internal class UpdateOfficeName : IEndpoint
 {
-    public static void MapEndpoint(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPatch("offices/{officeId:guid}/name", async (
                 Guid officeId,

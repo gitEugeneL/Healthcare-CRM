@@ -11,7 +11,8 @@
 
     <ItemGroup>
       <Folder Include="Abstractions\" />
-      <Folder Include="Operations\Managers\Queries\" />
+      <Folder Include="Operations\Managers\" />
+      <Folder Include="UseCases\Common\Pagination\" />
     </ItemGroup>
 
 </Project>
