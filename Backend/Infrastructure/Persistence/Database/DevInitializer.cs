@@ -1,8 +1,8 @@
+using Application.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Persistence.Persistence;
 
-namespace Persistence;
+namespace Persistence.Database;
 
 public static class DevInitializer
 {
@@ -10,7 +10,10 @@ public static class DevInitializer
    {
       using var scope = serviceProvider.CreateScope();
       var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+      var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordManager>();
+
       dataContext.Database.Migrate();
-      DataGenerator.Seed(dataContext);
+        
+      DataGenerator.Seed(dataContext, passwordHasher);
    }
 }

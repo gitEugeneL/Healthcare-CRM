@@ -1,6 +1,6 @@
 using Domain.Offices;
 using Microsoft.EntityFrameworkCore;
-using Persistence.Persistence;
+using Persistence.Database;
 
 namespace Persistence.Offices;
 

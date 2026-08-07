@@ -8,7 +8,7 @@ using Domain.Users;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Persistence.Security;
+namespace Security;
 
 public sealed class TokenManager : ITokenManager
 {
