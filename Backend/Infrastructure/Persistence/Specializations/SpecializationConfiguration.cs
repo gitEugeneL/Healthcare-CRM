@@ -17,5 +17,9 @@ internal class SpecializationConfiguration : IEntityTypeConfiguration<Specializa
 
         builder.Property(s => s.Description)
             .HasMaxLength(250);
+        
+        builder.Metadata
+            .FindSkipNavigation(nameof(Specialization.Doctors))!
+            .SetPropertyAccessMode(PropertyAccessMode.Field);
     }
 }

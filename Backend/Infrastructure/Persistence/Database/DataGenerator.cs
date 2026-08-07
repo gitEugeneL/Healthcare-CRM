@@ -1,9 +1,11 @@
 using Application.Common.Interfaces;
 using Bogus;
+using Domain.Doctors;
 using Domain.Managers;
 using Domain.Offices;
 using Domain.Specializations;
 using Domain.Users;
+using Domain.WorkSchedules;
 
 namespace Persistence.Database;
 
@@ -54,35 +56,51 @@ internal static class DataGenerator
                 firstName: faker.Person.FirstName, 
                 lastName: faker.Person.LastName, 
                 phone: faker.Person.Phone));
-            
         
-        // var doctor = new Faker<User>()
-            // .RuleFor(u => u.Email, f => 
-                // $"doctor-{f.Lorem.Word()}-{f.Random.Number(1, 9999)}@mail.dev")
-            // .RuleFor(u => u.Role, Role.Doctor)
-            // .RuleFor(u => u.PasswordHash, hash)
-            // .RuleFor(u => u.PasswordSalt, salt)
-            // .RuleFor(u => u.FirstName, f => f.Person.FirstName)
-            // .RuleFor(u => u.LastName, f => f.Person.LastName)
-            // .RuleFor(u => u.Phone, f => f.Person.Phone)
-            // .RuleFor(u => u.UserDoctor, _ =>
-                // new Faker<UserDoctor>()
-                    // .RuleFor(d => d.Status, Status.Active)
-                    // .RuleFor(d => d.Description, f => f.Lorem.Sentence())
-                    // .RuleFor(d => d.Education, f => f.Company.CompanyName())
-                    // .RuleFor(d => d.Specializations, f => 
-                        // f.Random.ListItems(specializations, 2))
-                    // .RuleFor(d => d.AppointmentSettings, new AppointmentSettings
-                    // {
-                        // StartTime = new TimeOnly(08,00),
-                        // EndTime = new TimeOnly(18, 00),
-                        // Interval = Interval.Min60,
-                        // Workdays = 
-                            // [Workday.Monday, Workday.Tuesday, Workday.Wednesday, Workday.Thursday, Workday.Friday]
-                    // })
-                // )
-            // .Generate(10);
+        /*** Doctors ***/
+        var doctors = new List<Doctor>();
 
+        var allWorkdays = new[]
+        {
+            Workday.Monday, Workday.Tuesday, Workday.Wednesday,
+            Workday.Thursday, Workday.Friday, Workday.Saturday
+        };
+
+        for (var i = 0; i < 10; i++)
+        {
+            var doctorUser = User.Create(
+                email: $"doctor-{faker.Lorem.Word()}-{faker.Random.Number(1, 9999)}@mail.dev",
+                passwordHash: hash,
+                passwordSalt: salt,
+                role: UserAuthRole.Doctor,
+                firstName: faker.Person.FirstName,
+                lastName: faker.Person.LastName,
+                phone: faker.Person.Phone);
+
+            var doctor = Doctor.Create(
+                description: faker.Lorem.Sentence(),
+                education: faker.Company.CompanyName(),
+                user: doctorUser);
+
+            var startHour = faker.Random.Int(7, 10);
+            var endHour = faker.Random.Int(16, 20);
+            var workdaysCount = faker.Random.Int(3, 6);
+
+            var workScheduleResult = WorkSchedule.Create(
+                doctorId: doctor.Id,
+                startTime: new TimeOnly(startHour, 0),
+                endTime: new TimeOnly(endHour, 0),
+                appointmentDuration: faker.PickRandom<AppointmentDuration>(),
+                workdays: faker.Random.ListItems(allWorkdays, workdaysCount).ToList());
+
+            doctor.AssignWorkSchedule(workScheduleResult.Value);
+
+            foreach (var specialization in faker.Random.ListItems(specializations, 2))
+                doctor.AddSpecialization(specialization);
+
+            doctors.Add(doctor);
+        }
+        
         // var patient = new Faker<User>()
             // .RuleFor(u => u.Email, f =>
                 // $"patient-{f.Lorem.Word()}-{f.Random.Number(1, 9999)}@mail.dev")
@@ -120,7 +138,7 @@ internal static class DataGenerator
         context.Add(admin);
         context.Add(manager.Value);
         
-        // context.AddRange(doctor);
+        context.AddRange(doctors);
         // context.AddRange(patient);
         context.AddRange(offices);
         

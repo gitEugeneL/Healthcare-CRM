@@ -11,8 +11,9 @@ public sealed class Specialization : BaseEntity
     public string? Description { get; private set; }
     
     /*** Relations ***/
-    public List<Doctor> Doctors { get; private init; } = [];
-
+    private readonly List<Doctor> _doctors = [];
+    public IReadOnlyList<Doctor> Doctors => _doctors.AsReadOnly();
+    
     public static Specialization Create(string name, string? description)
     {
         var specialization = new Specialization

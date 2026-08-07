@@ -7,6 +7,7 @@ using Domain.Offices;
 using Domain.RefreshTokens;
 using Domain.Specializations;
 using Domain.Users;
+using Domain.WorkSchedules;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Database;
@@ -19,7 +20,7 @@ internal sealed class DataContext(DbContextOptions<DataContext> options) : DbCon
     
     // internal DbSet<Appointment> Appointments { get; set; }
     
-    // internal DbSet<AppointmentSettings> AppointmentSettings { get; set; }
+    internal DbSet<WorkSchedule> WorkSchedules { get; set; }
     
     internal DbSet<Specialization> Specializations { get; set; }
     
