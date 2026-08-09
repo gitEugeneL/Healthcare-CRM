@@ -15,7 +15,7 @@ public sealed class WorkSchedule : BaseEntity
     public IReadOnlyList<Workday> Workdays => _workdays.AsReadOnly();
     
     /*** Relations ***/
-    public Guid DoctorId { get; private init; }
+    public Guid DoctorId { get; private set; }
     
     public static Result<WorkSchedule> Create(
         Guid doctorId,
@@ -43,6 +43,31 @@ public sealed class WorkSchedule : BaseEntity
         workSchedule._workdays.AddRange(workdays);
         
         return workSchedule;
+    }
+
+    public Result Update(
+        TimeOnly startTime,
+        TimeOnly endTime,
+        AppointmentDuration appointmentDuration,
+        List<Workday> workdays)
+    {
+        if (startTime >= endTime)
+            return Result.Failure(WorkScheduleErrors.InvalidTimeRange);
+        
+        if (workdays.Count == 0)
+            return Result.Failure(WorkScheduleErrors.EmptyWorkdays);
+    
+        if (workdays.Distinct().Count() != workdays.Count)
+            return Result.Failure(WorkScheduleErrors.DuplicateWorkdays);
+
+        StartTime = startTime;
+        EndTime = endTime;
+        AppointmentDuration = appointmentDuration;
+        
+        _workdays.Clear();
+        _workdays.AddRange(workdays);
+        
+        return Result.Success();
     }
     
     public Result UpdateWorkdays(List<Workday> workdays)

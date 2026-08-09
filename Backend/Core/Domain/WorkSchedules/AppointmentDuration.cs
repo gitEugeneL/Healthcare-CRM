@@ -2,7 +2,7 @@ namespace Domain.WorkSchedules;
 
 public enum AppointmentDuration
 {
-    Min15 = 0,
-    Min30 = 1,
-    Min60 = 2
+    Min15 = 15,
+    Min30 = 30,
+    Min60 = 60
 }

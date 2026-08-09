@@ -4,6 +4,8 @@ public interface IDoctorRepository
 {
     Task InsertDoctorAsync(Doctor doctor, CancellationToken ct);
     
+    Task<bool> DoctorExistsAsync(Guid doctorId, CancellationToken ct);
+    
     Task<Doctor?> FindDoctorByIdAsync(Guid doctorId, CancellationToken ct);
 
     Task<Doctor?> FindDoctorByIdWithTrackingAsync(Guid doctorId, CancellationToken ct);

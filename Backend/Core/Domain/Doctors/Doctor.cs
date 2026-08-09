@@ -72,7 +72,7 @@ public sealed class Doctor : BaseAuditableEntity
         Status = status;
     }
     
-    public    void UpdateDescription(string description)
+    public void UpdateDescription(string description)
     {
         if (Description == description)
         {

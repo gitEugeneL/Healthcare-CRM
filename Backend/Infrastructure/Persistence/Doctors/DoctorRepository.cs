@@ -13,6 +13,13 @@ internal sealed class DoctorRepository(DataContext dataContext) : IDoctorReposit
             .AddAsync(doctor, ct);
     }
 
+    public async Task<bool> DoctorExistsAsync(Guid doctorId, CancellationToken ct)
+    {
+        return await dataContext
+            .Doctors
+            .AnyAsync(d => d.Id == doctorId, ct);
+    }
+
     public async Task<Doctor?> FindDoctorByIdAsync(Guid doctorId, CancellationToken ct)
     {
         return await dataContext

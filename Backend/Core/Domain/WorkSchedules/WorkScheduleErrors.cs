@@ -19,5 +19,4 @@ public static class WorkScheduleErrors
     public static readonly Error DuplicateWorkdays = Error.Conflict(
         "WorkSchedule.DuplicateWorkdays",
         "Workdays must not contain duplicates");
-    
 }

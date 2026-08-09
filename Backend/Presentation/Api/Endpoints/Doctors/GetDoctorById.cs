@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Api.Endpoints.Doctors;
 
-internal class GetDoctorByUserId : IEndpoint
+internal class GetDoctorById : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
