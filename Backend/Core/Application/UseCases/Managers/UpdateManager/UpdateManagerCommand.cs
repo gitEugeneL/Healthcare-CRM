@@ -5,9 +5,9 @@ using MediatR;
 namespace Application.UseCases.Managers.UpdateManager;
 
 public sealed record UpdateManagerCommand(
-    Guid UserId,
+    Guid ManagerId,
     string? Phone,
     string? Position,
     string? FirstName,
     string? LastName
-) : UpdateUserCommand(UserId, FirstName, LastName, Phone), IRequest<Result<ManagerResponse>>;
+) : UpdateUserCommand(FirstName, LastName, Phone), IRequest<Result<ManagerResponse>>;

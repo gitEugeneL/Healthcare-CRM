@@ -1,49 +1,11 @@
 using Domain.Doctors;
+using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 
 namespace Persistence.Doctors;
 
 internal sealed class DoctorRepository(DataContext dataContext) : IDoctorRepository
 {
-    // public async Task<UserDoctor> UpdateDoctorAsync(UserDoctor doctor, CancellationToken cancellationToken)
-    // {
-    //     dataContext.UserDoctors.Update(doctor);
-    //     await dataContext.SaveChangesAsync(cancellationToken);
-    //     return doctor;
-    // }
-    //
-    // public async Task<UserDoctor?> FindDoctorByUserIdAsync(Guid id, CancellationToken cancellationToken)
-    // {
-    //     return await dataContext.UserDoctors
-    //         .Include(doctor => doctor.User)
-    //         .Include(doctor => doctor.Specializations)
-    //         .Include(doctor => doctor.AppointmentSettings)
-    //         .FirstOrDefaultAsync(doctor => doctor.UserId == id, cancellationToken);
-    // }
-    //
-    // public async Task<(IEnumerable<UserDoctor> List, int Count)> GetDoctorsWithPaginationAsync(
-    //     CancellationToken cancellationToken, int pageNumber, int pageSize, Guid? specializationId = null)
-    // {
-    //     var query = dataContext.UserDoctors
-    //         .Include(d => d.User)
-    //         .Include(d => d.Specializations)
-    //         .Where(doctor => doctor.Status == Status.Active);
-    //     
-    //     query = specializationId.HasValue
-    //         ? query
-    //             .Where(doctor => doctor.Specializations
-    //                 .Any(s => s.Id == specializationId))
-    //         : query;
-    //
-    //     var count = await query.CountAsync(cancellationToken);
-    //
-    //     var doctors = await query
-    //         .Skip(pageSize * (pageNumber - 1))
-    //         .Take(pageSize)
-    //         .ToListAsync(cancellationToken);
-    //
-    //     return (doctors, count);
-    // }
     public async Task InsertDoctorAsync(Doctor doctor, CancellationToken ct)
     {
         await dataContext
@@ -51,9 +13,32 @@ internal sealed class DoctorRepository(DataContext dataContext) : IDoctorReposit
             .AddAsync(doctor, ct);
     }
 
-    public Task<Doctor?> FindDoctorByUserIdAsync(Guid userId, CancellationToken ct)
+    public async Task<Doctor?> FindDoctorByIdAsync(Guid doctorId, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        return await dataContext
+            .Doctors
+            .Include(d => d.User)
+            .Include(d => d.Specializations)
+            .Include(d => d.WorkSchedule)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(d => d.Id == doctorId, ct);
+    }
+
+    public async Task<Doctor?> FindDoctorByIdWithTrackingAsync(Guid doctorId, CancellationToken ct)
+    {
+        return await dataContext
+            .Doctors
+            .Include(d => d.User)
+            .FirstOrDefaultAsync(d => d.Id == doctorId, ct);
+    }
+
+    public async Task<Doctor?> FindDoctorForChangeStatus(Guid doctorId, CancellationToken ct)
+    {
+        return await dataContext
+            .Doctors
+            .Include(d => d.Specializations)
+            .Include(d => d.WorkSchedule)
+            .FirstOrDefaultAsync(d => d.Id == doctorId, ct);
     }
 
     public Task<(IReadOnlyList<Doctor> List, int Count)> GetDoctorsWithPaginationAsync(

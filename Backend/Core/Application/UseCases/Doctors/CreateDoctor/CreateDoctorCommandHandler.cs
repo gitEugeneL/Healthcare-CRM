@@ -11,13 +11,13 @@ public class CreateDoctorCommandHandler(
    IUserRepository userRepository,
    IDoctorRepository doctorRepository,
    IUnitOfWork unitOfWork,
-   IPasswordManager passwordManager) : IRequestHandler<CreateDoctorCommand, Result<Guid>>
+   IPasswordManager passwordManager) : IRequestHandler<CreateDoctorCommand, Result<DoctorResponse>>
 {
-    public async Task<Result<Guid>> Handle(CreateDoctorCommand command, CancellationToken ct)
+    public async Task<Result<DoctorResponse>> Handle(CreateDoctorCommand command, CancellationToken ct)
     {
         if (await userRepository.UserExistsByEmailAsync(command.Email, ct))
         {
-            return Result.Failure<Guid>(UserErrors.AlreadyExist(command.Email));
+            return Result.Failure<DoctorResponse>(UserErrors.AlreadyExist(command.Email));
         }
         
         passwordManager.CreatePasswordHash(command.Password, out var hash, out var salt);
@@ -37,6 +37,6 @@ public class CreateDoctorCommandHandler(
         await doctorRepository.InsertDoctorAsync(doctor, ct);
         await unitOfWork.SaveChangesAsync(ct);
         
-        return doctor.Id;
+        return DoctorResponse.FromDoctor(doctor);
     }
 }

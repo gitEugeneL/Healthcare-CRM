@@ -12,4 +12,4 @@ public sealed record CreateDoctorCommand(
     string? LastName,
     string? Education,
     string? Description
-) : CreateUserCommand(Email, Password, FirstName, LastName, Phone), IRequest<Result<Guid>>;
+) : CreateUserCommand(Email, Password, FirstName, LastName, Phone), IRequest<Result<DoctorResponse>>;

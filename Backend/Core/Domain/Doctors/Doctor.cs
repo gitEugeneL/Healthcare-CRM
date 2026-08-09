@@ -18,7 +18,7 @@ public sealed class Doctor : BaseAuditableEntity
     public User User { get; private init; } = null!;
     public Guid UserId { get; private init; }
 
-    public WorkSchedule WorkSchedule { get; private set; } = null!;
+    public WorkSchedule? WorkSchedule { get; private set; }
     
     private readonly List<Specialization> _specializations = [];
     public IReadOnlyList<Specialization> Specializations => _specializations.AsReadOnly();
@@ -70,5 +70,23 @@ public sealed class Doctor : BaseAuditableEntity
     public void ChangeStatus(DoctorStatus status)
     {
         Status = status;
+    }
+    
+    public    void UpdateDescription(string description)
+    {
+        if (Description == description)
+        {
+            return;
+        }
+        Description = description;
+    }
+    
+    public void UpdateEducation(string education)
+    {
+        if (Education == education)
+        {
+            return;
+        }
+        Education = education;
     }
 }

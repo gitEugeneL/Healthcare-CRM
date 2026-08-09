@@ -8,6 +8,10 @@ internal sealed class UpdateManagerValidator : AbstractValidator<UpdateManagerCo
     public UpdateManagerValidator()
     {
         Include(new UpdateUserValidator());
+
+        RuleFor(m => m.ManagerId)
+            .NotEmpty()
+            .WithMessage("The manager id is required.");
         
         RuleFor(m => m.Position)
             .MaximumLength(100)

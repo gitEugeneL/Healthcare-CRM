@@ -8,6 +8,14 @@ public static class DoctorErrors
         "Doctor.NotFound", 
         $"The doctor with the identifierMa {doctorId} was not found");
     
+    public static readonly Error EmptyWorSchedule = Error.Problem(
+        "Doctor.WorkScheduleEmpty",
+        "Doctor have not got work schedule yet");
+    
+    public static readonly Error EmptySpecializationList = Error.Problem(
+        "Doctor.SpecializationsListEmpty",
+        "Doctor have not got any specializations yet");
+    
     public static readonly Error SpecializationAlreadyExists = Error.Conflict(
         "Doctor.SpecializationAlreadyExists",
         "Doctor already has this specialization");

@@ -6,5 +6,5 @@ public interface IManagerRepository
     
     Task<IReadOnlyList<Manager>> GetAllManagersAsync(CancellationToken ct);
     
-    Task<Manager?> FindManagerByUserIdAsync(Guid userId, CancellationToken ct);
+    Task<Manager?> FindManagerByIdWithTrackingAsync(Guid managerId, CancellationToken ct);
 }

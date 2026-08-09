@@ -21,11 +21,11 @@ internal sealed class ManagerRepository(DataContext dataContext) : IManagerRepos
             .ToListAsync(ct);
     }
 
-    public async Task<Manager?> FindManagerByUserIdAsync(Guid userId, CancellationToken ct)
+    public async Task<Manager?> FindManagerByIdWithTrackingAsync(Guid managerId, CancellationToken ct)
     {
         return await dataContext
             .Managers
             .Include(manager => manager.User)
-            .FirstOrDefaultAsync(manager => manager.UserId == userId, ct);
+            .FirstOrDefaultAsync(manager => manager.Id == managerId, ct);
     }
 }

@@ -1,5 +1,4 @@
 using Domain.Doctors;
-using Domain.Specializations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

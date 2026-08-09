@@ -8,21 +8,23 @@ using MediatR;
 namespace Api.Endpoints.Managers;
 
 internal sealed record UpdateManagerRequest(
-    Guid UserId,
     string? Phone,
     string? Position,
     string? FirstName,
     string? LastName
 );
 
-public class UpdateManager : IEndpoint
+internal class UpdateManager : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPatch("manager", async (UpdateManagerRequest request, ISender sender) =>
+        app.MapPatch("managers/{managerId:guid}", async (
+                Guid managerId, 
+                UpdateManagerRequest request, 
+                ISender sender) =>
             {
                 var command = new UpdateManagerCommand(
-                    UserId: request.UserId,
+                    ManagerId: managerId,
                     Phone: request.Phone,
                     Position: request.Position,
                     FirstName: request.FirstName,

@@ -12,9 +12,9 @@ internal sealed class UpdateManagerCommandHandler(
 {
     public async Task<Result<ManagerResponse>> Handle(UpdateManagerCommand command, CancellationToken ct)
     {
-        var manager = await managerRepository.FindManagerByUserIdAsync(command.UserId, ct);
+        var manager = await managerRepository.FindManagerByIdWithTrackingAsync(command.ManagerId, ct);
         if (manager is null)
-            return Result.Failure<ManagerResponse>(ManagerErrors.NotFound(command.UserId));
+            return Result.Failure<ManagerResponse>(ManagerErrors.NotFound(command.ManagerId));
 
         if (command.Position is not null)
             manager.UpdatePosition(command.Position);

@@ -6,10 +6,6 @@ internal sealed class UpdateUserValidator : AbstractValidator<UpdateUserCommand>
 {
     public UpdateUserValidator()
     {
-        RuleFor(u => u.UserId)
-            .NotEmpty()
-            .WithMessage("The user id is required.");       
-        
         RuleFor(u => u.FirstName)
             .MaximumLength(50)
             .WithMessage("The first name must be less than 50 characters.");
