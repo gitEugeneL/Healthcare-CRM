@@ -1,4 +1,4 @@
-namespace Application.Common.Models;
+namespace Application.UseCases.Common.Pagination;
 
 public sealed record PaginationResult<T>(IReadOnlyList<T> Items, int TotalItems, int PageNumber, int PageSize)
 {

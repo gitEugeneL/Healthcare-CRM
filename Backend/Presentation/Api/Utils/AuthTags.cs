@@ -1,4 +1,4 @@
-﻿namespace Api;
+﻿namespace Api.Utils;
 
 internal abstract class AuthTags
 {
@@ -13,6 +13,8 @@ internal abstract class AuthTags
     internal const string AdminPolicy = "admin-policy";
     
     internal const string DoctorOrPatientPolicy = "doctor-or-patient-policy";
+    
+    internal const string ManagerOrPatientPolicy = "manager-or-patient-policy";
     
     internal const string DoctorOrManagerPolicy = "doctor-or-manager-policy";
 }

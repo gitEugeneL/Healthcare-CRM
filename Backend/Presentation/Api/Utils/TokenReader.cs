@@ -2,7 +2,7 @@ using System.Security.Claims;
 
 namespace Api.Utils;
 
-internal static class TokenManager
+internal static class TokenReader
 {
     internal static Guid ReadUserIdFromToken(HttpContext httpContext)
     {
@@ -12,7 +12,7 @@ internal static class TokenManager
                 .FindFirstValue(ClaimTypes.NameIdentifier)!);
     }
     
-    internal  static string ReadUserRoleFromToken(HttpContext httpContext)
+    internal static string ReadUserRoleFromToken(HttpContext httpContext)
     {
         return httpContext
             .User
