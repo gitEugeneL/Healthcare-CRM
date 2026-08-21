@@ -15,12 +15,4 @@ public static class DoctorErrors
     public static readonly Error EmptySpecializationList = Error.Problem(
         "Doctor.SpecializationsListEmpty",
         "Doctor have not got any specializations yet");
-    
-    public static readonly Error SpecializationAlreadyExists = Error.Conflict(
-        "Doctor.SpecializationAlreadyExists",
-        "Doctor already has this specialization");
-
-    public static readonly Error SpecializationNotFound = Error.NotFound(
-        "Doctor.SpecializationNotFound",
-        "Specialization not found for this doctor");
 }
