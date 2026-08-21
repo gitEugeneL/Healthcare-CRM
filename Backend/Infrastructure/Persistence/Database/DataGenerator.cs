@@ -96,7 +96,7 @@ internal static class DataGenerator
             doctor.AssignWorkSchedule(workScheduleResult.Value);
 
             foreach (var specialization in faker.Random.ListItems(specializations, 2))
-                doctor.AddSpecialization(specialization);
+                specialization.IncludeDoctor(doctor);
 
             doctors.Add(doctor);
         }

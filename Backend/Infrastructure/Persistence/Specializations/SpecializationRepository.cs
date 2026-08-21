@@ -1,75 +1,80 @@
 using Domain.Specializations;
+using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 
 namespace Persistence.Specializations;
 
 internal sealed class SpecializationRepository(DataContext dataContext) : ISpecializationRepository
 {
-    // public async Task<Specialization> CreateSpecializationAsync(Specialization s, CancellationToken cancellationToken)
-    // {
-    //     await dataContext.Specializations
-    //         .AddAsync(s, cancellationToken);
-    //
-    //     await dataContext.SaveChangesAsync(cancellationToken);
-    //     return s;
-    // }
-    //
-    // public async Task<Specialization> UpdateSpecializationAsync(Specialization s, CancellationToken cancellationToken)
-    // {
-    //     dataContext.Specializations.Update(s);
-    //     await dataContext.SaveChangesAsync(cancellationToken);
-    //     return s;
-    // }
-    //
-    // public async Task<Specialization?> FindSpecializationByIdAsync(Guid id, CancellationToken cancellationToken)
-    // {
-    //     return await dataContext.Specializations
-    //         .Include(s => s.UserDoctors)
-    //         .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
-    // }
-    //
-    // public async Task<Specialization?> FindSpecializationByValueAsync(string value, CancellationToken cancellationToken)
-    // {
-    //     return await dataContext.Specializations
-    //         .Include(s => s.UserDoctors)
-    //         .FirstOrDefaultAsync(s => s.Value.ToLower().Equals(value.ToLower()), cancellationToken);
-    // }
-    //
-    // public async Task<IEnumerable<Specialization>> GetSpecializationsAsync(CancellationToken cancellationToken)
-    // {
-    //     return await dataContext.Specializations
-    //         .Include(s => s.UserDoctors)
-    //         .OrderBy(s => s.Value)
-    //         .ToListAsync(cancellationToken);
-    // }
-    //
-    // public async Task DeleteSpecializationAsync(Specialization s, CancellationToken cancellationToken)
-    // {
-    //     dataContext.Specializations.Remove(s);
-    //     await dataContext.SaveChangesAsync(cancellationToken);
-    // }
-    public Task InsertSpecializationAsync(Specialization specialization, CancellationToken ct)
+    public async Task InsertSpecializationAsync(Specialization specialization, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        await dataContext
+            .Specializations
+            .AddAsync(specialization, ct);
     }
 
-    public Task<Specialization?> FindSpecializationByIdAsync(Guid specializationId, CancellationToken ct)
+    public async Task<IReadOnlyList<Specialization>> GetAllSpecializationsWithDoctorsAsync(CancellationToken ct)
     {
-        throw new NotImplementedException();
+        return await dataContext
+            .Specializations
+            .Include(s => s.Doctors)
+            .ThenInclude(d => d.User)
+            .OrderByDescending(s => s.Doctors.Count)
+            .AsNoTracking()
+            .ToListAsync(ct);
+    }
+    
+    
+    public async Task<Specialization?> FindSpecializationByIdWithTrackingAsync(Guid specializationId, CancellationToken ct)
+    {
+        return await dataContext
+            .Specializations
+            .FirstOrDefaultAsync(s => s.Id == specializationId, ct);
     }
 
-    public Task<Specialization?> FindSpecializationByNameAsync(string specializationName, CancellationToken ct)
+    public async Task<Specialization?> FindSpecializationByIdWithDoctorsAndWithTrackingAsync(Guid specializationId, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        return await dataContext
+            .Specializations
+            .Include(s => s.Doctors)
+            .ThenInclude(d => d.User)
+            .FirstOrDefaultAsync(s => s.Id == specializationId, ct);   
     }
 
-    public Task<IReadOnlyCollection<Specialization>> GetSpecializationsAsync(CancellationToken ct)
+    public async Task<Specialization?> FindSpecializationByIdWithDoctorsAndAsync(Guid specializationId, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        return await dataContext
+            .Specializations
+            .Include(s => s.Doctors)
+            .ThenInclude(d => d.User)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Id == specializationId, ct);   
     }
-
-    public Task DeleteSpecializationByIdAsync(Guid specializationId, CancellationToken ct)
+    
+    public async Task<bool> SpecializationExistsByNameAsync(string specializationName, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        return await dataContext
+            .Specializations
+            .AnyAsync(s => s.Name == specializationName.Trim().ToUpperInvariant(), ct);
+    }
+    
+    public async Task<bool?> IsSpecializationEmptyByIdAsync(Guid specializationId, CancellationToken ct)
+    {
+        var hasDoctors = await dataContext
+            .Specializations
+            .AsNoTracking()
+            .Where(s => s.Id == specializationId)
+            .Select(s => (bool?)s.Doctors.Any())
+            .SingleOrDefaultAsync(ct);
+
+        return !hasDoctors;
+    }
+    
+    public async Task DeleteSpecializationByIdAsync(Guid specializationId, CancellationToken ct)
+    {
+        await dataContext
+            .Specializations
+            .Where(s => s.Id == specializationId)
+            .ExecuteDeleteAsync(ct);
     }
 }

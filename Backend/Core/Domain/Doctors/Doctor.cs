@@ -1,4 +1,3 @@
-using Domain.Abstractions.Errors;
 using Domain.Common;
 using Domain.Specializations;
 using Domain.Users;
@@ -23,7 +22,6 @@ public sealed class Doctor : BaseAuditableEntity
     private readonly List<Specialization> _specializations = [];
     public IReadOnlyList<Specialization> Specializations => _specializations.AsReadOnly();
     
-    
     // public List<Appointment> Appointments { get; init; } = [];
 
     // public List<MedicalRecord> MedicalRecords { get; init; } = [];
@@ -33,8 +31,8 @@ public sealed class Doctor : BaseAuditableEntity
         var doctor = new Doctor
         {
             Status = DoctorStatus.Disable,
-            Description = description,
-            Education = education,
+            Description = description?.Trim(),
+            Education = education?.Trim(),
             User = user,
         };
         
@@ -46,47 +44,28 @@ public sealed class Doctor : BaseAuditableEntity
         WorkSchedule = workSchedule;
     }
     
-    public Result AddSpecialization(Specialization specialization)
-    {
-        if (_specializations.Any(s => s.Id == specialization.Id))
-            return Result.Failure(DoctorErrors.SpecializationAlreadyExists);
-        
-        _specializations.Add(specialization);
-        
-        return Result.Success();
-    }
-    
-    public Result RemoveSpecialization(Guid specializationId)
-    {
-        var specialization = _specializations.FirstOrDefault(s => s.Id == specializationId);
-        if (specialization is null)
-            return Result.Failure(DoctorErrors.SpecializationNotFound);
-        
-        _specializations.Remove(specialization);
-        
-        return Result.Success();
-    }
-    
     public void ChangeStatus(DoctorStatus status)
     {
         Status = status;
     }
     
-    public void UpdateDescription(string description)
+    public void UpdateDescription(string? description)
     {
-        if (Description == description)
-        {
+        var normalized = description?.Trim();
+    
+        if (Description == normalized)
             return;
-        }
-        Description = description;
+    
+        Description = normalized;
     }
     
     public void UpdateEducation(string education)
     {
-        if (Education == education)
-        {
+        var normalized = education?.Trim();
+
+        if (Education == normalized)
             return;
-        }
-        Education = education;
+        
+        Education = normalized;   
     }
 }
