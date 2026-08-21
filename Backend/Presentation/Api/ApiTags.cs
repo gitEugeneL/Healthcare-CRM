@@ -9,4 +9,8 @@ internal static class ApiTags
     internal const string Doctors = "Doctors";
     
     internal const string WorkSchedules = "WorkSchedules";
+    
+    internal const string Patients = "Patients";
+    
+    internal const string Specializations = "Specializations";
 }

@@ -9,10 +9,10 @@ using Persistence.Database;
 
 #nullable disable
 
-namespace Persistence.Migrations
+namespace Persistence.Database.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20260807155428_init")]
+    [Migration("20260821181050_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -38,6 +38,52 @@ namespace Persistence.Migrations
                     b.HasIndex("SpecializationsId");
 
                     b.ToTable("DoctorSpecialization");
+                });
+
+            modelBuilder.Entity("Domain.Addresses.Address", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Apartment")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Hose")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("Domain.Doctors.Doctor", b =>
@@ -127,6 +173,51 @@ namespace Persistence.Migrations
                     b.ToTable("Offices");
                 });
 
+            modelBuilder.Entity("Domain.Patients.Patient", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AddressId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Insurance")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("Pesel")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Patients");
+                });
+
             modelBuilder.Entity("Domain.RefreshTokens.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -193,6 +284,9 @@ namespace Persistence.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
+                    b.Property<bool>("IsTemporaryPassword")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("LastName")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
@@ -222,6 +316,37 @@ namespace Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Domain.WorkSchedules.WorkSchedule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AppointmentDuration")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("DoctorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time without time zone");
+
+                    b.PrimitiveCollection<string[]>("Workdays")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId")
+                        .IsUnique();
+
+                    b.ToTable("WorkSchedules");
                 });
 
             modelBuilder.Entity("DoctorSpecialization", b =>
@@ -261,6 +386,25 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Patients.Patient", b =>
+                {
+                    b.HasOne("Domain.Addresses.Address", "Address")
+                        .WithOne()
+                        .HasForeignKey("Domain.Patients.Patient", "AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Users.User", "User")
+                        .WithOne()
+                        .HasForeignKey("Domain.Patients.Patient", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.RefreshTokens.RefreshToken", b =>
                 {
                     b.HasOne("Domain.Users.User", "User")
@@ -270,6 +414,20 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.WorkSchedules.WorkSchedule", b =>
+                {
+                    b.HasOne("Domain.Doctors.Doctor", null)
+                        .WithOne("WorkSchedule")
+                        .HasForeignKey("Domain.WorkSchedules.WorkSchedule", "DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Doctors.Doctor", b =>
+                {
+                    b.Navigation("WorkSchedule");
                 });
 
             modelBuilder.Entity("Domain.Users.User", b =>

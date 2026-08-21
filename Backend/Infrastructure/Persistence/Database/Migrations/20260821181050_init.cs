@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Persistence.Migrations
+namespace Persistence.Database.Migrations
 {
     /// <inheritdoc />
     public partial class init : Migration
@@ -11,6 +11,25 @@ namespace Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Addresses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Province = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PostalCode = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    City = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Street = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Hose = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    Apartment = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Offices",
                 columns: table => new
@@ -44,6 +63,7 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Email = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    IsTemporaryPassword = table.Column<bool>(type: "boolean", nullable: false),
                     PasswordHash = table.Column<byte[]>(type: "bytea", nullable: false),
                     PasswordSalt = table.Column<byte[]>(type: "bytea", nullable: false),
                     Role = table.Column<string>(type: "text", nullable: false),
@@ -103,6 +123,37 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Patients",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false),
+                    Pesel = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Insurance = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AddressId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Patients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Patients_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Patients_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RefreshTokens",
                 columns: table => new
                 {
@@ -146,6 +197,28 @@ namespace Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "WorkSchedules",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    StartTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    EndTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    AppointmentDuration = table.Column<string>(type: "text", nullable: false),
+                    Workdays = table.Column<string[]>(type: "text[]", nullable: false),
+                    DoctorId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WorkSchedules", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WorkSchedules_Doctors_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Doctors_UserId",
                 table: "Doctors",
@@ -170,6 +243,18 @@ namespace Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Patients_AddressId",
+                table: "Patients",
+                column: "AddressId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_UserId",
+                table: "Patients",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_Token",
                 table: "RefreshTokens",
                 column: "Token");
@@ -190,6 +275,12 @@ namespace Persistence.Migrations
                 table: "Users",
                 column: "Email",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WorkSchedules_DoctorId",
+                table: "WorkSchedules",
+                column: "DoctorId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -205,13 +296,22 @@ namespace Persistence.Migrations
                 name: "Offices");
 
             migrationBuilder.DropTable(
+                name: "Patients");
+
+            migrationBuilder.DropTable(
                 name: "RefreshTokens");
 
             migrationBuilder.DropTable(
-                name: "Doctors");
+                name: "WorkSchedules");
 
             migrationBuilder.DropTable(
                 name: "Specializations");
+
+            migrationBuilder.DropTable(
+                name: "Addresses");
+
+            migrationBuilder.DropTable(
+                name: "Doctors");
 
             migrationBuilder.DropTable(
                 name: "Users");

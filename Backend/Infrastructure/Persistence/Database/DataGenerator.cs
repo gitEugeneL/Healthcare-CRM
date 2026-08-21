@@ -1,8 +1,10 @@
-using Application.Common.Interfaces;
+using Application.Abstractions;
 using Bogus;
+using Domain.Addresses;
 using Domain.Doctors;
 using Domain.Managers;
 using Domain.Offices;
+using Domain.Patients;
 using Domain.Specializations;
 using Domain.Users;
 using Domain.WorkSchedules;
@@ -53,9 +55,9 @@ internal static class DataGenerator
                 passwordHash: hash, 
                 passwordSalt: salt, 
                 role: UserAuthRole.Manager, 
-                firstName: faker.Person.FirstName, 
-                lastName: faker.Person.LastName, 
-                phone: faker.Person.Phone));
+                firstName: faker.Name.FirstName(), 
+                lastName: faker.Name.LastName(), 
+                phone: faker.Phone.PhoneNumber()));
         
         /*** Doctors ***/
         var doctors = new List<Doctor>();
@@ -73,9 +75,9 @@ internal static class DataGenerator
                 passwordHash: hash,
                 passwordSalt: salt,
                 role: UserAuthRole.Doctor,
-                firstName: faker.Person.FirstName,
-                lastName: faker.Person.LastName,
-                phone: faker.Person.Phone);
+                firstName: faker.Name.FirstName(),
+                lastName: faker.Name.LastName(),
+                phone: faker.Phone.PhoneNumber());
 
             var doctor = Doctor.Create(
                 description: faker.Lorem.Sentence(),
@@ -101,47 +103,52 @@ internal static class DataGenerator
             doctors.Add(doctor);
         }
         
-        // var patient = new Faker<User>()
-            // .RuleFor(u => u.Email, f =>
-                // $"patient-{f.Lorem.Word()}-{f.Random.Number(1, 9999)}@mail.dev")
-            // .RuleFor(u => u.Role, Role.Patient)
-            // .RuleFor(u => u.PasswordHash, hash)
-            // .RuleFor(u => u.PasswordSalt, salt)
-            // .RuleFor(u => u.FirstName, f => f.Person.FirstName)
-            // .RuleFor(u => u.LastName, f => f.Person.LastName)
-            // .RuleFor(u => u.Phone, f => f.Person.Phone)
-            // .RuleFor(u => u.UserPatient, _ =>
-                // new Faker<UserPatient>()
-                    // .RuleFor(p => p.Pesel, f => f.Random.Replace("###########"))
-                    // .RuleFor(p => p.DateOfBirth, f =>
-                        // f.Date.BetweenDateOnly(new DateOnly(1990, 01, 01),
-                            // new DateOnly(2024, 01, 01))
-                    // )
-                    // .RuleFor(p => p.Insurance, f => f.Lorem.Sentence())
-                    // .RuleFor(p => p.Address, _ =>
-                        // new Faker<Address>()
-                            // .RuleFor(a => a.Province, f => f.Address.State())
-                            // .RuleFor(a => a.PostalCode, f => f.Address.ZipCode())
-                            // .RuleFor(a => a.City, f => f.Address.City())
-                            // .RuleFor(a => a.Street, f => f.Address.StreetName())
-                            // .RuleFor(a => a.Hose, f => f.Address.BuildingNumber())
-                            // .RuleFor(a => a.Apartment, f => f.Random.Number(1, 200).ToString())
-                    // )
-            // )
-            // .Generate(20);
+        /*** Patients ***/
+        var patients = new List<Patient>();
 
+        for (var i = 0; i < 20; i++)
+        {
+            var patientUser = User.Create(
+                email: $"patient-{faker.Lorem.Word()}-{faker.Random.Number(1, 9999)}@mail.dev",
+                passwordHash: hash,
+                passwordSalt: salt,
+                role: UserAuthRole.Patient,
+                firstName: faker.Name.FirstName(),
+                lastName: faker.Name.LastName(),
+                phone: faker.Phone.PhoneNumber());
 
+            var address = Address.Create(
+                province: faker.Address.State(),
+                postalCode: faker.Address.ZipCode(),
+                city: faker.Address.City(),
+                street: faker.Address.StreetName(),
+                hose: faker.Address.BuildingNumber(),
+                apartment: faker.Random.Bool()
+                    ? faker.Random.Number(1, 200).ToString()
+                    : null);
 
-            var offices = officeNames
+            var patient = Patient.Create(
+                dateOfBirth: faker.Date.BetweenDateOnly(new DateOnly(1950, 1, 1), new DateOnly(2024, 1, 1)),
+                pesel: faker.Random.Replace("###########"),
+                insurance: faker.Lorem.Sentence(),
+                user: patientUser,
+                address: address);
+
+            patients.Add(patient);
+        }
+
+        var offices = officeNames
                 .Select(name => Office.Create(name, faker.Random.Number(100, 999)));
             
         context.Add(admin);
         context.Add(manager.Value);
         
         context.AddRange(doctors);
-        // context.AddRange(patient);
+        context.AddRange(patients);
         context.AddRange(offices);
-        
+
+        context.AddRange(specializations);
+
         context.SaveChanges();
     }
 }
