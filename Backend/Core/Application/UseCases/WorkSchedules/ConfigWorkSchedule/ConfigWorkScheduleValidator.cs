@@ -37,8 +37,8 @@ internal sealed class ConfigWorkScheduleValidator : AbstractValidator<ConfigConf
         RuleFor(c => c.Workdays)
             .NotEmpty()
             .WithMessage("At least one workday must be specified.")
-            .Must(w => w.All(d => Enum.IsDefined(typeof(Workday), d)))
-            .WithMessage($"Workdays must contain values between {(int)Workday.Monday} and {(int)Workday.Sunday}.")
+            .Must(w => w.All(d => Enum.IsDefined(typeof(DayOfWeek), d)))
+            .WithMessage("Workdays contain an invalid day value.")
             .Must(w => w.Length == w.Distinct().Count())
             .WithMessage("Workdays must not contain duplicate values.");
     }

@@ -7,7 +7,7 @@ public sealed record WorkScheduleResponse(
     TimeOnly StartTime,
     TimeOnly EndTime,
     int AppointmentDuration,
-    int[] Workdays)
+    string[] Workdays)
 {
     public static WorkScheduleResponse FromWorkSchedule(WorkSchedule workSchedule)
     {
@@ -16,6 +16,6 @@ public sealed record WorkScheduleResponse(
             StartTime: workSchedule.StartTime,
             EndTime: workSchedule.EndTime,
             AppointmentDuration: (int)workSchedule.AppointmentDuration,
-            Workdays: workSchedule.Workdays.Select(w => (int)w).ToArray());
+            Workdays: workSchedule.Workdays.Select(w => w.ToString()).ToArray());
     }
 }

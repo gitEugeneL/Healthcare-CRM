@@ -11,8 +11,8 @@ public sealed class WorkSchedule : BaseEntity
     public TimeOnly EndTime { get; private set; }
     public AppointmentDuration AppointmentDuration { get; private set; }
     
-    private readonly List<Workday> _workdays = [];
-    public IReadOnlyList<Workday> Workdays => _workdays.AsReadOnly();
+    private readonly List<DayOfWeek> _workdays = [];
+    public IReadOnlyList<DayOfWeek> Workdays => _workdays.AsReadOnly();
     
     /*** Relations ***/
     public Guid DoctorId { get; private set; }
@@ -22,7 +22,7 @@ public sealed class WorkSchedule : BaseEntity
         TimeOnly startTime,
         TimeOnly endTime,
         AppointmentDuration appointmentDuration,
-        List<Workday> workdays)
+        List<DayOfWeek> workdays)
     {
         if (startTime >= endTime)
             return Result.Failure<WorkSchedule>(WorkScheduleErrors.InvalidTimeRange);
@@ -49,7 +49,7 @@ public sealed class WorkSchedule : BaseEntity
         TimeOnly startTime,
         TimeOnly endTime,
         AppointmentDuration appointmentDuration,
-        List<Workday> workdays)
+        List<DayOfWeek> workdays)
     {
         if (startTime >= endTime)
             return Result.Failure(WorkScheduleErrors.InvalidTimeRange);
@@ -70,7 +70,7 @@ public sealed class WorkSchedule : BaseEntity
         return Result.Success();
     }
     
-    public Result UpdateWorkdays(List<Workday> workdays)
+    public Result UpdateWorkdays(List<DayOfWeek> workdays)
     {
         if (workdays.Count == 0)
             return Result.Failure(WorkScheduleErrors.EmptyWorkdays);
@@ -82,6 +82,11 @@ public sealed class WorkSchedule : BaseEntity
         _workdays.AddRange(workdays);
         
         return Result.Success();
+    }
+
+    public bool IsAvailableDay(DayOfWeek dayOfWeek)
+    {
+        return Workdays.Contains(dayOfWeek);
     }
 }
 

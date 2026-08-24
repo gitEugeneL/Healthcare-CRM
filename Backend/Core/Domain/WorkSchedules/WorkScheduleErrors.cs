@@ -19,4 +19,8 @@ public static class WorkScheduleErrors
     public static readonly Error DuplicateWorkdays = Error.Conflict(
         "WorkSchedule.DuplicateWorkdays",
         "Workdays must not contain duplicates");
+    
+    public static Error UnavailableWorkday(DayOfWeek dayOfWeek) => Error.Problem(
+        "WorkSchedule.UnavailableWorkday",
+        $"{dayOfWeek} is unavailable");
 }

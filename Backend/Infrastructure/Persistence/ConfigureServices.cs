@@ -1,17 +1,21 @@
 using Domain.Abstractions;
+using Domain.Appointments;
 using Domain.Doctors;
 using Domain.Managers;
 using Domain.Offices;
+using Domain.Patients;
 using Domain.Specializations;
 using Domain.Users;
 using Domain.WorkSchedules;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Persistence.Appointments;
 using Persistence.Database;
-using Persistence.Database.Managers;
 using Persistence.Doctors;
+using Persistence.Managers;
 using Persistence.Offices;
+using Persistence.Patients;
 using Persistence.Specializations;
 using Persistence.Users;
 using Persistence.WorkSchedules;
@@ -36,13 +40,12 @@ public static class ConfigureServices
             .AddScoped<IOfficeRepository, OfficeRepository>()
             // .AddScoped<IMedicalRecordRepository, MedicalRecordRepository>()
             .AddScoped<ISpecializationRepository, SpecializationRepository>()
-            // .AddScoped<IAppointmentRepository, AppointmentRepository>()
+            .AddScoped<IAppointmentRepository, AppointmentRepository>()
             .AddScoped<IWorkScheduleRepository, WorkScheduleRepository>()
-            // .AddScoped<IAddressRepository, AddressRepository>()
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IDoctorRepository, DoctorRepository>()
-            .AddScoped<IManagerRepository, ManagerRepository>();
-            // .AddScoped<IPatientRepository, PatientRepository>();
+            .AddScoped<IManagerRepository, ManagerRepository>()
+            .AddScoped<IPatientRepository, PatientRepository>();
             
         return services;
     }
