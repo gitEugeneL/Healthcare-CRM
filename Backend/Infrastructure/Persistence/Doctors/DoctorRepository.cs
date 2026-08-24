@@ -31,6 +31,15 @@ internal sealed class DoctorRepository(DataContext dataContext) : IDoctorReposit
             .FirstOrDefaultAsync(d => d.Id == doctorId, ct);
     }
 
+    public async Task<Doctor?> FindActiveDoctorByIdAsync(Guid doctorId, CancellationToken ct)
+    {
+        return await dataContext
+            .Doctors
+            .Include(d => d.WorkSchedule)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(d => d.Id == doctorId && d.Status == DoctorStatus.Active, ct);  
+    }
+    
     public async Task<Doctor?> FindDoctorByIdWithTrackingAsync(Guid doctorId, CancellationToken ct)
     {
         return await dataContext

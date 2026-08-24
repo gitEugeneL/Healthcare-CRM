@@ -19,7 +19,7 @@ internal sealed class ConfigConfigWorkScheduleCommandHandler(
 
         var appointmentDuration = (AppointmentDuration)command.AppointmentDuration;
         var workdays = command.Workdays
-            .Select(d => (Workday)d)
+            .Select(d => (DayOfWeek)d)
             .ToList();
 
         var workSchedule = await workScheduleRepository.FindWorkScheduleByDoctorIdWithTracking(command.DoctorId, ct);

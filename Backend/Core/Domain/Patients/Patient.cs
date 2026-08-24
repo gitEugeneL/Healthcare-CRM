@@ -1,4 +1,5 @@
 using Domain.Addresses;
+using Domain.Appointments;
 using Domain.Common;
 using Domain.Users;
 
@@ -19,7 +20,8 @@ public sealed class Patient : BaseAuditableEntity
     public Address Address { get; private init; } = null!;
     public Guid AddressId { get; private init; }
     
-    // public List<Appointment> Appointments { get; init; } = [];
+    private readonly List<Appointment> _appointments = [];
+    public IReadOnlyList<Appointment> Appointments => _appointments.AsReadOnly();
 
     // public List<MedicalRecord> MedicalRecords { get; init; } = [];
 

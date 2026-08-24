@@ -41,5 +41,9 @@ internal sealed class UserPatientConfiguration : IEntityTypeConfiguration<Patien
             .IsRequired()
             .HasForeignKey<Patient>(p => p.AddressId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Metadata
+            .FindNavigation(nameof(Patient.Appointments))!
+            .SetPropertyAccessMode(PropertyAccessMode.Field);
     }
 }
