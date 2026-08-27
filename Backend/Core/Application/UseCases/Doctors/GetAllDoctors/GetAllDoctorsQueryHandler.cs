@@ -26,15 +26,13 @@ internal sealed class GetAllDoctorsQueryHandler(
             pageSize: query.NormalizedPageSize,
             specializationId: query.SpecializationId,
             status: status,
-            ct: ct
-        );
+            ct: ct);
         
         var response = new PaginationResult<DoctorResponse>(
             Items: doctors.Select(DoctorResponse.FromDoctor).ToList(),
             TotalItems: count,
             PageNumber: query.NormalizedPageNumber,
-            PageSize: query.NormalizedPageSize
-        );
+            PageSize: query.NormalizedPageSize);
 
         return response;
     }

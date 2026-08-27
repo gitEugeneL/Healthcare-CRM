@@ -7,6 +7,8 @@ namespace Domain.Patients;
 
 public sealed class Patient : BaseAuditableEntity
 {
+    private Patient() { }
+    
     public DateOnly DateOfBirth { get; private set; }
     public string Pesel { get; private set; } = null!;
     public string? Insurance { get; private set; }
@@ -22,9 +24,7 @@ public sealed class Patient : BaseAuditableEntity
     
     private readonly List<Appointment> _appointments = [];
     public IReadOnlyList<Appointment> Appointments => _appointments.AsReadOnly();
-
-    // public List<MedicalRecord> MedicalRecords { get; init; } = [];
-
+    
     public static Patient Create(DateOnly dateOfBirth, string pesel, string? insurance, User user, Address address)
     {
         var patient = new Patient

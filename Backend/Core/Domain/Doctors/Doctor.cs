@@ -1,3 +1,4 @@
+using Domain.Appointments;
 using Domain.Common;
 using Domain.Specializations;
 using Domain.Users;
@@ -22,9 +23,8 @@ public sealed class Doctor : BaseAuditableEntity
     private readonly List<Specialization> _specializations = [];
     public IReadOnlyList<Specialization> Specializations => _specializations.AsReadOnly();
     
-    // public List<Appointment> Appointments { get; init; } = [];
-
-    // public List<MedicalRecord> MedicalRecords { get; init; } = [];
+    private readonly List<Appointment> _appointments = [];
+    public IReadOnlyList<Appointment> Appointments => _appointments.AsReadOnly();
     
     public static Doctor Create(string? description, string? education, User user)
     {

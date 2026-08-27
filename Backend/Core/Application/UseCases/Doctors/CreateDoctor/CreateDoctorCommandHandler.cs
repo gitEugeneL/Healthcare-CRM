@@ -1,4 +1,4 @@
-using Application.Common.Interfaces;
+using Application.Abstractions;
 using Domain.Abstractions;
 using Domain.Abstractions.Errors;
 using Domain.Doctors;
@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Application.UseCases.Doctors.CreateDoctor;
 
-public class CreateDoctorCommandHandler(
+internal sealed class CreateDoctorCommandHandler(
    IUserRepository userRepository,
    IDoctorRepository doctorRepository,
    IUnitOfWork unitOfWork,

@@ -23,7 +23,7 @@ public sealed class Manager : BaseAuditableEntity
         
         var manager = new Manager
         {
-            Position = position,
+            Position = position?.Trim(),
             User = user
         };
 
@@ -32,11 +32,12 @@ public sealed class Manager : BaseAuditableEntity
 
     public void UpdatePosition(string position)
     {
-        if (Position == position)
-        {
+        var normalized = position?.Trim();
+        
+        if (Position == normalized)
             return;
-        }
-        Position = position;
+        
+        Position = normalized;
     }
 }
 

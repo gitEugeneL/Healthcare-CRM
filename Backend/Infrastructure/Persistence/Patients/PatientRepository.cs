@@ -43,14 +43,35 @@ internal sealed class PatientRepository(DataContext dataContext) : IPatientRepos
             .Include(p => p.Address)
             .FirstOrDefaultAsync(p => p.Id == patientId, ct);
     }
-    
-    public Task<(IReadOnlyList<Patient> List, int Count)> GetPatientsWithPaginationAsync(
+
+    public async Task<(IReadOnlyList<Patient> List, int Count)> GetAllPatientsWithPaginationAsync(
         int pageNumber, 
         int pageSize, 
         Guid? doctorId, 
-        Guid? specializationId,
         CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var query = dataContext
+            .Patients
+            .Include(p => p.User)
+            .Include(p => p.Address)
+            .Include(p => p.Appointments)
+            .AsSplitQuery()
+            .AsNoTracking();
+
+        if (doctorId.HasValue)
+            query = query.Where(p => p.Appointments.Any(a => a.DoctorId == doctorId));
+
+        var count = await query.CountAsync(ct);
+
+        var patients = await query
+            .OrderByDescending(p => p.Updated)
+            .ThenBy(p => p.Created)
+            .ThenBy(p => p.Id)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(ct);
+        
+        return (patients, count);
     }
+
 }

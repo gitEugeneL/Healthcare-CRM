@@ -2,7 +2,7 @@ using Domain.Managers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Persistence.Database.Managers;
+namespace Persistence.Managers;
 
 internal class ManagerConfiguration : IEntityTypeConfiguration<Manager>
 {

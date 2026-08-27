@@ -1,7 +1,8 @@
 using Domain.Managers;
 using Microsoft.EntityFrameworkCore;
+using Persistence.Database;
 
-namespace Persistence.Database.Managers;
+namespace Persistence.Managers;
 
 internal sealed class ManagerRepository(DataContext dataContext) : IManagerRepository
 {

@@ -10,7 +10,7 @@ using MediatR;
 
 namespace Api.Endpoints.Doctors;
 
-internal sealed record QueryParams(
+internal sealed record GetAllDoctorsQueryParams(
     Guid? SpecializationId,
     int? PageNumber,
     int? PageSize,
@@ -22,7 +22,7 @@ internal class GetAllDoctors : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("doctors", async (
-                [AsParameters] QueryParams queryParams,
+                [AsParameters] GetAllDoctorsQueryParams queryParams,
                 HttpContext httpContext,
                 ISender sender) =>
             {

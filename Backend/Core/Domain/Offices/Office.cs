@@ -15,7 +15,7 @@ public sealed class Office : BaseEntity
     {
         var office = new Office
         {
-            Name = name,
+            Name = name.Trim().ToUpperInvariant(),
             Number = number,
             IsAvailable = true
         };
@@ -27,12 +27,13 @@ public sealed class Office : BaseEntity
         IsAvailable = !IsAvailable;
     }
 
-    public void ChangeName(string newName)
+    public void ChangeName(string name)
     {
-        if (Name == newName)
-        {
+        var normalized = name.Trim().ToUpperInvariant();
+        
+        if (Name == normalized)
             return;
-        }
-        Name = newName;
+
+        Name = normalized;
     }
 }

@@ -15,7 +15,7 @@ internal sealed record UpdateDoctorRequest(
     string? Education
 );
 
-internal class UpdateDoctor : IEndpoint
+internal sealed class UpdateDoctor : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
@@ -34,11 +34,10 @@ internal class UpdateDoctor : IEndpoint
                 );
             
                 Result<DoctorResponse> result = await sender.Send(command);
-            
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
                 
         })
-        // TODO .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
+        // TODO .RequireAuthorization(AuthTags.ManagerPolicy)
         .WithTags(ApiTags.Doctors)
         .Produces<DoctorResponse>()
         .Produces(StatusCodes.Status400BadRequest)

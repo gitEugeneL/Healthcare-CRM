@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.Doctors;
 
-internal class UserDoctorConfiguration : IEntityTypeConfiguration<Doctor>
+internal sealed class UserDoctorConfiguration : IEntityTypeConfiguration<Doctor>
 {
     public void Configure(EntityTypeBuilder<Doctor> builder)
     {
@@ -34,6 +34,10 @@ internal class UserDoctorConfiguration : IEntityTypeConfiguration<Doctor>
         
         builder.Metadata
             .FindSkipNavigation(nameof(Doctor.Specializations))!
+            .SetPropertyAccessMode(PropertyAccessMode.Field);
+        
+        builder.Metadata
+            .FindNavigation(nameof(Doctor.Appointments))!
             .SetPropertyAccessMode(PropertyAccessMode.Field);
     }
 }

@@ -18,7 +18,7 @@ internal class GetDoctorById : IEndpoint
                 
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
-            .AllowAnonymous()
+            // todo .RequireAuthorization(AuthTags.ManagerOrPatientPolicy)
             .WithTags(ApiTags.Doctors)
             .Produces<DoctorResponse>()
             .Produces(StatusCodes.Status404NotFound);
