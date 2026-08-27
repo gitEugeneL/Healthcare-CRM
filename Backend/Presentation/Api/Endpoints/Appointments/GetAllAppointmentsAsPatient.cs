@@ -2,13 +2,16 @@ using Api.ApiConfiguration;
 using Api.ApiResults;
 using Api.Utils;
 using Application.UseCases.Appointments;
-using Application.UseCases.Appointments.GetAllByDate;
+using Application.UseCases.Appointments.GetAllAppointments;
+using Application.UseCases.Common.Pagination;
 using MediatR;
 
 namespace Api.Endpoints.Appointments;
 
 internal sealed record GetAllAppointmentsAsPatientQueryParams(
-    DateOnly Date,
+    int? PageNumber,
+    int? PageSize,
+    DateOnly? Date,
     Guid? DoctorId);
 
 internal sealed class GetAllAppointmentsAsPatient : IEndpoint
@@ -22,7 +25,9 @@ internal sealed class GetAllAppointmentsAsPatient : IEndpoint
             {
                 var currentPatientId = TokenReader.ReadUserIdFromToken(httpContext);
             
-                var query = new GetAllAppointmentsByDateQuery(
+                var query = new GetAllAppointmentsQuery(
+                    PageNumber: queryParams.PageNumber,
+                    PageSize: queryParams.PageSize,
                     Date: queryParams.Date,
                     DoctorId: queryParams.DoctorId,
                     PatientId: currentPatientId);
@@ -32,6 +37,6 @@ internal sealed class GetAllAppointmentsAsPatient : IEndpoint
             })
             // TODO .RequireAuthorization(AuthTags.PatientPolicy)
             .WithTags(ApiTags.Appointments)
-            .Produces<IReadOnlyList<AppointmentResponse>>();
+            .Produces<PaginationResult<AppointmentResponse>>();
     }
 }

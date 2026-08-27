@@ -7,6 +7,8 @@ namespace Domain.Appointments;
 
 public sealed class Appointment : BaseAuditableEntity
 {
+    private Appointment() { }
+    
     public DateOnly Date { get; private init; }
     public TimeOnly StartTime { get; private init; }
     public TimeOnly EndTime { get; private init; }
@@ -18,10 +20,7 @@ public sealed class Appointment : BaseAuditableEntity
 
     public Doctor Doctor { get; private init; } = null!;
     public Guid DoctorId { get; private init; }
-
     
-    // public MedicalRecord? MedicalRecord { get; init; }
-
     public static Result<Appointment> Create(
         DateOnly date, 
         TimeOnly startTime, 

@@ -15,8 +15,10 @@ public interface IAppointmentRepository
     
     Task<Appointment?> FindAppointmentByIdWithTrackingAsync(Guid appointmentId, CancellationToken ct);
 
-    Task<IReadOnlyList<Appointment>> GetAppointmentsByDateAsync(
-        DateOnly date,
+    Task<(IReadOnlyList<Appointment> List, int Count)> GetAppointmentsWithPaginationAsync(
+        int pageNumber,
+        int pageSize,
+        DateOnly? date,
         Guid? doctorId,
         Guid? patientId,
         CancellationToken ct);

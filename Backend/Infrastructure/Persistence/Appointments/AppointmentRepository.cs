@@ -66,32 +66,36 @@ internal sealed class AppointmentRepository(DataContext dataContext) : IAppointm
             .FirstOrDefaultAsync(a => a.Id == appointmentId, ct);
     }
 
-    public async Task<IReadOnlyList<Appointment>> GetAppointmentsByDateAsync(
-        DateOnly date,
+    public async Task<(IReadOnlyList<Appointment> List, int Count)> GetAppointmentsWithPaginationAsync(
+        int pageNumber, 
+        int pageSize,
+        DateOnly? date,
         Guid? doctorId, 
         Guid? patientId,
         CancellationToken ct)
     {
-        var result = await dataContext
+        var query = dataContext
             .Appointments
-            .OrderByDescending(a => a.StartTime)
-            .Where(a => a.Date == date)
-            .ToListAsync(ct);
+            .AsNoTracking();
+            
+        if (date.HasValue)
+            query = query.Where(a => a.Date == date);
 
         if (doctorId.HasValue)
-        {
-            result = result
-                .Where(a => a.DoctorId == doctorId)
-                .ToList();
-        }
+            query = query.Where(a => a.DoctorId == doctorId);
 
         if (patientId.HasValue)
-        {
-            result = result
-                .Where(a => a.PatientId == patientId)
-                .ToList();
-        }
+            query = query.Where(a => a.PatientId == patientId);
         
-        return result;
+        var count = await query.CountAsync(ct);
+        
+        var appointments = await query
+            .OrderByDescending(a => a.Date)
+            .ThenBy(d => d.Id)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(ct);
+        
+        return (appointments, count);
     }
 }
