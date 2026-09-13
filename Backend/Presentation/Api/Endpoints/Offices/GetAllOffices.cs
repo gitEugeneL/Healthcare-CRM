@@ -4,6 +4,7 @@ using Application.UseCases.Offices;
 using Application.UseCases.Offices.GetAllOffices;
 using Domain.Abstractions.Errors;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Offices;
 
@@ -18,8 +19,8 @@ internal class GetAllOffices : IEndpoint
                 
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
-            // TODO .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
-            .WithTags(ApiTags.Offices)
+            .RequireAuthorization(AuthTags.BasePolicy)
+            .WithTags(EndpointTags.Offices)
             .Produces<IReadOnlyList<OfficeResponse>>();
     }
 }

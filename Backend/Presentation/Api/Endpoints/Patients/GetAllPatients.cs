@@ -4,6 +4,7 @@ using Application.UseCases.Common.Pagination;
 using Application.UseCases.Patients;
 using Application.UseCases.Patients.GetAllPatients;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Patients;
 
@@ -28,8 +29,8 @@ internal sealed class GetAllPatients : IEndpoint
             var result = await sender.Send(query);
             return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
         })
-        // TODO .RequireAuthorization(AuthTags.ManagerOrPatientPolicy)
-        .WithTags(ApiTags.Patients)
+        .RequireAuthorization(AuthTags.ManagerOrPatientPolicy)
+        .WithTags(EndpointTags.Patients)
         .Produces<PaginationResult<PatientResponse>>();
     }
 }

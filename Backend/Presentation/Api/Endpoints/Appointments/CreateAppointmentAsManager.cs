@@ -3,6 +3,7 @@ using Api.ApiResults;
 using Application.UseCases.Appointments;
 using Application.UseCases.Appointments.CreateAppointment;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Appointments;
 
@@ -30,8 +31,8 @@ internal sealed class CreateAppointmentAsManager : IEndpoint
                 var result = await sender.Send(command);
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
-            // TODO .RequireAuthorization(AuthTags.ManagerPolicy);
-            .WithTags(ApiTags.Appointments)
+            .RequireAuthorization(AuthTags.ManagerPolicy)
+            .WithTags(EndpointTags.Appointments)
             .Produces<AppointmentResponse>()
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound);

@@ -4,6 +4,7 @@ using Application.UseCases.Specializations;
 using Application.UseCases.Specializations.ExcludeDoctor;
 using Domain.Abstractions.Errors;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Specializations;
 
@@ -23,8 +24,8 @@ internal sealed class ExcludeDoctorFromSpecialization : IEndpoint
             Result<SpecializationResponse> result = await sender.Send(command);
             return result.Match(Results.NoContent, ApiResults.ApiResults.Problem);
         })
-        //TODO .RequireAuthorization(AuthTags.ManagerPolicy)
-        .WithTags(ApiTags.Specializations)
+        .RequireAuthorization(AuthTags.ManagerPolicy)
+        .WithTags(EndpointTags.Specializations)
         .Produces<SpecializationResponse>()
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status409Conflict)

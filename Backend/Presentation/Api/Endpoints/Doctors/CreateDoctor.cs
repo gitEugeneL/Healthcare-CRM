@@ -4,6 +4,7 @@ using Application.UseCases.Doctors;
 using Application.UseCases.Doctors.CreateDoctor;
 using Domain.Abstractions.Errors;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Doctors;
 
@@ -35,8 +36,8 @@ internal class CreateDoctor : IEndpoint
             
             return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
         })
-            //TODO .RequireAuthorization(AuthTags.ManagerPolicy)
-            .WithTags(ApiTags.Doctors)
+            .RequireAuthorization(AuthTags.ManagerPolicy)
+            .WithTags(EndpointTags.Doctors)
             .Produces<DoctorResponse>()
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status409Conflict);

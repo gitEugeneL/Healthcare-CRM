@@ -4,6 +4,7 @@ using Application.UseCases.Managers;
 using Application.UseCases.Managers.CreateManager;
 using Domain.Abstractions.Errors;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Managers;
 
@@ -34,8 +35,8 @@ internal class CreateManager : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
 
             })
-            // TODO .RequireAuthorization(AuthTags.AdminPolicy)
-            .WithTags(ApiTags.Managers)
+            .RequireAuthorization(AuthTags.AdminPolicy)
+            .WithTags(EndpointTags.Managers)
             .Produces<ManagerResponse>()
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status409Conflict);

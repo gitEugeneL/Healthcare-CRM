@@ -4,6 +4,7 @@ using Application.UseCases.Doctors;
 using Application.UseCases.Doctors.UpdateDoctor;
 using Domain.Abstractions.Errors;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Doctors;
 
@@ -37,8 +38,8 @@ internal sealed class UpdateDoctor : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
                 
         })
-        // TODO .RequireAuthorization(AuthTags.ManagerPolicy)
-        .WithTags(ApiTags.Doctors)
+        .RequireAuthorization(AuthTags.ManagerPolicy)
+        .WithTags(EndpointTags.Doctors)
         .Produces<DoctorResponse>()
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status404NotFound);

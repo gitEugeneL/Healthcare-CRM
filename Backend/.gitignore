@@ -8,3 +8,5 @@ riderModule.iml
 sqlite-data.db
 sqlite-data.db-shm
 sqlite-data.db-wal
+
+messageCode.txt

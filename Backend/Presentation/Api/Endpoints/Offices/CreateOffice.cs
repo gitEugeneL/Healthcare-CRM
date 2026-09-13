@@ -3,6 +3,7 @@ using Api.ApiResults;
 using Application.UseCases.Offices.CreateOffice;
 using Domain.Abstractions.Errors;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Offices;
 
@@ -22,8 +23,8 @@ internal class CreateOffice : IEndpoint
 
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
-            // TODO .RequireAuthorization(AuthTags.ManagerPolicy)
-            .WithTags(ApiTags.Offices)
+            .RequireAuthorization(AuthTags.ManagerPolicy)
+            .WithTags(EndpointTags.Offices)
             .Produces<Guid>()
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status409Conflict);

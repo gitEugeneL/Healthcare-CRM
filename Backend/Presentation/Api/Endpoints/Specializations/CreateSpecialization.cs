@@ -4,6 +4,7 @@ using Application.UseCases.Specializations;
 using Application.UseCases.Specializations.CreateSpecialization;
 using Domain.Abstractions.Errors;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Specializations;
 
@@ -25,8 +26,8 @@ internal sealed class CreateSpecialization : IEndpoint
            
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
-            //TODO .RequireAuthorization(AuthTags.ManagerPolicy)
-            .WithTags(ApiTags.Specializations)
+            .RequireAuthorization(AuthTags.ManagerPolicy)
+            .WithTags(EndpointTags.Specializations)
             .Produces<SpecializationResponse>()
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status409Conflict);

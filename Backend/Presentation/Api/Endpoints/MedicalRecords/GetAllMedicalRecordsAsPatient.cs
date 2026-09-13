@@ -1,10 +1,11 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
-using Api.Utils;
 using Application.UseCases.Common.Pagination;
 using Application.UseCases.MedicalRecords;
 using Application.UseCases.MedicalRecords.GetAllMedicalRecords;
 using MediatR;
+using Security.Setups;
+using Security.Utils;
 
 namespace Api.Endpoints.MedicalRecords;
 
@@ -34,8 +35,8 @@ internal sealed class GetAllMedicalRecordsAsPatient : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
                 
             })
-        // TODO .RequireAuthorization(AuthTags.PatientPolicy)
-        .WithTags(ApiTags.MedicalRecords)
-        .Produces<PaginationResult<MedicalRecordResponse>>();
+            .RequireAuthorization(AuthTags.PatientPolicy)
+            .WithTags(EndpointTags.MedicalRecords)
+            .Produces<PaginationResult<MedicalRecordResponse>>();
     }
 }

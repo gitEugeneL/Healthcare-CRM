@@ -3,6 +3,7 @@ using Api.ApiResults;
 using Application.UseCases.MedicalRecords;
 using Application.UseCases.MedicalRecords.CreateMedicalRecord;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.MedicalRecords;
 
@@ -35,8 +36,8 @@ internal sealed class CreateMedicalRecord : IEndpoint
             var result = await sender.Send(command);
             return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
         })
-        // TODO .RequireAuthorization(AuthTags.DoctorPolicy)
-        .WithTags(ApiTags.MedicalRecords)
+        .RequireAuthorization(AuthTags.DoctorPolicy)
+        .WithTags(EndpointTags.MedicalRecords)
         .Produces<MedicalRecordResponse>()
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status404NotFound)

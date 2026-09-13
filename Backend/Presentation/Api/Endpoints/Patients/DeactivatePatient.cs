@@ -3,6 +3,7 @@ using Api.ApiResults;
 using Application.UseCases.Patients.DeactivatePatient;
 using Domain.Abstractions.Errors;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Patients;
 
@@ -18,10 +19,10 @@ internal sealed class DeactivatePatient : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
                 
             })
-        // TODO .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
-        .WithTags(ApiTags.Patients)
-        .Produces(StatusCodes.Status204NoContent)
-        .Produces(StatusCodes.Status404NotFound)
-        .Produces(StatusCodes.Status409Conflict);
+            .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
+            .WithTags(EndpointTags.Patients)
+            .Produces(StatusCodes.Status204NoContent)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status409Conflict);
     }
 }

@@ -18,9 +18,9 @@ internal sealed class GetWorkScheduleByDoctorId : IEndpoint
                 
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
-        .AllowAnonymous()
-        .WithTags(ApiTags.WorkSchedules)
-        .Produces<WorkScheduleResponse>()
-        .Produces(StatusCodes.Status404NotFound);
+            .AllowAnonymous()
+            .WithTags(EndpointTags.WorkSchedules)
+            .Produces<WorkScheduleResponse>()
+            .Produces(StatusCodes.Status404NotFound);
     }
 }

@@ -1,6 +1,6 @@
-namespace Api;
+namespace Api.ApiConfiguration;
 
-internal static class ApiTags
+internal static class EndpointTags
 {
     internal const string Offices = "Offices";
     
@@ -17,4 +17,6 @@ internal static class ApiTags
     internal const string Appointments = "Appointments";
     
     internal const string MedicalRecords = "MedicalRecords";
+    
+    internal const string Security = "Security";
 }

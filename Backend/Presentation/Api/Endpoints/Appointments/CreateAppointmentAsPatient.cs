@@ -1,9 +1,10 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
-using Api.Utils;
 using Application.UseCases.Appointments;
 using Application.UseCases.Appointments.CreateAppointment;
 using MediatR;
+using Security.Setups;
+using Security.Utils;
 
 namespace Api.Endpoints.Appointments;
 
@@ -35,7 +36,7 @@ internal sealed class CreateAppointmentAsPatient : IEndpoint
             
         })
         .RequireAuthorization(AuthTags.PatientPolicy)
-        .WithTags(ApiTags.Appointments)
+        .WithTags(EndpointTags.Appointments)
         .Produces<AppointmentResponse>()
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status404NotFound);

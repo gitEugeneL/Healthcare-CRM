@@ -1,12 +1,13 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
-using Api.Utils;
 using Application.UseCases.Common.Pagination;
 using Application.UseCases.Doctors;
 using Application.UseCases.Doctors.GetAllDoctors;
 using Domain.Abstractions.Errors;
 using Domain.Users;
 using MediatR;
+using Security.Setups;
+using Security.Utils;
 
 namespace Api.Endpoints.Doctors;
 
@@ -39,8 +40,8 @@ internal class GetAllDoctors : IEndpoint
                 
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
-            // todo .RequireAuthorization(AuthTags.ManagerOrPatientPolicy)
-            .WithTags(ApiTags.Doctors)
+            .RequireAuthorization(AuthTags.ManagerOrPatientPolicy)
+            .WithTags(EndpointTags.Doctors)
             .Produces<PaginationResult<DoctorResponse>>();
     }
 }

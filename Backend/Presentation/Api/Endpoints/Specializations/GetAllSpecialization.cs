@@ -18,8 +18,8 @@ internal sealed class GetAllSpecialization : IEndpoint
                 
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
-        .AllowAnonymous()
-        .WithTags(ApiTags.Specializations)
-        .Produces<IReadOnlyList<SpecializationResponse>>();
+            .AllowAnonymous()
+            .WithTags(EndpointTags.Specializations)
+            .Produces<IReadOnlyList<SpecializationResponse>>();
     }
 }

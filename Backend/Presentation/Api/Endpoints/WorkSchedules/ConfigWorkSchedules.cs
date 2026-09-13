@@ -1,10 +1,10 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
-using Application.UseCases.Doctors;
 using Application.UseCases.WorkSchedules;
 using Application.UseCases.WorkSchedules.ConfigWorkSchedule;
 using Domain.Abstractions.Errors;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.WorkSchedules;
 
@@ -35,8 +35,8 @@ internal sealed class ConfigWorkSchedules : IEndpoint
             
             return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
         })
-        // TODO .RequireAuthorization(AuthTags.DoctorOrManagerPolicy);
-        .WithTags(ApiTags.WorkSchedules)
+        .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
+        .WithTags(EndpointTags.WorkSchedules)
         .Produces<WorkScheduleResponse>()
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status404NotFound);

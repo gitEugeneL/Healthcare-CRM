@@ -4,6 +4,7 @@ using Application.UseCases.Doctors;
 using Application.UseCases.Doctors.GetDoctor;
 using Domain.Abstractions.Errors;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Doctors;
 
@@ -18,8 +19,8 @@ internal class GetDoctorById : IEndpoint
                 
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
-            // todo .RequireAuthorization(AuthTags.ManagerOrPatientPolicy)
-            .WithTags(ApiTags.Doctors)
+            .RequireAuthorization(AuthTags.ManagerOrPatientPolicy)
+            .WithTags(EndpointTags.Doctors)
             .Produces<DoctorResponse>()
             .Produces(StatusCodes.Status404NotFound);
     }

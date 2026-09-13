@@ -4,6 +4,7 @@ using Application.UseCases.Patients;
 using Application.UseCases.Patients.CreatePatient;
 using Domain.Abstractions.Errors;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Patients;
 
@@ -51,8 +52,8 @@ internal sealed class CreatePatient : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
                 
             })
-            // TODO .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
-            .WithTags(ApiTags.Patients)
+            .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
+            .WithTags(EndpointTags.Patients)
             .Produces<PatientResponse>()
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status409Conflict);

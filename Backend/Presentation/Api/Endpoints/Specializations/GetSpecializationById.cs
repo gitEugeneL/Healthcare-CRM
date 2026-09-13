@@ -18,9 +18,9 @@ internal sealed class GetSpecializationById : IEndpoint
                 Result<SpecializationResponse> result = await sender.Send(query); 
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
-        .AllowAnonymous()
-        .WithTags(ApiTags.Specializations)
-        .Produces<SpecializationResponse>()
-        .Produces(StatusCodes.Status404NotFound);
+            .AllowAnonymous()
+            .WithTags(EndpointTags.Specializations)
+            .Produces<SpecializationResponse>()
+            .Produces(StatusCodes.Status404NotFound);
     }
 }

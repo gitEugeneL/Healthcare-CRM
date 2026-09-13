@@ -4,6 +4,7 @@ using Application.UseCases.Offices;
 using Application.UseCases.Offices.UpdateOfficeName;
 using Domain.Abstractions.Errors;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Offices;
 
@@ -23,8 +24,8 @@ internal class UpdateOfficeName : IEndpoint
                 
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
-            // TODO .RequireAuthorization(AuthTags.ManagerPolicy)
-            .WithTags(ApiTags.Offices)
+            .RequireAuthorization(AuthTags.ManagerPolicy)
+            .WithTags(EndpointTags.Offices)
             .Produces<OfficeResponse>()
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound);

@@ -1,10 +1,11 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
-using Api.Utils;
 using Application.UseCases.Appointments;
 using Application.UseCases.Appointments.GetAllAppointments;
 using Application.UseCases.Common.Pagination;
 using MediatR;
+using Security.Setups;
+using Security.Utils;
 
 namespace Api.Endpoints.Appointments;
 
@@ -35,8 +36,8 @@ internal sealed class GetAllAppointmentsAsDoctor : IEndpoint
                 var result = await sender.Send(query);
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
-             // TODO .RequireAuthorization(AuthTags.DoctorPolicy)
-            .WithTags(ApiTags.Appointments)
+            .RequireAuthorization(AuthTags.DoctorPolicy)
+            .WithTags(EndpointTags.Appointments)
             .Produces<PaginationResult<AppointmentResponse>>();
     }
 }

@@ -3,6 +3,7 @@ using Api.ApiResults;
 using Application.UseCases.Appointments;
 using Application.UseCases.Appointments.ChangeAppointmentStatus;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Appointments;
 
@@ -22,8 +23,8 @@ internal sealed class ChangeAppointmentStatus : IEndpoint
                 var result = await sender.Send(command);
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
-            // TODO .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
-            .WithTags(ApiTags.Appointments)
+            .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
+            .WithTags(EndpointTags.Appointments)
             .Produces<AppointmentResponse>()
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound);

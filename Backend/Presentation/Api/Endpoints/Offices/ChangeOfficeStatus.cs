@@ -4,6 +4,7 @@ using Application.UseCases.Offices;
 using Application.UseCases.Offices.ChangeOfficeStatus;
 using Domain.Abstractions.Errors;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Offices;
 
@@ -17,10 +18,9 @@ internal class ChangeOfficeStatus : IEndpoint
             Result<OfficeResponse> result = await sender.Send(command);
             
             return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
-            
         })
-            // TODO .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
-            .WithTags(ApiTags.Offices)
+            .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
+            .WithTags(EndpointTags.Offices)
             .Produces<OfficeResponse>()
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound);

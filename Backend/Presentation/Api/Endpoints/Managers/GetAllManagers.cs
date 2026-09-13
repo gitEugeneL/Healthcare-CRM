@@ -4,6 +4,7 @@ using Application.UseCases.Managers;
 using Application.UseCases.Managers.GetAllManagers;
 using Domain.Abstractions.Errors;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.Managers;
 
@@ -18,8 +19,8 @@ internal class GetAllManagers : IEndpoint
 
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
-            // TODO .RequireAuthorization(AuthTags.AdminPolicy)
-            .WithTags(ApiTags.Managers)
+            .RequireAuthorization(AuthTags.AdminPolicy)
+            .WithTags(EndpointTags.Managers)
             .Produces<IReadOnlyList<ManagerResponse>>();
     }
 }
