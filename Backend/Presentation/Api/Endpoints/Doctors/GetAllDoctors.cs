@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Common.Pagination;
 using Application.UseCases.Doctors;
 using Application.UseCases.Doctors.GetAllDoctors;
@@ -41,6 +42,7 @@ internal class GetAllDoctors : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
             .RequireAuthorization(AuthTags.ManagerOrPatientPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Doctors)
             .Produces<PaginationResult<DoctorResponse>>();
     }

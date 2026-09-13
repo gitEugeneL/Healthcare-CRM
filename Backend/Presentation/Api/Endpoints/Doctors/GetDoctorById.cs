@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Doctors;
 using Application.UseCases.Doctors.GetDoctor;
 using Domain.Abstractions.Errors;
@@ -20,6 +21,7 @@ internal class GetDoctorById : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
             .RequireAuthorization(AuthTags.ManagerOrPatientPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Doctors)
             .Produces<DoctorResponse>()
             .Produces(StatusCodes.Status404NotFound);

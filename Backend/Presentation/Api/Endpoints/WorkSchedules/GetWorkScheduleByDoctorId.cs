@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.WorkSchedules;
 using Application.UseCases.WorkSchedules.GetWorkScheduleByDoctorId;
 using Domain.Abstractions.Errors;
@@ -19,6 +20,7 @@ internal sealed class GetWorkScheduleByDoctorId : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
             .AllowAnonymous()
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.WorkSchedules)
             .Produces<WorkScheduleResponse>()
             .Produces(StatusCodes.Status404NotFound);

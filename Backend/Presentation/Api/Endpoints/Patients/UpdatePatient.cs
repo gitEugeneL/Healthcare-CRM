@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Patients;
 using Application.UseCases.Patients.UpdatePatient;
 using Domain.Abstractions.Errors;
@@ -52,6 +53,7 @@ internal sealed class UpdatePatient : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
             .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Patients)
             .Produces<PatientResponse>()
             .Produces(StatusCodes.Status400BadRequest)

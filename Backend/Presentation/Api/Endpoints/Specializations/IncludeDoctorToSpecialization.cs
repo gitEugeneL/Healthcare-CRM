@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Specializations;
 using Application.UseCases.Specializations.IncludeDoctor;
 using Domain.Abstractions.Errors;
@@ -25,6 +26,7 @@ internal sealed class IncludeDoctorToSpecialization : IEndpoint
                 return result.Match(Results.NoContent, ApiResults.ApiResults.Problem);
             })
             .RequireAuthorization(AuthTags.ManagerPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Specializations)
             .Produces<SpecializationResponse>()
             .Produces(StatusCodes.Status404NotFound)

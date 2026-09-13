@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Doctors;
 using Application.UseCases.Doctors.CreateDoctor;
 using Domain.Abstractions.Errors;
@@ -37,6 +38,7 @@ internal class CreateDoctor : IEndpoint
             return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
         })
             .RequireAuthorization(AuthTags.ManagerPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Doctors)
             .Produces<DoctorResponse>()
             .Produces(StatusCodes.Status400BadRequest)

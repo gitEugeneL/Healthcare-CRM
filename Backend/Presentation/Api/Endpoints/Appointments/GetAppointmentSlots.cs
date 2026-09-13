@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Appointments;
 using Application.UseCases.Appointments.GetAppointmentSlots;
 using MediatR;
@@ -26,6 +27,7 @@ internal sealed class GetAppointmentSlots : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
             .RequireAuthorization(AuthTags.ManagerOrPatientPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Appointments)
             .Produces<AppointmentSlotsResponse>()
             .Produces(StatusCodes.Status404NotFound)

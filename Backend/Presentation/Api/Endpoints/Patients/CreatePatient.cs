@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Patients;
 using Application.UseCases.Patients.CreatePatient;
 using Domain.Abstractions.Errors;
@@ -53,6 +54,7 @@ internal sealed class CreatePatient : IEndpoint
                 
             })
             .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Patients)
             .Produces<PatientResponse>()
             .Produces(StatusCodes.Status400BadRequest)

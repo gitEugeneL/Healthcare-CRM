@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Managers;
 using Application.UseCases.Managers.GetAllManagers;
 using Domain.Abstractions.Errors;
@@ -20,6 +21,7 @@ internal class GetAllManagers : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
             .RequireAuthorization(AuthTags.AdminPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Managers)
             .Produces<IReadOnlyList<ManagerResponse>>();
     }

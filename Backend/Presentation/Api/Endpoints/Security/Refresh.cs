@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Security;
 using Application.UseCases.Security.Refresh;
 using Domain.Abstractions.Errors;
@@ -35,6 +36,7 @@ internal sealed class Refresh : IEndpoint
                     ApiResults.ApiResults.Problem);
             })
             .AllowAnonymous()
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Security)
             .Produces<LoginOrRefreshResponse>()
             .Produces(StatusCodes.Status400BadRequest)

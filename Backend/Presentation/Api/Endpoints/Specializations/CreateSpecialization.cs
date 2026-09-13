@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Specializations;
 using Application.UseCases.Specializations.CreateSpecialization;
 using Domain.Abstractions.Errors;
@@ -27,6 +28,7 @@ internal sealed class CreateSpecialization : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
             .RequireAuthorization(AuthTags.ManagerPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Specializations)
             .Produces<SpecializationResponse>()
             .Produces(StatusCodes.Status400BadRequest)

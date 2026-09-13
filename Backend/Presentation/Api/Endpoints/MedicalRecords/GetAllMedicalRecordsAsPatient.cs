@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Common.Pagination;
 using Application.UseCases.MedicalRecords;
 using Application.UseCases.MedicalRecords.GetAllMedicalRecords;
@@ -36,6 +37,7 @@ internal sealed class GetAllMedicalRecordsAsPatient : IEndpoint
                 
             })
             .RequireAuthorization(AuthTags.PatientPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.MedicalRecords)
             .Produces<PaginationResult<MedicalRecordResponse>>();
     }

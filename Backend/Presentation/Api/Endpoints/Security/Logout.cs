@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Security.Logout;
 using Domain.Abstractions.Errors;
 using MediatR;
@@ -29,6 +30,7 @@ internal sealed class Logout : IEndpoint
                     ApiResults.ApiResults.Problem);
             })
             .AllowAnonymous()
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Security)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status400BadRequest)

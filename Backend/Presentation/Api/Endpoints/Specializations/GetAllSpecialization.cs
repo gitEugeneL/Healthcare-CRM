@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Specializations;
 using Application.UseCases.Specializations.GetAllSpecializations;
 using Domain.Abstractions.Errors;
@@ -19,6 +20,7 @@ internal sealed class GetAllSpecialization : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
             .AllowAnonymous()
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Specializations)
             .Produces<IReadOnlyList<SpecializationResponse>>();
     }

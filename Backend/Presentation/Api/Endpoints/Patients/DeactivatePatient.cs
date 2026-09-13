@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Patients.DeactivatePatient;
 using Domain.Abstractions.Errors;
 using MediatR;
@@ -20,6 +21,7 @@ internal sealed class DeactivatePatient : IEndpoint
                 
             })
             .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Patients)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)

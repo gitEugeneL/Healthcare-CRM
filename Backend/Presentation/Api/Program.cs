@@ -6,7 +6,6 @@ using Cache;
 using Mail;
 using Persistence;
 using Security;
-using Security.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +17,8 @@ builder.Services.AddMailServices();
 builder.Services.AddApiServices(builder.Configuration);
 
 var app = builder.Build();
+
+app.UseRateLimiter();
 
 app.MapEndpoints();
 

@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Specializations.DeleteSpecialization;
 using Domain.Abstractions.Errors;
 using MediatR;
@@ -19,6 +20,7 @@ internal sealed class DeleteSpecialization : IEndpoint
                 return result.Match(Results.NoContent, ApiResults.ApiResults.Problem);
             })
             .RequireAuthorization(AuthTags.ManagerPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Specializations)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)

@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Managers;
 using Application.UseCases.Managers.CreateManager;
 using Domain.Abstractions.Errors;
@@ -36,6 +37,7 @@ internal class CreateManager : IEndpoint
 
             })
             .RequireAuthorization(AuthTags.AdminPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Managers)
             .Produces<ManagerResponse>()
             .Produces(StatusCodes.Status400BadRequest)

@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Doctors;
 using Application.UseCases.Doctors.ChangeDoctorStatus;
 using Domain.Abstractions.Errors;
@@ -20,6 +21,7 @@ internal sealed class ChangeDoctorStatus : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
             .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Doctors)
             .Produces<DoctorResponse>()
             .Produces(StatusCodes.Status400BadRequest)

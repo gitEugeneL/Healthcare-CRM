@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Security.GenerateCode;
 using Domain.Abstractions.Errors;
 using MediatR;
@@ -20,6 +21,7 @@ internal sealed class GenerateCode : IEndpoint
             return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
         })   
         .AllowAnonymous()
+        .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
         .WithTags(EndpointTags.Security)
         .Produces<GenerateCodeResponse>()
         .Produces(StatusCodes.Status400BadRequest)

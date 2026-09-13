@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Appointments;
 using Application.UseCases.Appointments.GetAllAppointments;
 using Application.UseCases.Common.Pagination;
@@ -37,6 +38,7 @@ internal sealed class GetAllAppointmentsAsPatient : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
             .RequireAuthorization(AuthTags.PatientPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Appointments)
             .Produces<PaginationResult<AppointmentResponse>>();
     }

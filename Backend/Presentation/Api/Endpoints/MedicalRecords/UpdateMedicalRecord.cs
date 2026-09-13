@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.MedicalRecords;
 using Application.UseCases.MedicalRecords.UpdateMedicalRecord;
 using MediatR;
@@ -31,6 +32,7 @@ internal sealed class UpdateMedicalRecord : IEndpoint
             return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
         })
         .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
+        .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
         .WithTags(EndpointTags.MedicalRecords)
         .Produces<MedicalRecordResponse>()
         .Produces(StatusCodes.Status400BadRequest)

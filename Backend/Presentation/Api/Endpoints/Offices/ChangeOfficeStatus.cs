@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Offices;
 using Application.UseCases.Offices.ChangeOfficeStatus;
 using Domain.Abstractions.Errors;
@@ -20,6 +21,7 @@ internal class ChangeOfficeStatus : IEndpoint
             return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
         })
             .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Offices)
             .Produces<OfficeResponse>()
             .Produces(StatusCodes.Status400BadRequest)

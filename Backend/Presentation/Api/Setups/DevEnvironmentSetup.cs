@@ -3,7 +3,7 @@ using Scalar.AspNetCore;
 
 namespace Api.Setups;
 
-internal static class DevSetup
+internal static class DevEnvironmentSetup
 {
     internal static WebApplication UeDevConfiguration(this WebApplication app)
     {

@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Offices;
 using Application.UseCases.Offices.UpdateOfficeName;
 using Domain.Abstractions.Errors;
@@ -25,6 +26,7 @@ internal class UpdateOfficeName : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
             .RequireAuthorization(AuthTags.ManagerPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Offices)
             .Produces<OfficeResponse>()
             .Produces(StatusCodes.Status400BadRequest)

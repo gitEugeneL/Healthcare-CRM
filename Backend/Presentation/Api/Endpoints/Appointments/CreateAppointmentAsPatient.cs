@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Appointments;
 using Application.UseCases.Appointments.CreateAppointment;
 using MediatR;
@@ -36,6 +37,7 @@ internal sealed class CreateAppointmentAsPatient : IEndpoint
             
         })
         .RequireAuthorization(AuthTags.PatientPolicy)
+        .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
         .WithTags(EndpointTags.Appointments)
         .Produces<AppointmentResponse>()
         .Produces(StatusCodes.Status400BadRequest)

@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.Offices.CreateOffice;
 using Domain.Abstractions.Errors;
 using MediatR;
@@ -24,6 +25,7 @@ internal class CreateOffice : IEndpoint
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
             .RequireAuthorization(AuthTags.ManagerPolicy)
+            .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.Offices)
             .Produces<Guid>()
             .Produces(StatusCodes.Status400BadRequest)

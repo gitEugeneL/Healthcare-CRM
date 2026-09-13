@@ -1,5 +1,6 @@
 using Api.ApiConfiguration;
 using Api.ApiResults;
+using Api.Setups;
 using Application.UseCases.WorkSchedules;
 using Application.UseCases.WorkSchedules.ConfigWorkSchedule;
 using Domain.Abstractions.Errors;
@@ -36,6 +37,7 @@ internal sealed class ConfigWorkSchedules : IEndpoint
             return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
         })
         .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
+        .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
         .WithTags(EndpointTags.WorkSchedules)
         .Produces<WorkScheduleResponse>()
         .Produces(StatusCodes.Status400BadRequest)
