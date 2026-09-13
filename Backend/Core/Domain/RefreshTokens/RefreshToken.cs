@@ -16,18 +16,16 @@ public sealed class RefreshToken : BaseEntity
     public Guid UserId { get; private init; }
 
 
-    public static Result<RefreshToken> Create(string token, DateTime expires, User user)
+    public static Result<RefreshToken> Create(string token, DateTime expires, Guid userId)
     {
         if (expires < DateTime.UtcNow)
-        {
             return Result.Failure<RefreshToken>(RefreshTokenErrors.ExpiresPrecedesUtcNow);
-        }
 
         var refreshToken = new RefreshToken
         {
             Token = token,
             Expires = expires,
-            User = user
+            UserId = userId
         };
 
         return refreshToken;

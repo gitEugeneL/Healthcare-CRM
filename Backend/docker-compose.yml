@@ -3,16 +3,38 @@ services:
     image: postgres:18-alpine    
     container_name: halthcare-crm.database
     environment:
-      - POSTGRES_DB=halthcare            # only for dev
-      - POSTGRES_USER=user               # only for dev
-      - POSTGRES_PASSWORD=password       # only for dev
+      - POSTGRES_DB=halthcare                         # open only for dev    
+      - POSTGRES_USER=user                            # open only for dev    
+      - POSTGRES_PASSWORD=password                    # open only for dev    
     ports:
-      - "5440:5432"                      # open only for dev    
+      - "5440:5432"                                   # open only for dev    
     networks:
       - Healthcare-CRM
     volumes:
       - halthcare-crm.database:/var/lib/postgresql
       
+  redis:
+    image: redis:8-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"                                    # open only for dev    
+    volumes:
+      - halthcare-crm.redis_data:/data
+    networks:
+      - Healthcare-CRM
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"                                     # open only for dev    
+    networks:
+      - Healthcare-CRM
+    depends_on:
+      - redis
+  
   cloudbeaver:
     container_name: cloudbeaver
     image: dbeaver/cloudbeaver:latest
@@ -50,3 +72,4 @@ networks:
 volumes:
   halthcare-crm.database:
   halthcare-crm.cloudbeaver:
+  halthcare-crm.redis_data:

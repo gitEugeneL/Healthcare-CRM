@@ -13,12 +13,19 @@ internal class UserRepository(DataContext dataContext) : IUserRepository
             .AsNoTracking()
             .AnyAsync(u => u.Email == email, ct);
     }
-    
-    // public async Task<User?> FindUserByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken)
-    // {
-    //     return await dataContext.Users
-    //         .Include(user => user.RefreshTokens)
-    //         .FirstOrDefaultAsync(user => user.RefreshTokens
-    //                 .Any(rt => rt.Token == refreshToken), cancellationToken);
-    // }
+
+    public async Task<User?> FindUserByEmailAsync(string email, CancellationToken ct)
+    {
+        return await dataContext
+            .Users
+            .FirstOrDefaultAsync(u => u.Email == email, ct);
+    }
+
+    public async Task<User?> FindUserByEmailWithRefreshTokensAsync(string email, CancellationToken ct)
+    {
+        return await dataContext
+            .Users
+            .Include(u => u.RefreshTokens)
+            .FirstOrDefaultAsync(u => u.Email == email, ct);
+    }
 }

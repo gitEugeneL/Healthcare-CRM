@@ -8,6 +8,8 @@ internal class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken
 {
     public void Configure(EntityTypeBuilder<RefreshToken> builder)
     {
+        builder.Property(rt => rt.Id).ValueGeneratedNever();
+        
         builder.HasIndex(r => r.Token);
 
         builder.HasIndex(r => r.UserId);

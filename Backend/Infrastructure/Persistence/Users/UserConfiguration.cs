@@ -34,9 +34,13 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasConversion<string>();
         
-        /*** Many-to-one relation ***/
+        /*** Many-to-one: RefreshToken ***/
         builder.HasMany(user => user.RefreshTokens)
             .WithOne(refreshToken => refreshToken.User)
-            .HasForeignKey(refreshToken => refreshToken.UserId); 
+            .HasForeignKey(refreshToken => refreshToken.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Navigation(user => user.RefreshTokens)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

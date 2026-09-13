@@ -1,6 +1,6 @@
-namespace Application.Common.Interfaces;
+namespace Application.Abstractions.Security;
 
-public interface IPasswordManager
+public interface IPasswordService
 {
     void CreatePasswordHash(string password, out byte[] hash, out byte[] salt);
    
