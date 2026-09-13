@@ -12,13 +12,19 @@ internal sealed class CreateUserValidator : AbstractValidator<CreateUserCommand>
             .EmailAddress()
             .WithMessage("The email is not valid.");
         
-        RuleFor(u => u.Password)
+        RuleFor(request => request.Password)
             .NotEmpty()
-            .WithMessage("The password is required.")
-            .MinimumLength(8)
-            .WithMessage("The password must be at least 8 characters long.")
-            .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d\s]).{8,64}$")
-            .WithMessage("The password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");       
+            .WithMessage("Password is required")
+            .Length(8, 200)
+            .WithMessage("Password must be between 8 and 150 characters")
+            .Must(p => p.Any(char.IsLetter))
+            .WithMessage("Password must contain letters")
+            .Must(p => p.Any(char.IsUpper))
+            .WithMessage("Password must contain upper case")
+            .Must(p => p.Any(char.IsDigit))
+            .WithMessage("Password must contain digits")
+            .Must(p => p.Any(c => !char.IsLetterOrDigit(c)))
+            .WithMessage("Password must contain special characters");     
         
         RuleFor(u => u.FirstName)
             .MaximumLength(50)

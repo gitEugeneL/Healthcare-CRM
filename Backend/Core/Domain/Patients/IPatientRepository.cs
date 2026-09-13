@@ -10,10 +10,9 @@ public interface IPatientRepository
 
     Task<Patient?> FindPatientByIdWithTrackingAsync(Guid patientId, CancellationToken ct);
     
-    Task<(IReadOnlyList<Patient> List, int Count)> GetPatientsWithPaginationAsync(
+    Task<(IReadOnlyList<Patient> List, int Count)> GetAllPatientsWithPaginationAsync(
         int pageNumber, 
         int pageSize,
         Guid? doctorId,
-        Guid? specializationId,
         CancellationToken ct);
 }

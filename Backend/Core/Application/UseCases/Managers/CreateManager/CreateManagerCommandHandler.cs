@@ -1,4 +1,4 @@
-using Application.Abstractions;
+using Application.Abstractions.Security;
 using Domain.Abstractions;
 using Domain.Abstractions.Errors;
 using Domain.Managers;
@@ -11,7 +11,7 @@ internal sealed class CreateManagerCommandHandler(
     IUserRepository userRepository, 
     IManagerRepository managerRepository,
     IUnitOfWork unitOfWork,
-    IPasswordManager passwordManager) : IRequestHandler<CreateMangerCommand, Result<ManagerResponse>>
+    IPasswordService passwordService) : IRequestHandler<CreateMangerCommand, Result<ManagerResponse>>
 {
     public async Task<Result<ManagerResponse>> Handle(CreateMangerCommand command, CancellationToken ct)
     {
@@ -20,7 +20,7 @@ internal sealed class CreateManagerCommandHandler(
             return Result.Failure<ManagerResponse>(UserErrors.AlreadyExist(command.Email));
         }
         
-        passwordManager.CreatePasswordHash(command.Password, out var hash, out var salt);
+        passwordService.CreatePasswordHash(command.Password, out var hash, out var salt);
 
         Result<Manager> result = Manager.Create(
             position: command.Position,

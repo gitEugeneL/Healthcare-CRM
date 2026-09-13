@@ -1,9 +1,13 @@
 using System.Reflection;
 using Domain.Abstractions;
+using Domain.Addresses;
+using Domain.Appointments;
 using Domain.Common;
 using Domain.Doctors;
 using Domain.Managers;
+using Domain.MedicalRecords;
 using Domain.Offices;
+using Domain.Patients;
 using Domain.RefreshTokens;
 using Domain.Specializations;
 using Domain.Users;
@@ -16,9 +20,9 @@ internal sealed class DataContext(DbContextOptions<DataContext> options) : DbCon
 {
     internal DbSet<Office> Offices { get; set; }
     
-    // internal DbSet<MedicalRecord> MedicalRecords { get; set; }
+    internal DbSet<MedicalRecord> MedicalRecords { get; set; }
     
-    // internal DbSet<Appointment> Appointments { get; set; }
+    internal DbSet<Appointment> Appointments { get; set; }
     
     internal DbSet<WorkSchedule> WorkSchedules { get; set; }
     
@@ -32,9 +36,9 @@ internal sealed class DataContext(DbContextOptions<DataContext> options) : DbCon
     
     internal DbSet<Manager> Managers { get; set; }
     
-    // internal DbSet<UserPatient> UserPatients { get; set; }
+    internal DbSet<Patient> Patients { get; set; }
     
-    // internal DbSet<Address> Addresses { get; set; }
+    internal DbSet<Address> Addresses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

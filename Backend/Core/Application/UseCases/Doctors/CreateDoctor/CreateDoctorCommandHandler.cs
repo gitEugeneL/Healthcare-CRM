@@ -1,4 +1,4 @@
-using Application.Abstractions;
+using Application.Abstractions.Security;
 using Domain.Abstractions;
 using Domain.Abstractions.Errors;
 using Domain.Doctors;
@@ -11,7 +11,7 @@ internal sealed class CreateDoctorCommandHandler(
    IUserRepository userRepository,
    IDoctorRepository doctorRepository,
    IUnitOfWork unitOfWork,
-   IPasswordManager passwordManager) : IRequestHandler<CreateDoctorCommand, Result<DoctorResponse>>
+   IPasswordService passwordService) : IRequestHandler<CreateDoctorCommand, Result<DoctorResponse>>
 {
     public async Task<Result<DoctorResponse>> Handle(CreateDoctorCommand command, CancellationToken ct)
     {
@@ -20,7 +20,7 @@ internal sealed class CreateDoctorCommandHandler(
             return Result.Failure<DoctorResponse>(UserErrors.AlreadyExist(command.Email));
         }
         
-        passwordManager.CreatePasswordHash(command.Password, out var hash, out var salt);
+        passwordService.CreatePasswordHash(command.Password, out var hash, out var salt);
         
         Doctor doctor = Doctor.Create(
             education: command.Education,

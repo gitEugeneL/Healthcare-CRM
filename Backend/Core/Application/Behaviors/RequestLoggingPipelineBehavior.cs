@@ -27,10 +27,7 @@ internal sealed class RequestLoggingPipelineBehavior<TRequest, TResponse>(
         }
         else
         {
-            // using (LogContext.PushProperty("Error", result.Error, true))
-            // {
-                // logger.LogError("Completed request {RequestName} with error", requestName);
-            // }
+            logger.LogError("Completed request {RequestName} with error: {@Error}", requestName, result.Error);
         }
 
         return result;

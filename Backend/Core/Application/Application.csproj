@@ -6,13 +6,8 @@
     
     <ItemGroup>
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.8" />
         <PackageReference Include="MediatR" Version="14.2.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Abstractions\" />
-      <Folder Include="Operations\Managers\" />
-      <Folder Include="UseCases\Common\Pagination\" />
     </ItemGroup>
     
 </Project>
