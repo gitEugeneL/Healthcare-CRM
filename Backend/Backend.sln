@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.env = ..\.env
 		..\.env.example = ..\.env.example
 		Presentation\Api\messageCode.txt = Presentation\Api\messageCode.txt
+		scalar.json = scalar.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{E1F7B146-B35D-460C-B03F-9A06C7A9CA18}"

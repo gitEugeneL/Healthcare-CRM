@@ -5,6 +5,7 @@ using Application.UseCases.WorkSchedules;
 using Application.UseCases.WorkSchedules.GetWorkScheduleByDoctorId;
 using Domain.Abstractions.Errors;
 using MediatR;
+using Security.Setups;
 
 namespace Api.Endpoints.WorkSchedules;
 
@@ -19,7 +20,7 @@ internal sealed class GetWorkScheduleByDoctorId : IEndpoint
                 
                 return result.Match(Results.Ok, ApiResults.ApiResults.Problem);
             })
-            .AllowAnonymous()
+            .RequireAuthorization(AuthTags.DoctorOrManagerPolicy)
             .RequireRateLimiting(RateLimiterSetup.FixedRateLimiter)
             .WithTags(EndpointTags.WorkSchedules)
             .Produces<WorkScheduleResponse>()
