@@ -1,5 +1,8 @@
 # Healthcare-CRM
 
+<!-- Status -->
+[![CI](https://github.com/gitEugeneL/Healthcare-CRM/actions/workflows/dotnet.yml/badge.svg)](https://github.com/gitEugeneL/Healthcare-CRM/actions/workflows/dotnet.yml)
+
 <!-- Stack -->
 ![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)
 ![C%23](https://img.shields.io/badge/C%23-239120?logo=csharp&logoColor=white)
@@ -20,7 +23,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/gitEugeneL/Healthcare-CRM)
 
 
-A management backend for small clinics, private medical offices, and cosmetic salons.
+A management backend for small clinics and private medical offices.
 
 Covers the full operational loop of a clinic — staff and doctors, patients and offices,
 work schedules and appointments, all the way through to the medical records that
