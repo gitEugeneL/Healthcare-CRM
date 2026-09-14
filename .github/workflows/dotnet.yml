@@ -28,6 +28,7 @@ jobs:
           dotnet-version: 10.0.x
           cache: true
           cache-dependency-path: Backend/**/*.csproj
+          # dotnet-quality: preview   # раскомментируй, если 10.0 ещё не GA
 
       - name: Restore dependencies
         run: dotnet restore
@@ -45,6 +46,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create .env for CI
+        run: |
+          cat > .env <<'EOF'
+          POSTGRES_DB=halthcare
+          POSTGRES_USER=user
+          POSTGRES_PASSWORD=password
+          AUTH_AUDIENCE=http://localhost:8080
+          AUTH_ISSUER=onlyDevIssuer_identityWebApi
+          AUTH_SECURITY_KEY=OnlyDevSecurityKey123456789_DONT_USE_DONT_USE_DONT_USE_DONT_USE_!!!
+          EOF
+
       - name: Check Docker
         run: docker --version
 
@@ -54,7 +66,7 @@ jobs:
       - name: Wait for API
         run: |
           for i in {1..30}; do
-            if curl -fsS http://localhost:8080/health >/dev/null 2>&1; then
+            if curl -fsS http://localhost:8080/scalar >/dev/null 2>&1; then
               echo "API is up"
               exit 0
             fi
