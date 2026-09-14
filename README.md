@@ -7,6 +7,7 @@
 ![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)
 ![C%23](https://img.shields.io/badge/C%23-239120?logo=csharp&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
 
 <!-- Architecture & Patterns -->
@@ -39,10 +40,10 @@ The security model is owned, not borrowed.
 
 - [.NET](https://github.com/dotnet/core)
 - [C#](https://github.com/dotnet/csharplang)
-- [FastEndpoints](https://fast-endpoints.com/)
 - [xUnit](https://github.com/xunit/xunit)
 - [ASP.NET Core](https://github.com/dotnet/aspnetcore)
 - [MediatR](https://github.com/jbogard/MediatR)
+- [Redis](https://github.com/redis/redis)
 - [Entity Framework Core](https://github.com/dotnet/efcore)
 - [PostgreSQL](https://github.com/postgres)
 - [FluentValidation](https://github.com/FluentValidation/FluentValidation)
@@ -118,7 +119,7 @@ If the database is empty, the system automatically seeds fake data on startup us
 | **Backend API**     | 8080 | `-`    | `-`         | http://localhost:8080 |
 
 
-## 🖨️ Swagger documentation
+## 🖨️ Scalar documentation
 
 1. Scalar UI
 
