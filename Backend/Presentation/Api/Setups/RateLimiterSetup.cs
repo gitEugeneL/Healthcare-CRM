@@ -16,7 +16,6 @@ internal static class RateLimiterSetup
                 options.PermitLimit = 10;
                 options.Window = TimeSpan.FromSeconds(10);
                 options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                options.QueueLimit = 5;
             });
         });
 

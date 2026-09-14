@@ -1,0 +1,85 @@
+services:
+  halthcare-crm.database:
+    image: postgres:18-alpine    
+    container_name: halthcare-crm.database
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5440:5432"                                   # open only for dev    
+    networks:
+      - Healthcare-CRM
+    volumes:
+      - halthcare-crm.database:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d halthcare" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      
+  halthcare-crm.redis:
+    image: redis:8-alpine
+    container_name: halthcare-crm.redis
+    ports:
+      - "6379:6379"                                    # open only for dev    
+    volumes:
+      - halthcare-crm.redis_data:/data
+    networks:
+      - Healthcare-CRM
+
+  halthcare-crm.redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: halthcare-crm.redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"                                     # open only for dev    
+    networks:
+      - Healthcare-CRM
+    depends_on:
+      - halthcare-crm.redis
+  
+  halthcare-crm.cloudbeaver:
+    container_name: halthcare-crm.cloudbeaver
+    image: dbeaver/cloudbeaver:latest
+    restart: unless-stopped
+    ports:
+      - "9000:8978"
+    networks:
+      - Healthcare-CRM
+    volumes:
+      - halthcare-crm.cloudbeaver:/opt/cloudbeaver/workspace
+
+  halthcare-crm.app:
+    container_name: halthcare-crm.app
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    environment:
+      - "ASPNETCORE_ENVIRONMENT=Development"
+      - "ConnectionStrings__PSQL=Host=halthcare-crm.database;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};"
+      - "ConnectionStrings__Redis=halthcare-crm.redis:6379"
+      - "Authentication__Audience=${AUTH_AUDIENCE}"
+      - "Authentication__Issuer=${AUTH_ISSUER}"
+      - "Authentication__AccessToken__SecurityKey=${AUTH_SECURITY_KEY}"
+    ports:
+      - "8080:8080"
+    depends_on:
+      halthcare-crm.database:
+        condition: service_healthy
+    networks:
+      - Healthcare-CRM
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+   
+networks:
+  Healthcare-CRM:
+    driver: bridge 
+   
+volumes:
+  halthcare-crm.database:
+  halthcare-crm.cloudbeaver:
+  halthcare-crm.redis_data:
