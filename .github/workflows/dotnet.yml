@@ -10,11 +10,14 @@ on:
 permissions:
   contents: read
 
-jobs:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
+jobs:
   build:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: Backend
@@ -28,7 +31,6 @@ jobs:
           dotnet-version: 10.0.x
           cache: true
           cache-dependency-path: Backend/**/*.csproj
-          # dotnet-quality: preview   # раскомментируй, если 10.0 ещё не GA
 
       - name: Restore dependencies
         run: dotnet restore
@@ -42,6 +44,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     needs: build
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v4
@@ -49,7 +52,7 @@ jobs:
       - name: Create .env for CI
         run: |
           cat > .env <<'EOF'
-          POSTGRES_DB=halthcare
+          POSTGRES_DB=healthcare
           POSTGRES_USER=user
           POSTGRES_PASSWORD=password
           AUTH_AUDIENCE=http://localhost:8080
@@ -64,6 +67,7 @@ jobs:
         run: make up
 
       - name: Wait for API
+        shell: bash
         run: |
           for i in {1..30}; do
             if curl -fsS http://localhost:8080/scalar >/dev/null 2>&1; then
