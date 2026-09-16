@@ -4,18 +4,18 @@
 [![CI](https://github.com/gitEugeneL/Healthcare-CRM/actions/workflows/dotnet.yml/badge.svg)](https://github.com/gitEugeneL/Healthcare-CRM/actions/workflows/dotnet.yml)
 
 <!-- Stack -->
-![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)
+![.NET](https://img.shields.io/badge/.NET_10-512BD4?logo=dotnet)
 ![C%23](https://img.shields.io/badge/C%23-239120?logo=csharp&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
 
 <!-- Architecture & Patterns -->
-![Clean Architecture](https://img.shields.io/badge/arch-Clean%20Architecture-9cf)
-![CQRS](https://img.shields.io/badge/pattern-CQRS-blueviolet)
-![MediatR](https://img.shields.io/badge/pattern-MediatR-512BD4)
-![Result Pattern](https://img.shields.io/badge/pattern-Result-2E7D32)
-![Minimal API](https://img.shields.io/badge/API-MinimalApi-6A1B9A)
+![Clean Architecture](https://img.shields.io/badge/Clean%20Architecture-10cf)
+![CQRS](https://img.shields.io/badge/CQRS-blueviolet)
+![MediatR](https://img.shields.io/badge/MediatR-blue)
+![Result Pattern](https://img.shields.io/badge/ResultPattern-2E7D32)
+![Minimal API](https://img.shields.io/badge/Minima_Api-6A1B9A)
 
 <!-- Meta -->
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -26,7 +26,7 @@
 
 A management backend for small clinics and private medical offices.
 
-Covers the full operational loop of a clinic — staff and doctors, patients and offices,
+Covers the full operational loop of a clinic staff and doctors, patients and offices,
 work schedules and appointments, all the way through to the medical records that
 close each visit.
 
